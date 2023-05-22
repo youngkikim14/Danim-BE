@@ -23,7 +23,7 @@ public class Member {
 	private String nickname;	//닉네임
 
 	@Column(nullable = false)
-	private String age;			//연령대
+	private String ageRange;	//연령대
 
 	private String provider;	//소셜
 
