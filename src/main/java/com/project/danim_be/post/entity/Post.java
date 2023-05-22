@@ -2,11 +2,15 @@ package com.project.danim_be.post.entity;
 
 import java.util.Date;
 
+import com.project.danim_be.member.entity.Member;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
@@ -44,6 +48,9 @@ public class Post {
 	private int recruitMember;	//인원수
 
 	private String imageUrl;	//사진
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Member member;
 
 
 
