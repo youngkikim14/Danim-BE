@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.danim_be.common.exception.CustomException;
+import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.SignupRequestDto;
@@ -34,11 +36,11 @@ public class MemberService {
 
 		Optional<Member> findMember = memberRepository.findByUserId(userId);
 		if(findMember.isPresent()){
-			throw new RuntimeException("이미 가입된 아이디 입니다");
+			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
 		}
 		Optional<Member> foundMemberNickname = memberRepository.findByNickname(nickname);
 		if (foundMemberNickname.isPresent()) {
-			throw new RuntimeException("중복된 닉네임입니다.");
+			throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
 		}
 		Member member =  new Member(userId,password,nickname,ageRange);
 		memberRepository.save(member);
