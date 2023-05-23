@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class GoogleLoginService {
+public class GoogleService {
 
     private final Environment env;
     private final MemberRepository memberRepository;

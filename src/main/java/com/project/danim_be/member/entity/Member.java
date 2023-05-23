@@ -27,7 +27,6 @@ public class Member {
 	@Column(nullable = false)
 	private String password;	//비밀번호
 
-	@Column(nullable = false)
 	private String nickname;	//닉네임
 
 	@Column(nullable = false)
@@ -42,17 +41,19 @@ public class Member {
 	private String content;		//(간략한)자기소개
 
 
+
 	public Member(String userId, String password, String nickname) {
 		this.userId = userId;
 		this.password = password;
 		this.nickname = nickname;
   }
-  
-	public Member(String userId, String password, String nickname, String ageRange) {
-		this.userId = userId;
+
+
+	public Member(String email, String password, String ageRange,String gender) {
+		this.userId = email;
 		this.password = password;
-		this.nickname = nickname;
 		this.ageRange = ageRange;
+		this.gender = gender;
 	}
 
 	@Builder
@@ -63,4 +64,8 @@ public class Member {
 		this.nickname = nickname;
 		this.ageRange = ageRange;
 	}
+
+
+
+
 }
