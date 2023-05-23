@@ -6,7 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class Member {
@@ -37,6 +43,15 @@ public class Member {
 
 	public Member(String userId, String password, String nickname, String ageRange) {
 		this.userId = userId;
+		this.password = password;
+		this.nickname = nickname;
+		this.ageRange = ageRange;
+	}
+
+	@Builder
+	public Member(String email, String gender, String password, String nickname, String ageRange) {
+		this.userId = email;
+		this.gender = gender;
 		this.password = password;
 		this.nickname = nickname;
 		this.ageRange = ageRange;
