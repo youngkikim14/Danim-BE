@@ -2,21 +2,18 @@ package com.project.danim_be.member.service;
 
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonParser;
-import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.util.Message;
+import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.MemberRequestDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
-import com.project.danim_be.member.repository.RefreshTokenRepository;
+import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
+
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -179,13 +176,14 @@ public class NaverService {
     private Member saveMember(MemberRequestDto memberRequestDto) {
 
         Member naverMember = memberRepository.findByUserId(memberRequestDto.getUserId()).orElse(null);
-
+        String nickname = RandomNickname.getRandomNickname();
         if(naverMember == null) {
             Member member = Member.builder()
                     .email(memberRequestDto.getUserId())
                     .ageRange(memberRequestDto.getAgeRange())
                     .gender(memberRequestDto.getGender())
-                    .nickname("가상데이터")
+                    .nickname(nickname)
+                    .provider("NAVER")
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .build();
 
