@@ -32,6 +32,4 @@ public class Member {
 	private String gender;		//성별
 
 	private String content;		//(간략한)자기소개
-
-
 }

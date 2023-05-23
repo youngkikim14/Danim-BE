@@ -1,4 +1,7 @@
 package com.project.danim_be.member.repository;
 
-public interface MemberRepository {
+import com.project.danim_be.member.entity.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MemberRepository extends JpaRepository<Member, Long> {
 }
