@@ -1,6 +1,9 @@
 package com.project.danim_be.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.project.danim_be.member.entity.Member;
+import com.project.danim_be.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -8,26 +11,33 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.UUID;
+
 @Service
+@RequiredArgsConstructor
 public class GoogleLoginService {
 
     private final Environment env;
+    private final MemberRepository memberRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public GoogleLoginService(Environment env) {
-        this.env = env;
-    }
     public void socialLogin(String code, String registrationId) {
         String accessToken = getAccessToken(code, registrationId);
         JsonNode userResourceNode = getUserResource(accessToken, registrationId);
-        System.out.println("userResourceNode = " + userResourceNode);
+//        System.out.println("userResourceNode = " + userResourceNode);
 
         String id = userResourceNode.get("id").asText();
         String email = userResourceNode.get("email").asText();
-        String nickname = userResourceNode.get("name").asText();
-        System.out.println("id = " + id);
-        System.out.println("email = " + email);
-        System.out.println("nickname = " + nickname);
+        String googleNickname = userResourceNode.get("name").asText();
+//        System.out.println("id = " + id);
+//        System.out.println("email = " + email);
+//        System.out.println("nickname = " + nickname);
+        if(memberRepository.findByUserId(email).isEmpty()){
+            String password = UUID.randomUUID() + id;
+            String nickname = UUID.randomUUID() + googleNickname;
+            Member member = new Member(email, password, nickname);
+            memberRepository.saveAndFlush(member);
+        }
     }
 
     private String getAccessToken(String authorizationCode, String registrationId) {
