@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/api/user/google", produces = "application/json")
+@RequestMapping(value = "/api/user", produces = "application/json")
 public class GoogleLoginController {
 
     GoogleLoginService googleLoginService;
 
-    @GetMapping("/callback/{registrationId}")
-    public void googleLogin(@RequestParam String code, @PathVariable String registrationId) {
+    @GetMapping("/google/callback")
+    public void googleLogin(@RequestParam String code, String registrationId) {
+        System.out.println(code);
         googleLoginService.socialLogin(code, registrationId);
     }
 }

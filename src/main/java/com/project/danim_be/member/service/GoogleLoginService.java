@@ -31,9 +31,9 @@ public class GoogleLoginService {
         String googleNickname = userResourceNode.get("name").asText();
 //        System.out.println("id = " + id);
 //        System.out.println("email = " + email);
-//        System.out.println("nickname = " + nickname);
+//        System.out.println("nickname = " + googleNickname);
         if(memberRepository.findByUserId(email).isEmpty()){
-            String password = UUID.randomUUID() + id;
+            String password = UUID.randomUUID().toString();
             String nickname = UUID.randomUUID() + googleNickname;
             Member member = new Member(email, password, nickname);
             memberRepository.saveAndFlush(member);
