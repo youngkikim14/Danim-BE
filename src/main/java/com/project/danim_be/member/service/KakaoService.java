@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.member.dto.KakaoMemberInfoDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
+
 
 	private final MemberRepository memberRepository;
 
@@ -129,6 +131,7 @@ public class KakaoService {
 			} else {
 
 				String password = UUID.randomUUID().toString();
+				String nickname = RandomNickname.getRandomNickname();
 
 
 
