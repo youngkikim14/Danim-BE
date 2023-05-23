@@ -13,6 +13,7 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.SignupRequestDto;
+
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 
@@ -20,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService {
 
+public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -47,7 +48,6 @@ public class MemberService {
 
 		Message message = Message.setSuccess(StatusEnum.OK,"회원 가입 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
-
 
 	}
 }
