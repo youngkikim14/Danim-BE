@@ -1,23 +1,32 @@
 package com.project.danim_be.member.service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.beans.factory.annotation.Value;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
+import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.KakaoMemberInfoDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.security.jwt.JwtUtil;
+import com.project.danim_be.security.jwt.TokenDto;
+import com.project.danim_be.security.refreshToken.RefreshToken;
+import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,18 +37,40 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class KakaoService {
 
+	private final JwtUtil jwtUtil;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	private final MemberRepository memberRepository;
+	@Value("${kakao.client.id}")
+	private String clientId;
+	@Value("${kakao.redirect.uri}")
+	private String redirectUri;
+	@Value("${kakao.token.url}")
+	private String tokenUrl;
+	@Value("${kakao.info.url}")
+	private String userInfoUrl;
 
 
-	public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+	public ResponseEntity<Message> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
 		String accessToken = getToken(code);
 		System.out.println("accessToken : "+accessToken);
 		KakaoMemberInfoDto kakaoUserInfo = getKakaoMemberInfo(accessToken);
 		Member kakaoUser = kakaoSignup(kakaoUserInfo);
+		System.out.println(kakaoUser.getUserId());
 
+		TokenDto tokenDto = jwtUtil.createAllToken(kakaoUser.getUserId());
+		setHeader(response, tokenDto);
+		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(kakaoUser.getUserId());
+		if (refreshToken.isPresent()) {
+			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+		} else {
+			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), kakaoUser.getUserId());
+			refreshTokenRepository.save(newToken);
+		}
 
-		return accessToken;
+		Message message = Message.setSuccess(StatusEnum.OK,"회원 가입 성공");
+		return new ResponseEntity<>(message, HttpStatus.OK);
+		// return accessToken;
 	}
 
 	private String getToken(String code) throws JsonProcessingException {
@@ -50,8 +81,8 @@ public class KakaoService {
 		// HTTP Body 생성
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "authorization_code");
-		body.add("client_id", "d47514ab2cd7a805e902a2c8d4d70ea6");
-		body.add("redirect_uri", "http://localhost:8080/api/user/kakao/callback");
+		body.add("client_id", clientId);
+		body.add("redirect_uri", redirectUri);
 		body.add("code", code);
 
 		// HTTP 요청 보내기
@@ -59,7 +90,7 @@ public class KakaoService {
 			new HttpEntity<>(body, headers);
 		RestTemplate rt = new RestTemplate();
 		ResponseEntity<String> response = rt.exchange(
-			"https://kauth.kakao.com/oauth/token",
+			tokenUrl,
 			HttpMethod.POST,
 			kakaoTokenRequest,
 			String.class
@@ -82,7 +113,7 @@ public class KakaoService {
 		HttpEntity<MultiValueMap<String, String>> MemberInfoRequest = new HttpEntity<>(headers);
 		RestTemplate rt = new RestTemplate();
 		ResponseEntity<String> response = rt.exchange(
-			"https://kapi.kakao.com/v2/user/me",
+			userInfoUrl,
 			HttpMethod.POST,
 			MemberInfoRequest,
 			String.class
@@ -113,35 +144,32 @@ public class KakaoService {
 	private Member kakaoSignup(KakaoMemberInfoDto kakaoMemberInfoDto) {
 		// DB 에 중복된 Kakao Id 가 있는지 확인
 		String email = kakaoMemberInfoDto.getEmail();
-		String ageRange = kakaoMemberInfoDto.getAgeRange();
-		String gender = kakaoMemberInfoDto.getGender();
+		String nickname = RandomNickname.getRandomNickname();
 		Member kakaoMember = memberRepository.findByUserId(email)
 			.orElse(null);
-		// System.out.println(Long.toString(kakaoId)+kakaoMember.toString());
 		if (kakaoMember == null) {
 
-			// 카카오 사용자 email 동일한 email 가진 회원이 있는지 확인
-			String kakaoEmail = kakaoMemberInfoDto.getEmail();
+			String password = UUID.randomUUID().toString();
+			// kakaoMember = new Member(email, password, ageRange,gender,nickname);
+			Member member = Member.builder()
+				.email(kakaoMemberInfoDto.getEmail())
+				.ageRange(kakaoMemberInfoDto.getAgeRange())
+				.gender(kakaoMemberInfoDto.getGender())
+				.nickname(nickname)
+				.password(password)
+				.provider("KAKAO")
+				.build();
 
-			Member sameEmailUser = memberRepository.findByUserId(kakaoEmail).orElse(null);
-			if (sameEmailUser != null) {
-				kakaoMember = sameEmailUser;
-				// 기존 회원정보에 카카오 Id 추가
+			System.out.println(nickname);
 
-			} else {
-
-				String password = UUID.randomUUID().toString();
-				String nickname = RandomNickname.getRandomNickname();
-
-
-
-				kakaoMember = new Member(email, password, ageRange,gender);
-			}
-
-			memberRepository.save(kakaoMember);
+			memberRepository.save(member);
+			return member;
 		}
 		return kakaoMember;
 	}
 
-
+	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
+		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
+		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
+	}
 }
