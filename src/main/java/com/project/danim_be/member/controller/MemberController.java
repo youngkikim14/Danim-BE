@@ -1,29 +1,22 @@
 package com.project.danim_be.member.controller;
 
-import org.springframework.http.HttpStatus;
-import com.project.danim_be.common.util.Message;
-import com.project.danim_be.member.service.GoogleService;
-import com.project.danim_be.member.service.NaverService;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.danim_be.common.util.Message;
 import com.project.danim_be.member.dto.SignupRequestDto;
+import com.project.danim_be.member.service.GoogleService;
 import com.project.danim_be.member.service.KakaoService;
 import com.project.danim_be.member.service.MemberService;
-import java.io.IOException;
-
+import com.project.danim_be.member.service.NaverService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -50,7 +43,7 @@ public class MemberController {
 			return memberService.signup(signupRequestDto);
 		}
 	}
-	//네이버 소셜 로그인
+//	네이버 소셜 로그인
 	@GetMapping("/naver/callback")
 	public ResponseEntity<Message> naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws IOException {
 		return naverService.naverLogin(code, state, response);
@@ -63,11 +56,11 @@ public class MemberController {
 	}
 	//구글 소셜 로그인
 	@GetMapping("/google/callback")
-	public void googleLogin(@RequestParam String code, String registrationId) {
+	public ResponseEntity<Message> googleLogin(@RequestParam String code, String registrationId) {
+		// registrationId 이 부분은 소셜 로그인을 공통으로 구현할때 쓰임 .registrationId 값에 @RequestParam으로 kakao나 naver, google이 들어가면
+		// 그에 맞는 프로퍼티스에서 값을 가져와 같은 메서드로 서로 다른 소셜 로그인 구현 가능
 		System.out.println(code);
-		googleService.socialLogin(code, registrationId);
+		return googleService.socialLogin(code);
 	}
-
-
-	}
+}
 
