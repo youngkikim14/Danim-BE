@@ -64,7 +64,7 @@ public class KakaoService {
 		if (refreshToken.isPresent()) {
 			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
 		} else {
-			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), kakaoUser.getUserId());
+			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), kakaoUser.getUserId(), "KAKAO");
 			refreshTokenRepository.save(newToken);
 		}
 
