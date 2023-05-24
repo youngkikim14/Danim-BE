@@ -225,31 +225,20 @@ public class NaverService {
 
     private void createToken(Member member, HttpServletResponse response) {
         TokenDto tokenDto = jwtUtil.createAllToken(member.getUserId());
-        System.out.println("서버accessToken: "+tokenDto.getAccessToken());
-
-//        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
+        System.out.println(tokenDto.getAccessToken());
 
         RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
         refreshTokenRepository.save(newToken);
 
-//        if (refreshToken.isPresent()) {
-//            refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-//        } else {
-//            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
-//            refreshTokenRepository.save(newToken);
-//        }
         setHeader(response, tokenDto);
     }
 
     // 네이버 연결 해제
     public void naverSignout(Member member) throws IOException {
-        System.out.println("여기까지 오나?");
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "NAVER");
-        System.out.println("2. "+refreshToken.get().getRefreshToken());
 
         JsonElement newToken = newTokenOrDelete(refreshToken.get().getRefreshToken(), "newToken");
         String accessToken = newToken.getAsJsonObject().get("access_token").getAsString();
-        System.out.println("newToken: "+accessToken);
 
         JsonElement delete = newTokenOrDelete(accessToken, "delete");
         String result = delete.getAsJsonObject().get("result").getAsString();
@@ -258,6 +247,9 @@ public class NaverService {
         } else {
             throw new CustomException(ErrorCode.FAIL_SIGNOUT);
         }
+
+        refreshTokenRepository.delete(refreshToken.get());
+        refreshTokenRepository.delete(refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "DANIM").get());
     }
 
     public JsonElement newTokenOrDelete(String token, String type) throws IOException {
@@ -277,12 +269,13 @@ public class NaverService {
             bw.write(params);
             bw.flush();
             bw.close();
-        } else {
+        } else if(type.equals("delete")) {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
             String params = "grant_type=delete" +
                     "&client_id=" + clientId +
                     "&client_secret=" + clientSecret +
-                    "&access_token=" + token;
+                    "&access_token=" + token +
+                    "&service_provider=NAVER";
             bw.write(params);
             bw.flush();
             bw.close();
