@@ -15,15 +15,26 @@ public class RefreshToken {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+
 	@NotBlank
 	private String refreshToken;
 
 	@NotBlank
 	private String userId;
 
-	public RefreshToken(String tokenDto, String userId) {
+	@NotBlank
+	private String provider;
+
+	public RefreshToken(String tokenDto, String userId, String provider) {
 		this.refreshToken = tokenDto;
 		this.userId = userId;
+		this.provider = provider;
+	}
+
+	public RefreshToken(String refreshToken, String userId) {
+		this.refreshToken = refreshToken;
+		this.userId = userId;
+		this.provider = "google";
 	}
 
 	public RefreshToken updateToken(String tokenDto) {

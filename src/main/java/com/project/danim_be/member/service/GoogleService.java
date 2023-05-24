@@ -54,7 +54,7 @@ public class GoogleService {
             memberRepository.saveAndFlush(member);
 
             TokenDto tokenDto = jwtUtil.createAllToken(email);
-            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId());
+            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "Danim");
             refreshTokenRepository.saveAndFlush(newToken);
             response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
             response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
@@ -67,7 +67,7 @@ public class GoogleService {
             if (refreshToken.isPresent()) {
                 refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
             } else {
-                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), email);
+                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), email, "Danim");
                 refreshTokenRepository.save(newToken);
             }
             response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
@@ -100,10 +100,19 @@ public class GoogleService {
 
         // resttemplate를 이용해서 구글의 토근 uri에, post형식으로, httpentity에 담긴 값들을, JsonNode 형식으로 응답받음
         ResponseEntity<JsonNode> responseNode = restTemplate.exchange(tokenUri, HttpMethod.POST, entity, JsonNode.class);
-
+        System.out.println(responseNode);
         // jsonnode로 json 형태의 값의 토큰 값을 가져옴
         JsonNode accessTokenNode = responseNode.getBody();
-        return accessTokenNode.get("access_token").asText();
+        String googleAccessToken = accessTokenNode.get("access_token").asText();
+//
+//        JsonNode userResourceNode = getUserResource(googleAccessToken);
+//        String email = userResourceNode.get("email").asText();
+//
+//        String googleRefreshToken = accessTokenNode.get("refresh_token").asText();
+//
+//        RefreshToken refreshToken = new RefreshToken(googleRefreshToken, email);
+//        refreshTokenRepository.saveAndFlush(refreshToken);
+        return googleAccessToken;
     }
 
     private JsonNode getUserResource(String accessToken) {

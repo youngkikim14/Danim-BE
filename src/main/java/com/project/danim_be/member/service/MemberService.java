@@ -95,7 +95,7 @@ public class MemberService {
 		if (refreshToken.isPresent()) {
 			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
 		} else {
-			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId());
+			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "Danim");
 			refreshTokenRepository.save(newToken);
 		}
 		setHeader(response, tokenDto);

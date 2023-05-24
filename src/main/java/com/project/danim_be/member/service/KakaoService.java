@@ -1,19 +1,5 @@
 package com.project.danim_be.member.service;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,10 +13,18 @@ import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
-
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -64,7 +58,7 @@ public class KakaoService {
 		if (refreshToken.isPresent()) {
 			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
 		} else {
-			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), kakaoUser.getUserId());
+			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), kakaoUser.getUserId(), "Danim");
 			refreshTokenRepository.save(newToken);
 		}
 
