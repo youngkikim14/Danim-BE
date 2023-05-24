@@ -70,18 +70,18 @@ public class MemberController {
 
 	//카카오 소셜 로그인
 	@GetMapping("/kakao/callback")
-	public ResponseEntity<Message> kakaoLogin(@RequestParam String code,HttpServletResponse response) throws JsonProcessingException {
+	public ResponseEntity<Message> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 		System.out.println(code);
 		return kakaoService.kakaoLogin(code,response);
 	}
 
 	//구글 소셜 로그인
 	@GetMapping("/google/callback")
-	public ResponseEntity<Message> googleLogin(@RequestParam String code, String registrationId) {
+	public ResponseEntity<Message> googleLogin(@RequestParam String code, HttpServletResponse response) {
 		// registrationId 이 부분은 소셜 로그인을 공통으로 구현할때 쓰임 .registrationId 값에 @RequestParam으로 kakao나 naver, google이 들어가면
 		// 그에 맞는 프로퍼티스에서 값을 가져와 같은 메서드로 서로 다른 소셜 로그인 구현 가능
 		System.out.println(code);
-		return googleService.socialLogin(code);
+		return googleService.socialLogin(code, response);
 	}
 
 	//회원 탈퇴

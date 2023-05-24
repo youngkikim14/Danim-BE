@@ -102,7 +102,9 @@ public class MemberService {
 		if (refreshToken.isPresent()) {
 			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
 		} else {
+
 			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
+
 			refreshTokenRepository.save(newToken);
 		}
 		setHeader(response, tokenDto);
