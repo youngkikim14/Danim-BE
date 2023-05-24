@@ -47,6 +47,7 @@ public class Member {
 		this.password = password;
 		this.nickname = nickname;
 		this.ageRange = "don't receive";
+		this.provider = "google";
   }
 
 
