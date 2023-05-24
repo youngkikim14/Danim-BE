@@ -33,6 +33,7 @@ public class WebSecurityConfig {
 		"/api/user/signup",
 		"/api/user/login",
 		"/api/user/logout",
+		"/api/user/delete",
 		"/api/user/{ownerId}/info",
 		"/api/user/{ownerId}/posts",
 		"/api/user/{ownerId}/review",

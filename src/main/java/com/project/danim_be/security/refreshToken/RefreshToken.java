@@ -21,9 +21,13 @@ public class RefreshToken {
 	@NotBlank
 	private String userId;
 
-	public RefreshToken(String tokenDto,  String userId) {
+	@NotBlank
+	private String provider;
+
+	public RefreshToken(String tokenDto, String userId, String provider) {
 		this.refreshToken = tokenDto;
 		this.userId = userId;
+		this.provider = provider;
 	}
 
 	public RefreshToken updateToken(String tokenDto) {
