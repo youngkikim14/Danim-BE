@@ -25,7 +25,7 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -40,36 +40,41 @@ public class MemberController {
 		if(bindingResult.hasErrors()){
 			String errMessage =  bindingResult.getAllErrors().get(0).getDefaultMessage();
 			Message apiResult = Message.builder()
-				.statusCode(HttpStatus.BAD_REQUEST.value())
-				.message(errMessage)
-				.build();
+					.statusCode(HttpStatus.BAD_REQUEST.value())
+					.message(errMessage)
+					.build();
 			return ResponseEntity.badRequest().body(apiResult);
 		}else{
 			return memberService.signup(signupRequestDto);
 		}
 	}
+
 	//로그인
 	@PostMapping("/login")
 	public ResponseEntity<Message> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse  response ){
 
 		return memberService.login(requestDto,response);
 	}
+
 	//로그아웃
 	@DeleteMapping("/logout")
 	public ResponseEntity<Message> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request){
 		return memberService.logout(userDetails.getMember(), request);
 	}
+
 	//네이버 소셜 로그인
 	@GetMapping("/naver/callback")
-	public ResponseEntity<Message> naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws IOException {
-		return naverService.naverLogin(code, state, response);
+	public ResponseEntity<Message> naverLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
+		return naverService.naverLogin(code, response);
 	}
+
 	//카카오 소셜 로그인
 	@GetMapping("/kakao/callback")
 	public ResponseEntity<Message> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 		System.out.println(code);
 		return kakaoService.kakaoLogin(code,response);
 	}
+
 	//구글 소셜 로그인
 	@GetMapping("/google/callback")
 	public ResponseEntity<Message> googleLogin(@RequestParam String code, HttpServletResponse response) {
@@ -77,6 +82,13 @@ public class MemberController {
 		// 그에 맞는 프로퍼티스에서 값을 가져와 같은 메서드로 서로 다른 소셜 로그인 구현 가능
 		System.out.println(code);
 		return googleService.socialLogin(code, response);
+	}
+
+	//회원 탈퇴
+	@DeleteMapping("/delete")
+	public ResponseEntity<Message> signOut(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		System.out.println("1. "+userDetails.getMember().getUserId());
+		return memberService.signout(userDetails.getMember());
 	}
 }
 

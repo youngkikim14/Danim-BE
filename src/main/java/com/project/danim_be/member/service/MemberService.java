@@ -2,8 +2,10 @@ package com.project.danim_be.member.service;
 
 import static com.project.danim_be.common.exception.ErrorCode.*;
 
+import java.io.IOException;
 import java.util.Optional;
 
+import com.project.danim_be.security.auth.UserDetailsImpl;
 import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,14 +41,17 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtUtil jwtUtil;
+	private final NaverService naverService;
+	private final KakaoService kakaoService;
+	private final GoogleService googleService;
 
 	//회원가입
 	@Transactional
 	public ResponseEntity<Message> signup(SignupRequestDto signupRequestDto) {
 
-		String userId 	= signupRequestDto.getUserId();
+		String userId = signupRequestDto.getUserId();
 		String password = passwordEncoder.encode(signupRequestDto.getPassword());
-		String nickname	= signupRequestDto.getNickname();
+		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
 
 		Optional<Member> findMember = memberRepository.findByUserId(userId);
@@ -60,13 +65,14 @@ public class MemberService {
 		}
 
 		Member member = Member.builder()
-			.email(userId)
-			.ageRange(ageRange)
-			.gender("")
-			.nickname(nickname)
-			.password(password)
-			.provider("GENERAL")
-			.build();
+				.email(userId)
+				.ageRange(ageRange)
+				.gender("")
+				.nickname(nickname)
+				.password(password)
+				.provider("GENERAL")
+				.isDeleted(false)
+				.build();
 
 		System.out.println(nickname);
 		memberRepository.save(member);
@@ -75,6 +81,7 @@ public class MemberService {
 		return new ResponseEntity<>(message, HttpStatus.OK);
 
 	}
+
 	//로그인
 	@Transactional
 	public ResponseEntity<Message> login(LoginRequestDto requestDto, HttpServletResponse response) {
@@ -83,7 +90,7 @@ public class MemberService {
 		String password = requestDto.getPassword();
 
 		Member member = memberRepository.findByUserId(userId).orElseThrow(
-			() -> new CustomException(ErrorCode.ID_NOT_FOUND)
+				() -> new CustomException(ErrorCode.ID_NOT_FOUND)
 		);
 
 		if (!passwordEncoder.matches(password, member.getPassword())) {
@@ -95,7 +102,9 @@ public class MemberService {
 		if (refreshToken.isPresent()) {
 			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
 		} else {
-			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "Danim");
+
+			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
+
 			refreshTokenRepository.save(newToken);
 		}
 		setHeader(response, tokenDto);
@@ -104,6 +113,7 @@ public class MemberService {
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
 	//로그아웃
 	@Transactional
 	public ResponseEntity<Message> logout(Member member, HttpServletRequest request) {
@@ -118,9 +128,43 @@ public class MemberService {
 		}
 		throw new CustomException(USER_NOT_FOUND);
 	}
+
+	// 회원 탈퇴
+	@Transactional
+	public ResponseEntity<Message> signout(Member member) {
+		System.out.println("탈퇴 접근?");
+		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+		switch (member.getProvider()) {
+			case "NAVER" -> {
+				try {
+					naverService.naverSignout(member);
+				} catch (IOException e) {
+					throw new CustomException(FAIL_SIGNOUT);
+				}
+			}
+//			case "KAKAO" -> {
+//				try {
+//					kakaoService.kakaoSignout(member);
+//				} catch (IOException e) {
+//					throw new CustomException(FAIL_SIGNOUT);
+//				}
+//			}
+//			case "GOOGLE" -> {
+//				try {
+//					kakaoService.googleSignout(member);
+//				} catch (IOException e) {
+//					throw new CustomException(FAIL_SIGNOUT);
+//				}
+//			}
+		}
+		member.signOut();
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "탈퇴 성공"));
+	}
+
 	// 헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
-	   	response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
+		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 	}
 }

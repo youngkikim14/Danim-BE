@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Getter
 @Setter
@@ -39,6 +40,7 @@ public class Member {
 
 	private String content;		//(간략한)자기소개
 
+	private Boolean isDeleted;		//탈퇴 여부
 
 
 	public Member(String userId, String password, String nickname) {
@@ -58,16 +60,25 @@ public class Member {
 	}
 
 	@Builder
-	public Member(String email, String gender, String password, String nickname, String ageRange,String provider) {
+	public Member(String email, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted) {
 		this.userId = email;
 		this.gender = gender;
 		this.password = password;
 		this.nickname = nickname;
 		this.ageRange = ageRange;
 		this.provider = provider;
+		this.isDeleted = isDeleted;
 	}
 
 	public String getUserId() {
 		return userId;
+	}
+
+	public void signOut() {
+		this.userId = "탈퇴";
+		this.gender = "탈퇴";
+		this.nickname = null;
+		this.ageRange = "탈퇴";
+		this.isDeleted = true;
 	}
 }
