@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.project.danim_be.security.jwt.JwtAuthenticationFilter;
 
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +24,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
+	private final JwtAuthenticationFilter jwtUtil;
+
 	private static final String[] PERMIT_URL_ARRAY={
 		"/api/user/kakao/**",
 		"/api/user/google/**",
 		"/api/user/naver/**",
 		"/api/user/signup",
 		"/api/user/login",
+		"/api/user/logout",
 		"/api/user/{ownerId}/info",
 		"/api/user/{ownerId}/posts",
 		"/api/user/{ownerId}/review",
@@ -73,9 +79,9 @@ public class WebSecurityConfig {
 
 			);
 
-		// http.cors();
+		http.cors();
 
-		// http.addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jwtUtil, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}

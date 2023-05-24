@@ -2,6 +2,7 @@ package com.project.danim_be.member.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.project.danim_be.common.util.Message;
+import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
@@ -36,7 +37,7 @@ public class GoogleService {
 //        System.out.println("nickname = " + googleNickname);
         if(memberRepository.findByUserId(email).isEmpty()){
             String password = UUID.randomUUID().toString();
-            String nickname = UUID.randomUUID() + googleNickname;
+            String nickname = RandomNickname.getRandomNickname();
             Member member = new Member(email, password, nickname);
             memberRepository.saveAndFlush(member);
         }

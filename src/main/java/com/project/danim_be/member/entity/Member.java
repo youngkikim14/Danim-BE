@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -51,23 +50,24 @@ public class Member {
   }
 
 
-	public Member(String email, String password, String ageRange,String gender) {
+	public Member(String email, String password, String ageRange,String nickname) {
 		this.userId = email;
+		this.nickname = nickname;
 		this.password = password;
 		this.ageRange = ageRange;
-		this.gender = gender;
 	}
 
 	@Builder
-	public Member(String email, String gender, String password, String nickname, String ageRange) {
+	public Member(String email, String gender, String password, String nickname, String ageRange,String provider) {
 		this.userId = email;
 		this.gender = gender;
 		this.password = password;
 		this.nickname = nickname;
 		this.ageRange = ageRange;
+		this.provider = provider;
 	}
 
-
-
-
+	public String getUserId() {
+		return userId;
+	}
 }

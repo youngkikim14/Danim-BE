@@ -2,17 +2,22 @@ package com.project.danim_be.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.danim_be.common.util.Message;
+import com.project.danim_be.member.dto.LoginRequestDto;
 import com.project.danim_be.member.dto.SignupRequestDto;
 import com.project.danim_be.member.service.GoogleService;
 import com.project.danim_be.member.service.KakaoService;
 import com.project.danim_be.member.service.MemberService;
 import com.project.danim_be.member.service.NaverService;
+import com.project.danim_be.security.auth.UserDetailsImpl;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,14 +48,25 @@ public class MemberController {
 			return memberService.signup(signupRequestDto);
 		}
 	}
-//	네이버 소셜 로그인
+	//로그인
+	@PostMapping("/login")
+	public ResponseEntity<Message> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse  response ){
+
+		return memberService.login(requestDto,response);
+	}
+	//로그아웃
+	@DeleteMapping("/logout")
+	public ResponseEntity<Message> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request){
+		return memberService.logout(userDetails.getMember(), request);
+	}
+	//네이버 소셜 로그인
 	@GetMapping("/naver/callback")
 	public ResponseEntity<Message> naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws IOException {
 		return naverService.naverLogin(code, state, response);
 	}
 	//카카오 소셜 로그인
 	@GetMapping("/kakao/callback")
-	public @ResponseBody String kakaoLogin(@RequestParam String code,HttpServletResponse response) throws JsonProcessingException {
+	public ResponseEntity<Message> kakaoLogin(@RequestParam String code,HttpServletResponse response) throws JsonProcessingException {
 		System.out.println(code);
 		return kakaoService.kakaoLogin(code,response);
 	}
