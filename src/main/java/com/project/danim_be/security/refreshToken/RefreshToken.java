@@ -21,7 +21,7 @@ public class RefreshToken {
 	@NotBlank
 	private String userId;
 
-	public RefreshToken(String tokenDto,  String userId) {
+	public RefreshToken(String tokenDto, String userId) {
 		this.refreshToken = tokenDto;
 		this.userId = userId;
 	}

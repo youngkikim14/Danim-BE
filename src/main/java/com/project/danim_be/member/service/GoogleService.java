@@ -4,16 +4,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
+import com.project.danim_be.member.dto.LoginRequestDto;
+import com.project.danim_be.member.dto.MemberRequestDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.security.jwt.JwtUtil;
+import com.project.danim_be.security.jwt.TokenDto;
+import com.project.danim_be.security.refreshToken.RefreshToken;
+import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,9 +31,12 @@ public class GoogleService {
 
     private final Environment env;
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public ResponseEntity<Message> socialLogin(String code) { // 컨트롤러에서 registrationId 값이 들어왔다면 각 메서드에 대입하여 그에 맞는 소셜 로그인 구현
+    public ResponseEntity<Message> socialLogin(String code, HttpServletResponse response) { // 컨트롤러에서 registrationId 값이 들어왔다면 각 메서드에 대입하여 그에 맞는 소셜 로그인 구현
         String accessToken = getAccessToken(code);
         JsonNode userResourceNode = getUserResource(accessToken);
 //        System.out.println("userResourceNode = " + userResourceNode);
@@ -36,12 +48,33 @@ public class GoogleService {
 //        System.out.println("email = " + email);
 //        System.out.println("nickname = " + googleNickname);
         if(memberRepository.findByUserId(email).isEmpty()){
-            String password = UUID.randomUUID().toString();
+            String password = passwordEncoder.encode(UUID.randomUUID().toString());
             String nickname = RandomNickname.getRandomNickname();
             Member member = new Member(email, password, nickname);
             memberRepository.saveAndFlush(member);
+
+            TokenDto tokenDto = jwtUtil.createAllToken(email);
+            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId());
+            refreshTokenRepository.saveAndFlush(newToken);
+            response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
+            response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
+
+            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "회원가입 성공"));
+        } else {
+            TokenDto tokenDto = jwtUtil.createAllToken(email);
+
+            Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(email);
+            if (refreshToken.isPresent()) {
+                refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+            } else {
+                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), email);
+                refreshTokenRepository.save(newToken);
+            }
+            response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
+            response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
+            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공"));
         }
-        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "회원가입 성공"));
+
     }
 
     private String getAccessToken(String authorizationCode) {
