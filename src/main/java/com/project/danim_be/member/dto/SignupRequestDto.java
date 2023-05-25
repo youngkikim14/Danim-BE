@@ -1,14 +1,13 @@
 package com.project.danim_be.member.dto;
 
-import org.thymeleaf.spring6.processor.SpringInputGeneralFieldTagProcessor;
-
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class SignupRequestDto {
 
 

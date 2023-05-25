@@ -1,18 +1,5 @@
 package com.project.danim_be.member.service;
 
-import static com.project.danim_be.common.exception.ErrorCode.*;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import com.project.danim_be.security.auth.UserDetailsImpl;
-import org.apache.catalina.User;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
@@ -20,17 +7,26 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.LoginRequestDto;
 import com.project.danim_be.member.dto.LoginResponseDto;
 import com.project.danim_be.member.dto.SignupRequestDto;
-
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import static com.project.danim_be.common.exception.ErrorCode.FAIL_SIGNOUT;
+import static com.project.danim_be.common.exception.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -65,7 +61,7 @@ public class MemberService {
 		}
 
 		Member member = Member.builder()
-				.email(userId)
+				.userId(userId)
 				.ageRange(ageRange)
 				.gender(null)
 				.nickname(nickname)
@@ -74,7 +70,6 @@ public class MemberService {
 				.isDeleted(false)
 				.build();
 
-		System.out.println(nickname);
 		memberRepository.save(member);
 
 		Message message = Message.setSuccess(StatusEnum.OK,"회원 가입 성공");
