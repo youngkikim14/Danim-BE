@@ -162,7 +162,7 @@ public class KakaoService {
 		return new KakaoMemberInfoDto(email,gender,age_range);
 	}
 
-	private Member kakaoSignup(KakaoMemberInfoDto kakaoMemberInfoDto) {
+	public Member kakaoSignup(KakaoMemberInfoDto kakaoMemberInfoDto) {
 		// DB 에 중복된 Kakao Id 가 있는지 확인
 		String email = kakaoMemberInfoDto.getEmail();
 		String nickname = RandomNickname.getRandomNickname();

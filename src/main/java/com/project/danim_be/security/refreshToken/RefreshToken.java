@@ -7,10 +7,12 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@Setter
 public class RefreshToken {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
