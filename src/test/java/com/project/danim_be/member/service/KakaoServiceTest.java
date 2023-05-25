@@ -58,20 +58,20 @@ class KakaoServiceTest {
 
 			//given
 
-			String email = "test@kakao.com";
+			String userId = "test@kakao.com";
 			String gender = "male";
 			String ageRange = "30-39";
 
 			// String nickname = RandomNickname.getRandomNickname();
 			// String password = UUID.randomUUID().toString();
-			KakaoMemberInfoDto kakaoMemberInfoDto= new KakaoMemberInfoDto(email,gender,ageRange);
+			KakaoMemberInfoDto kakaoMemberInfoDto= new KakaoMemberInfoDto(userId,gender,ageRange);
 
 			//when
-			when(memberRepository.findByUserId(email)).thenReturn(Optional.empty());
+			when(memberRepository.findByUserId(userId)).thenReturn(Optional.empty());
 
 			Member member = kakaoService.kakaoSignup(kakaoMemberInfoDto);
 
-			assertEquals(email, member.getUserId());
+			assertEquals(userId, member.getUserId());
 			assertEquals(gender, member.getGender());
 			assertEquals(ageRange, member.getAgeRange());
 		}
