@@ -116,14 +116,16 @@ public class JwtUtil {
 
 	public long getExpirationTime(String token) {
 		// 토큰에서 만료 시간 정보를 추출
-		Claims claims = Jwts.parserBuilder()
-			.setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
-			.build()
+		Claims claims = Jwts.parser()
+			.setSigningKey(secretKey)
 			.parseClaimsJws(token)
 			.getBody();
 
 		// 현재 시간과 만료 시간의 차이를 계산하여 반환
-		return (claims.getExpiration().getTime() - new Date().getTime()) / 1000;
+		Date expirationDate = claims.getExpiration();
+		Date now = new Date();
+		long diff = (expirationDate.getTime() - now.getTime()) / 1000;
+		return diff;
 	}
 
 }

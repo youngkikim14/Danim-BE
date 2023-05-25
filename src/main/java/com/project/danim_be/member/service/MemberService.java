@@ -67,7 +67,7 @@ public class MemberService {
 		Member member = Member.builder()
 				.email(userId)
 				.ageRange(ageRange)
-				.gender("")
+				.gender(null)
 				.nickname(nickname)
 				.password(password)
 				.provider("GENERAL")
@@ -143,13 +143,13 @@ public class MemberService {
 					throw new CustomException(FAIL_SIGNOUT);
 				}
 			}
-//			case "KAKAO" -> {
-//				try {
-//					kakaoService.kakaoSignout(member);
-//				} catch (IOException e) {
-//					throw new CustomException(FAIL_SIGNOUT);
-//				}
-//			}
+			case "KAKAO" -> {
+				try {
+					kakaoService.kakaoSignout(member);
+				} catch (IOException e) {
+					throw new CustomException(FAIL_SIGNOUT);
+				}
+			}
 //			case "GOOGLE" -> {
 //				try {
 //					kakaoService.googleSignout(member);

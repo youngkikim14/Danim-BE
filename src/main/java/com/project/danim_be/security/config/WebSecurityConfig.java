@@ -32,7 +32,7 @@ public class WebSecurityConfig {
 		"/api/user/naver/**",
 		"/api/user/signup",
 		"/api/user/login",
-		"/api/user/logout",
+		// "/api/user/logout",
 		"/api/user/delete",
 		"/api/user/{ownerId}/info",
 		"/api/user/{ownerId}/posts",
@@ -68,9 +68,8 @@ public class WebSecurityConfig {
 		// 시큐리티 최신문서 찾아보기(아직안찾아봄)
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http
-			.csrf().disable()		//csrf 비활성화
-			.authorizeHttpRequests(request -> request
+		http.csrf().disable()	;	//csrf 비활성화
+			http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 				.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
