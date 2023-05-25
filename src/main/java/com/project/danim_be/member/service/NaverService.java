@@ -15,7 +15,6 @@ import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
-
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -194,7 +193,7 @@ public class NaverService {
         String nickname = RandomNickname.getRandomNickname();
         if(naverMember == null) {
             Member member = Member.builder()
-                    .email(memberRequestDto.getUserId())
+                    .userId(memberRequestDto.getUserId())
                     .ageRange(memberRequestDto.getAgeRange())
                     .gender(memberRequestDto.getGender())
                     .nickname(nickname)

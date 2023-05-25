@@ -1,15 +1,10 @@
 package com.project.danim_be.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Getter
 @Setter
@@ -52,16 +47,16 @@ public class Member {
   }
 
 
-	public Member(String email, String password, String ageRange,String nickname) {
-		this.userId = email;
+	public Member(String userId, String password, String ageRange,String nickname) {
+		this.userId = userId;
 		this.nickname = nickname;
 		this.password = password;
 		this.ageRange = ageRange;
 	}
 
 	@Builder
-	public Member(String email, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted) {
-		this.userId = email;
+	public Member(String userId, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted) {
+		this.userId = userId;
 		this.gender = gender;
 		this.password = password;
 		this.nickname = nickname;
