@@ -70,7 +70,7 @@ public class MemberController {
 
 	//카카오 소셜 로그인
 	@GetMapping("/kakao/callback")
-	public ResponseEntity<Message> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+	public ResponseEntity<Message> kakaoLogin(@RequestParam String code,HttpServletResponse response) throws JsonProcessingException {
 		System.out.println(code);
 		return kakaoService.kakaoLogin(code,response);
 	}
