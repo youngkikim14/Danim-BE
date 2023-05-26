@@ -21,6 +21,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8'
+          mysql database: mydatabase
+          mysql user: danim
+          mysql password: danim123123
       - run: mkdir -p ./src/main/resources/
       - run: touch ./src/main/resources/application.properties
       - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
