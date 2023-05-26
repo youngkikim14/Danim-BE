@@ -29,6 +29,10 @@ jobs:
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
       - run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
+      - name: Print secrets
+        run: |
+          echo ${{ secrets.JASYPT }}
+          echo ${{ secrets.PROPERTIES }}
       - name: Build
         run: |
           ./gradlew build
