@@ -20,8 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Nested
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
+
     @InjectMocks
     private MemberService memberService;
+
     @Mock
     private Member member;
     @Mock
@@ -36,7 +38,7 @@ class MemberServiceTest {
     void signupTest() {
         // given
         signupRequestDto = new SignupRequestDto("limslki333@hanmail.net",
-                "1234", "우아한사자", "30-39");
+                "1234", "우아한고양이", "30-39");
 
         // when
         ResponseEntity<Message> result = memberService.signup(signupRequestDto);
@@ -82,5 +84,22 @@ class MemberServiceTest {
             assertEquals("사용자 등록 오류입니다.", e.getMessage());
         }
     }
+
+//    @Test
+//    @DisplayName("로그인 정상 테스트")
+//    void login() {
+//
+//        //given
+//
+//        LoginRequestDto loginRequestDto = new LoginRequestDto("user1234@naver.com", "user1234!");
+//        MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+//
+//        //when
+//        ResponseEntity<Message> response = memberService.login(loginRequestDto, mockResponse);
+//
+//        //then
+//        assertEquals(response.getBody().getMessage(), "로그인 성공");
+//
+//    }
 
 }
