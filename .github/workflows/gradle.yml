@@ -32,4 +32,6 @@ jobs:
         with:
           arguments: build
         env:
-          JASYPT_PASSWORD: ${{ secrets.JASYPT }}
+          jasypt:
+            password:
+             ${{ secrets.JASYPT }}
