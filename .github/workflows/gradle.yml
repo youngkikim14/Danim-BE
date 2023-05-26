@@ -34,4 +34,4 @@ jobs:
           ./gradlew build
           ./gradlew test
         env:
-            JASYPT_PASSWORD: ${{ secrets.JASYPT }}
+          JASYPT_PASSWORD: ${{ secrets.JASYPT }}
