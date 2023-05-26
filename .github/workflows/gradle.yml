@@ -30,7 +30,6 @@ jobs:
         distribution: 'temurin'
     - run: mkdir -p ./src/main/resources/
     - run: touch ./src/main/resources/application.properties
-    - run: touch ./src/main/resources/application.properties
     - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
     - run: cat ./src/main/resources/application.properties
     - name: Build with Gradle
