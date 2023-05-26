@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
-import com.project.danim_be.member.dto.LoginRequestDto;
-import com.project.danim_be.member.dto.MemberRequestDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
