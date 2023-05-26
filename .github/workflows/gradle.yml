@@ -34,5 +34,6 @@ jobs:
       - run: cat ./src/main/resources/application.properties
       - name: Build with Gradle
         run:
+          chmod +x gradlew
           ./gradlew build
           ./gradlew test
