@@ -33,6 +33,7 @@ jobs:
       - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
       - name: Build with Gradle
-        run:
+        run: |
+          chmod +x ./gradlew
           ./gradlew build
           ./gradlew test
