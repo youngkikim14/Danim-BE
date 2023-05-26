@@ -14,7 +14,7 @@ jobs:
     # 실행 환경 지정
     runs-on: ubuntu-latest
     environment:
-      name: Danim # 변경할 환경의 이름
+      name: Danim  # 변경할 환경의 이름
     # Task의 sequence를 명시한다.
     steps:
       - uses: actions/checkout@v3
