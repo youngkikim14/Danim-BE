@@ -38,7 +38,7 @@ class MemberServiceTest {
     void signupTest() {
         // given
         signupRequestDto = new SignupRequestDto("limslki333@hanmail.net",
-                "1234", "우아한사자", "30-39");
+                "1234", "우아한고양이", "30-39");
 
         // when
         ResponseEntity<Message> result = memberService.signup(signupRequestDto);
