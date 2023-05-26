@@ -32,4 +32,4 @@ jobs:
         with:
           arguments: build
         env:
-          JASYPT_PASSWORD: ${{ secrets.JASYPT }} >> ./src/main/resources/application.properties
+          JASYPT_PASSWORD: ${{ secrets.JASYPT }}
