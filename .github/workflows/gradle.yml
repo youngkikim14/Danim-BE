@@ -27,5 +27,9 @@ jobs:
       - run: touch ./src/main/resources/application.properties
       - run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
-      - name: Build
-#        JASYPT_PASSWORD: ${{ secrets.JASYPT }}
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+          ./gradlew test
+
