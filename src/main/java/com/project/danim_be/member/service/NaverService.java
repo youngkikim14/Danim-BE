@@ -161,6 +161,10 @@ public class NaverService {
         String age = String.valueOf(userInfoData.getAsJsonObject().get("response").getAsJsonObject().get("age"));
         String gender = String.valueOf(userInfoData.getAsJsonObject().get("response").getAsJsonObject().get("gender"));
 
+        email = email.substring(1, email.length()-1);
+        age = age.substring(1, age.length()-1).replace('-', '~');
+        gender = gender.substring(1, gender.length()-1).equals("M") ? "male" : "female";
+
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.add("Authorization", "Bearer " + accessToken);
 //        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
