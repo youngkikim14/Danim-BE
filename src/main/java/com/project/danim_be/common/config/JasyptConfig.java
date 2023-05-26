@@ -25,7 +25,6 @@ public class JasyptConfig {
 		config.setKeyObtentionIterations("1000");
 		config.setPoolSize("1");
 
-
 		config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
 		config.setIvGeneratorClassName("org.jasypt.iv.NoIvGenerator");
 		config.setStringOutputType("base64");
