@@ -1,4 +1,3 @@
-
 name: Java CI with Gradle
 
 on:
@@ -16,19 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     # Task의 sequence를 명시한다.
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    - name: jasypt key주입
-      run: echo ${{secrets.JASYPT}} | base64 --decode >> ./src/main/resources/application.properties
-    - run: mkdir -p ./src/main/resources/
-    - run: touch ./src/main/resources/application.properties
-    - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
-    - run: cat ./src/main/resources/application.properties
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: build
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - run: mkdir -p ./src/main/resources/
+      - run: touch ./src/main/resources/application.properties
+      - name: jasypt key주입
+        run: echo ${{secrets.JASYPT}} >> ./src/main/resources/application.properties
+      - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: build
