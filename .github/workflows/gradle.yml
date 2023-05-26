@@ -1,17 +1,11 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
 name: Java CI with Gradle
 
 on:
   push:
     branches: [ "develop" ]
-#  pull_request:
-#    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
 
 permissions:
   contents: read
@@ -28,6 +22,8 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    - name: jasypt key주입
+      run: echo ${{secrets.JASYPT}} | base64 --decode >> ./src/main/resources/application.properties
     - run: mkdir -p ./src/main/resources/
     - run: touch ./src/main/resources/application.properties
     - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
