@@ -72,7 +72,6 @@ public class GoogleService {
             response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
             return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공"));
         }
-
     }
 
     private String getAccessToken(String authorizationCode) {

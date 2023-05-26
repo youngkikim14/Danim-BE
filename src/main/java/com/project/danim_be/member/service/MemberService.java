@@ -74,7 +74,6 @@ public class MemberService {
 
 		Message message = Message.setSuccess(StatusEnum.OK,"회원 가입 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
-
 	}
 
 	//로그인
