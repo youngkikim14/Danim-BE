@@ -1,8 +1,8 @@
 name: Java CI with Gradle
 
 on:
-  push:
-    branches: [ "develop" ]
+#  push:
+#    branches: [ "develop" ]
   pull_request:
     branches: [ "develop" ]
 
@@ -30,8 +30,11 @@ jobs:
       - run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
       - name: Build
-        run: |
-          ./gradlew build
-          ./gradlew test
+        run: ./gradlew build
         env:
           JASYPT_PASSWORD: ${{ secrets.JASYPT }}
+      - name: Test
+        run: ./gradlew test
+        env:
+          JASYPT_PASSWORD: ${{ secrets.JASYPT }}
+
