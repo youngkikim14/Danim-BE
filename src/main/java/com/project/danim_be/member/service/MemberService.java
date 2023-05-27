@@ -88,6 +88,9 @@ public class MemberService {
 	//랜덤 닉네임 생성
 	public ResponseEntity<Message> nicknameCreate() {
 		String nickname = RandomNickname.getRandomNickname();
+		while (memberRepository.findByNickname(nickname).isPresent()){
+			nickname = RandomNickname.getRandomNickname();
+		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "랜덤 닉네임 생성완료", nickname));
 	}
 
