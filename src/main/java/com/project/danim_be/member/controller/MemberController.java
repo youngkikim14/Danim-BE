@@ -60,6 +60,12 @@ public class MemberController {
 	@PostMapping("/checkNickname")
 	public ResponseEntity<Message> checkNickname(@RequestBody CheckNicknameRequestDto checkNicknameRequestDto) {
 		return memberService.checkNickname(checkNicknameRequestDto);
+  }
+
+	//회원가입시 랜덤 닉네임 생성
+	@GetMapping("/randomNickname")
+	public ResponseEntity<Message> nicknameCreate() {
+		return memberService.nicknameCreate();
 	}
 
 	//로그인
