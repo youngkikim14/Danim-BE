@@ -5,9 +5,7 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
-import com.project.danim_be.member.dto.LoginRequestDto;
-import com.project.danim_be.member.dto.LoginResponseDto;
-import com.project.danim_be.member.dto.SignupRequestDto;
+import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
@@ -31,7 +29,6 @@ import static com.project.danim_be.common.exception.ErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
-
 public class MemberService {
 
 	private final MemberRepository memberRepository;
@@ -51,16 +48,6 @@ public class MemberService {
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
 
-		Optional<Member> findMember = memberRepository.findByUserId(userId);
-		if(findMember.isPresent()){
-			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
-		}
-
-		Optional<Member> foundMemberNickname = memberRepository.findByNickname(nickname);
-		if (foundMemberNickname.isPresent()) {
-			throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
-		}
-
 		Member member = Member.builder()
 				.userId(userId)
 				.ageRange(ageRange)
@@ -76,6 +63,27 @@ public class MemberService {
 		Message message = Message.setSuccess(StatusEnum.OK,"회원 가입 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
+	//일반 회원가입 아이디 중복 검사
+	public ResponseEntity<Message> checkId(CheckIdRequestDto checkIdRequestDto) {
+
+		if(memberRepository.findByUserId(checkIdRequestDto.getUserId()).isPresent()) {
+			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
+		} else {
+			Message message = Message.setSuccess(StatusEnum.OK,"아이디 중복 검사 성공");
+			return new ResponseEntity<>(message, HttpStatus.OK);
+		}
+	}
+
+	//일반 회원가입 닉네임 중복 검사
+	public ResponseEntity<Message> checkNickname(CheckNicknameRequestDto checkNicknameRequestDto) {
+		if(memberRepository.findByNickname(checkNicknameRequestDto.getNickname()).isPresent()) {
+			throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+		} else {
+			Message message = Message.setSuccess(StatusEnum.OK,"닉네임 중복 검사 성공");
+			return new ResponseEntity<>(message, HttpStatus.OK);
+		}
+  }
 
 	//랜덤 닉네임 생성
 	public ResponseEntity<Message> nicknameCreate() {

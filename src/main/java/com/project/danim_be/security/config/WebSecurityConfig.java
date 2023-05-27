@@ -28,6 +28,8 @@ public class WebSecurityConfig {
 		"/api/user/naver/**",
 		"/api/user/signup",
 		"/api/user/login",
+		"/api/user/checkId",
+		"/api/user/checkNickname",
 		// "/api/user/logout",
 		"/api/user/delete",
 		"/api/user/{ownerId}/info",
