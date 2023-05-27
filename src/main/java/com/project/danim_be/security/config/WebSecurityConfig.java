@@ -33,7 +33,7 @@ public class WebSecurityConfig {
 		"/api/user/{ownerId}/info",
 		"/api/user/{ownerId}/posts",
 		"/api/user/{ownerId}/review",
-
+		"/api/user/randomNickname"
 	};
 
 	//정적자원은 인증인가를 하지않겠다.

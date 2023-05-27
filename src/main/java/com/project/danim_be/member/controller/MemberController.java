@@ -49,6 +49,12 @@ public class MemberController {
 		}
 	}
 
+	//회원가입시 랜덤 닉네임 생성
+	@GetMapping("/randomNickname")
+	public ResponseEntity<Message> nicknameCreate() {
+		return memberService.nicknameCreate();
+	}
+
 	//로그인
 	@PostMapping("/login")
 	public ResponseEntity<Message> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response ){

@@ -3,6 +3,7 @@ package com.project.danim_be.member.service;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
+import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.LoginRequestDto;
 import com.project.danim_be.member.dto.LoginResponseDto;
@@ -74,6 +75,12 @@ public class MemberService {
 
 		Message message = Message.setSuccess(StatusEnum.OK,"회원 가입 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+
+	//랜덤 닉네임 생성
+	public ResponseEntity<Message> nicknameCreate() {
+		String nickname = RandomNickname.getRandomNickname();
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "랜덤 닉네임 생성완료", nickname));
 	}
 
 	//로그인
@@ -161,4 +168,6 @@ public class MemberService {
 		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 	}
+
+
 }
