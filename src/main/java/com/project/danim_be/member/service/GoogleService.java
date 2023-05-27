@@ -44,19 +44,20 @@ public class GoogleService {
 //        System.out.println("id = " + id);
 //        System.out.println("email = " + email);
 //        System.out.println("nickname = " + googleNickname);
-        if(memberRepository.findByUserId(email).isEmpty()){
+        Optional<Member> member = memberRepository.findByUserId(email);
+        if(member.isEmpty()){
             String password = passwordEncoder.encode(UUID.randomUUID().toString());
             String nickname = RandomNickname.getRandomNickname();
-            Member member = new Member(email, password, nickname);
-            memberRepository.saveAndFlush(member);
+            Member createMember = new Member(email, password, nickname);
+            memberRepository.saveAndFlush(createMember);
 
             TokenDto tokenDto = jwtUtil.createAllToken(email);
-            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "Danim");
+            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), createMember.getUserId(), "Danim");
             refreshTokenRepository.saveAndFlush(newToken);
             response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
             response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 
-            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공"));
+            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", createMember.getId()));
         } else {
             TokenDto tokenDto = jwtUtil.createAllToken(email);
 
@@ -69,7 +70,7 @@ public class GoogleService {
             }
             response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
             response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
-            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공"));
+            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", member.get().getId()));
         }
     }
 
