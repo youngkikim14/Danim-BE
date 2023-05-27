@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Java CI/CD with Docker
 
 on:
   push:
@@ -25,6 +25,16 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 8080
+          container port: 3306
+          mysql version: '8.0.33'
+          mysql database: mydatabase
+          mysql user: ${{ secrets.DB_USERNAME }}
+          mysql password: ${{ secrets.DB_PASSWORD }}
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew    
@@ -76,7 +86,8 @@ jobs:
 
             sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
             --name ${{ secrets.PROJECT_NAME }} \
-            -e SPRING_DATASOURCE_URL=${{ secrets.DB_URL }} \
-            -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USERNAME }} \
-            -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+      #      -e SPRING_DATASOURCE_URL=${{ secrets.DB_URL }} \
+       #     -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USERNAME }} \
+        #    -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
+
