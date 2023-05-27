@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,7 +56,7 @@ public class GoogleService {
             response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
             response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 
-            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "회원가입 성공"));
+            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공"));
         } else {
             TokenDto tokenDto = jwtUtil.createAllToken(email);
 
