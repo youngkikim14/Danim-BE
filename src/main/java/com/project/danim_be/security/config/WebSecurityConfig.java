@@ -65,6 +65,7 @@ public class WebSecurityConfig {
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		http.csrf().disable()	;	//csrf 비활성화
+
 			http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 				.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
@@ -74,8 +75,6 @@ public class WebSecurityConfig {
 				.authenticated()
 
 			);
-
-		http.cors();
 
 		http.addFilterBefore(jwtUtil, UsernamePasswordAuthenticationFilter.class);
 
