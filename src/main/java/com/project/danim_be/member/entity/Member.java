@@ -64,6 +64,7 @@ public class Member {
 		this.isDeleted = isDeleted;
 	}
 
+
 	public String getUserId() {
 		return userId;
 	}

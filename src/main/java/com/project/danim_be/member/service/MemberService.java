@@ -86,6 +86,7 @@ public class MemberService {
   }
 
 	//랜덤 닉네임 생성
+	@Transactional
 	public ResponseEntity<Message> nicknameCreate() {
 		String nickname = RandomNickname.getRandomNickname();
 		while (memberRepository.findByNickname(nickname).isPresent()){
