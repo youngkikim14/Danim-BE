@@ -153,6 +153,8 @@ class MemberServiceTest {
     @DisplayName("마이페이지 유저정보")
     void memberInfo() {
 
+        //given
+//        Member owner =
     }
 
     @Test
