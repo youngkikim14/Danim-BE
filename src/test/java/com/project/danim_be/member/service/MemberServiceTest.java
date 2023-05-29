@@ -149,7 +149,14 @@ class MemberServiceTest {
 
     }
 
+    @Test
+    @DisplayName("마이페이지 유저정보")
+    void memberInfo() {
 
+    }
 
-
+    @Test
+    @DisplayName("마이페이지 게시물 정보")
+    void memberPosts() {
+    }
 }
