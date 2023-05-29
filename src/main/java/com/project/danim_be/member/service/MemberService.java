@@ -190,21 +190,13 @@ public class MemberService {
 		Member member = memberRepository.findById(memberId).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
 		);
+		MypageResponseDto mypageResponseDto;
 		if (ownerId.equals(memberId)){
-			MypageResponseDto mypageResponseDto = new MypageResponseDto(
-					member.getNickname(),
-					member.getImageUrl(),
-					member.getContent(),
-					true);
-			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageResponseDto));
+			mypageResponseDto = new MypageResponseDto(member, true);
 		} else {
-			MypageResponseDto mypageResponseDto = new MypageResponseDto(
-					owner.getNickname(),
-					owner.getImageUrl(),
-					owner.getContent(),
-					false);
-			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageResponseDto));
+			mypageResponseDto = new MypageResponseDto(owner, false);
 		}
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageResponseDto));
 	}
 
 	// 마이페이지 게시물 정보
@@ -217,18 +209,10 @@ public class MemberService {
 				() -> new CustomException(USER_NOT_FOUND)
 		);
 		if (ownerId.equals(memberId)) {
-			List<Post> postList = postRepository.findAllByMemberOrderByCreatedAt(member);
-			List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
-			for (Post post : postList) {
-				mypagePostResponseDtoList.add(new MypagePostResponseDto(post));
-			}
+			List<MypagePostResponseDto> mypagePostResponseDtoList = validMember(member);
 			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
 		} else {
-			List<Post> postList = postRepository.findAllByMemberOrderByCreatedAt(owner);
-			List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
-			for (Post post : postList) {
-				mypagePostResponseDtoList.add(new MypagePostResponseDto(post));
-			}
+			List<MypagePostResponseDto> mypagePostResponseDtoList = validMember(owner);
 			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
 		}
 	}
@@ -239,5 +223,13 @@ public class MemberService {
 		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 	}
 
+	private List<MypagePostResponseDto> validMember(Member member) {
+		List<Post> postList = postRepository.findAllByMemberOrderByCreatedAt(member);
+		List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
+		for (Post post : postList) {
+			mypagePostResponseDtoList.add(new MypagePostResponseDto(post));
+		}
+		return mypagePostResponseDtoList;
+	}
 
 }
