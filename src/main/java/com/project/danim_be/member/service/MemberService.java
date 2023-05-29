@@ -233,7 +233,6 @@ public class MemberService {
 		}
 	}
 
-
 	// 헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
