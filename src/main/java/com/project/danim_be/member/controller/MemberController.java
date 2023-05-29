@@ -105,7 +105,6 @@ public class MemberController {
 	//회원 탈퇴
 	@DeleteMapping("/delete")
 	public ResponseEntity<Message> signOut(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		System.out.println("1. "+userDetails.getMember().getUserId());
 		return memberService.signout(userDetails.getMember());
 	}
 
