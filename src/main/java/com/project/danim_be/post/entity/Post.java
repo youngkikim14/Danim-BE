@@ -58,6 +58,7 @@ public class Post extends Timestamped {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member member;
 
-
+	@OneToMany
+	List<Image> imageList;
 
 }

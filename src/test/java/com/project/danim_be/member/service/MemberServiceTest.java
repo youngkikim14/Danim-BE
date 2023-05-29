@@ -148,15 +148,17 @@ class MemberServiceTest {
         assertEquals(response.getBody().getMessage(), "로그아웃 성공");
 
     }
-
-    @Test
-    @DisplayName("마이페이지 유저정보")
-    void memberInfo() {
-
-    }
-
-    @Test
-    @DisplayName("마이페이지 게시물 정보")
-    void memberPosts() {
-    }
+//
+//    @Test
+//    @DisplayName("마이페이지 유저정보")
+//    void memberInfo() {
+//
+//        //given
+////        Member owner =
+//    }
+//
+//    @Test
+//    @DisplayName("마이페이지 게시물 정보")
+//    void memberPosts() {
+//    }
 }

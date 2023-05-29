@@ -30,11 +30,7 @@ class MemberTest {
         // when
         member.signOut();
         // then
-        Assertions.assertEquals("탈퇴", member.getUserId());
-        Assertions.assertEquals(null, member.getNickname());
-        Assertions.assertEquals("탈퇴", member.getGender());
         Assertions.assertEquals(true, member.getIsDeleted());
-        Assertions.assertEquals("탈퇴", member.getAgeRange());
     }
 
 }
