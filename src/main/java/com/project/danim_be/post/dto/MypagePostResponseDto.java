@@ -12,13 +12,11 @@ import java.util.Date;
 public class MypagePostResponseDto {
 
     private Long id;
-    private String imageUrl;
     private String title;
     private Date endDate;
 
     public MypagePostResponseDto(Post post) {
         this.id = post.getId();
-        this.imageUrl = post.getImageUrl();
         this.title = post.getPostTitle();
         this.endDate = post.getEndDate();
     }

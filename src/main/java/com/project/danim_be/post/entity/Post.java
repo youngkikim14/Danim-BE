@@ -1,6 +1,8 @@
 package com.project.danim_be.post.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.entity.Member;
@@ -12,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Getter;
@@ -42,15 +46,14 @@ public class Post extends Timestamped {
 	private String keyword;		//키워드
 
 	@Column(nullable = false)
-	private String content;		//내용
-
-	@Column(nullable = false)
 	private String location;	//지역
 
 	@Column(nullable = false)
 	private int recruitMember;	//인원수
 
-	private String imageUrl;	//사진
+	@Column(nullable = false)
+	@OneToMany(fetch = FetchType.LAZY)
+	private List<Content> contents = new ArrayList<>() ;		//내용
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member member;

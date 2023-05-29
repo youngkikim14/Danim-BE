@@ -18,6 +18,9 @@ public enum ErrorCode {
 	//404
 	ID_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 아이디 입니다.","사용자 등록 오류입니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "찾을수 없는 회원입니다.","사용자 등록 오류입니다.");
+	//추가핡것
+	//endDate 가 지나야 달수있습니다.
+
 
 	private final HttpStatus httpStatus;
 	private final String detail;
