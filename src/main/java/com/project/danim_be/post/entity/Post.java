@@ -51,7 +51,7 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private int recruitMember;	//인원수
 
-	@Column(nullable = false)
+
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<Content> contents = new ArrayList<>() ;		//내용
 

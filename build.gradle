@@ -27,8 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.4'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
-    //Jasypt
-    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
     compileOnly 'org.projectlombok:lombok:1.18.26'
     developmentOnly 'org.springframework.boot:spring-boot-devtools:3.0.4'
     runtimeOnly 'com.h2database:h2:2.1.214'
@@ -38,6 +37,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test:6.0.2'
 
 
+    //JWT
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
@@ -46,6 +46,11 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j:8.0.32'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
     implementation 'mysql:mysql-connector-java:8.0.33'
+    //Jasypt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+    //AWS S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     testImplementation 'org.mockito:mockito-core:5.2.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.2.0'
