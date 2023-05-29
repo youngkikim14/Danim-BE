@@ -71,10 +71,6 @@ public class Member extends Timestamped {
 	}
 
 	public void signOut() {
-		this.userId = "탈퇴";
-		this.gender = "탈퇴";
-		this.nickname = null;
-		this.ageRange = "탈퇴";
 		this.isDeleted = true;
 	}
 }

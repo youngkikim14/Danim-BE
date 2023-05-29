@@ -151,7 +151,6 @@ public class MemberService {
 	// 회원 탈퇴
 	@Transactional
 	public ResponseEntity<Message> signout(Member member) {
-		System.out.println("탈퇴 접근?");
 		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
 		switch (member.getProvider()) {
