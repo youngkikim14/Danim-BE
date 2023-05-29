@@ -222,6 +222,7 @@ public class MemberService {
 		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 	}
 
+	// 마이페이지 게시물 공통 메서드
 	private List<MypagePostResponseDto> validMember(Member member) {
 		List<Post> postList = postRepository.findAllByMemberOrderByCreatedAt(member);
 		List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
