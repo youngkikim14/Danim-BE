@@ -2,6 +2,7 @@ package com.project.danim_be.post.entity;
 
 import java.util.Date;
 
+import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.entity.Member;
 
 import jakarta.persistence.Column;
@@ -13,9 +14,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.Getter;
 
 @Entity
-public class Post {
+@Getter
+public class Post extends Timestamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -108,5 +108,18 @@ public class MemberController {
 		System.out.println("1. "+userDetails.getMember().getUserId());
 		return memberService.signout(userDetails.getMember());
 	}
+
+	// 마이페이지 - 사용자 정보
+	@GetMapping("/{ownerId}/info")
+	public ResponseEntity<Message> memberInfo(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+		return memberService.memberInfo(ownerId, userDetails.getMember().getId());
+	}
+
+	// 마이페이지 - 게시물 목록
+	@GetMapping("/{ownerId}/posts")
+	public ResponseEntity<Message> memberPosts(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+		return memberService.memberPosts(ownerId, userDetails.getMember().getId());
+	}
+
 }
 
