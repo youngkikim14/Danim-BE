@@ -175,6 +175,34 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "탈퇴 성공"));
 	}
 
+	// 마이페이지 - 사용자 정보
+	public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
+		Member owner = memberRepository.findById(ownerId).orElseThrow(
+				() -> new CustomException(USER_NOT_FOUND)
+		);
+		Member member = memberRepository.findById(memberId).orElseThrow(
+				() -> new CustomException(USER_NOT_FOUND)
+		);
+		if (ownerId.equals(memberId)){
+			MypageResponseDto mypageResponseDto = new MypageResponseDto(
+					member.getNickname(),
+					member.getImageUrl(),
+					member.getContent(),
+					true);
+			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageResponseDto));
+		} else {
+			MypageResponseDto mypageResponseDto = new MypageResponseDto(
+					owner.getNickname(),
+					owner.getImageUrl(),
+					owner.getContent(),
+					false);
+			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageResponseDto));
+		}
+	}
+
+
+
+
 	// 헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
