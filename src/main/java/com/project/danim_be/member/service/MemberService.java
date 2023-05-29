@@ -8,6 +8,9 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.post.dto.MypagePostResponseDto;
+import com.project.danim_be.post.entity.Post;
+import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
@@ -22,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.project.danim_be.common.exception.ErrorCode.FAIL_SIGNOUT;
@@ -38,6 +43,7 @@ public class MemberService {
 	private final NaverService naverService;
 	private final KakaoService kakaoService;
 	private final GoogleService googleService;
+	private final PostRepository postRepository;
 
 	//회원가입
 	@Transactional
@@ -176,6 +182,7 @@ public class MemberService {
 	}
 
 	// 마이페이지 - 사용자 정보
+	@Transactional
 	public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
 		Member owner = memberRepository.findById(ownerId).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
@@ -200,7 +207,31 @@ public class MemberService {
 		}
 	}
 
-
+	// 마이페이지 게시물 정보
+	@Transactional
+	public ResponseEntity<Message> memberPosts(Long ownerId, Long memberId) {
+		Member owner = memberRepository.findById(ownerId).orElseThrow(
+				() -> new CustomException(USER_NOT_FOUND)
+		);
+		Member member = memberRepository.findById(memberId).orElseThrow(
+				() -> new CustomException(USER_NOT_FOUND)
+		);
+		if (ownerId.equals(memberId)) {
+			List<Post> postList = postRepository.findAllByMemberOrderByCreatedAt(member);
+			List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
+			for (Post post : postList) {
+				mypagePostResponseDtoList.add(new MypagePostResponseDto(post));
+			}
+			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
+		} else {
+			List<Post> postList = postRepository.findAllByMemberOrderByCreatedAt(owner);
+			List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
+			for (Post post : postList) {
+				mypagePostResponseDtoList.add(new MypagePostResponseDto(post));
+			}
+			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
+		}
+	}
 
 
 	// 헤더 셋팅

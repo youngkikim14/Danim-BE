@@ -114,5 +114,12 @@ public class MemberController {
 	public ResponseEntity<Message> memberInfo(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails){
 		return memberService.memberInfo(ownerId, userDetails.getMember().getId());
 	}
+
+	// 마이페이지 - 게시물 목록
+	@GetMapping("/{ownerId}/posts")
+	public ResponseEntity<Message> memberPosts(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+		return memberService.memberPosts(ownerId, userDetails.getMember().getId());
+	}
+
 }
 

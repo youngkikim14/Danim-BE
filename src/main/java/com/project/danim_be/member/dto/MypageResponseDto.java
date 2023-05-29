@@ -14,10 +14,4 @@ public class MypageResponseDto {
     private String content;
     private Boolean owner;
 
-    public MypageResponseDto(String nickname, String imageUrl, String content, Boolean owner) {
-        this.nickname = nickname;
-        this.imageUrl = imageUrl;
-        this.content = content;
-        this.owner = owner;
-    }
 }
