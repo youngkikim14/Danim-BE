@@ -1,6 +1,7 @@
 package com.project.danim_be.post.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -51,6 +52,9 @@ public class Post extends Timestamped {
 	private String ageRange;	//연령대
 
 	@Column(nullable = false)
+	private String gender;		//성별
+
+	@Column(nullable = false)
 	private String keyword;		//키워드
 
 	// @Column(nullable = false)
@@ -73,4 +77,21 @@ public class Post extends Timestamped {
 	public void setTypeOfMeeting(Boolean typeOfMeeting) {
 		this.typeOfMeeting = typeOfMeeting;
 	}
+
+
+	//연령대 복수선택가능
+	public void setAgeRange(List<String> ageRange) {
+		this.ageRange = String.join(",", ageRange);
+	}
+	public List<String> getAgeRange() {
+		return new ArrayList<>(Arrays.asList(this.ageRange.split(",")));
+	}
+	// 성별 복수선택가능
+	public void setGender(List<String> gender) {
+		this.gender = String.join(",", gender);
+	}
+	public List<String> getGender() {
+		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
+	}
+
 }

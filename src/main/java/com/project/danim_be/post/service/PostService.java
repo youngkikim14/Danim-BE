@@ -47,8 +47,8 @@ public class PostService {
 	//게시글작성
 	@Transactional
 	public ResponseEntity<Message> createPost(Member member, PostRequestDto requestDto) {
-		logger.info("Received PostRequestDto: {}", requestDto.toString());
-		logger.info("Received PostRequestDto: {}", requestDto.getContents().toString());
+		// logger.info("Received PostRequestDto: {}", requestDto.toString());
+		// logger.info("Received PostRequestDto: {}", requestDto.getContents().toString());
 
 		Post post = Post.builder()
 			.postTitle(requestDto.getPostTitle())
@@ -58,7 +58,8 @@ public class PostService {
 			.tripEndDate(requestDto.getTripEndDate())
 			.location(requestDto.getLocation())
 			.groupSize(requestDto.getGroupSize())
-			.ageRange(requestDto.getAgeRange())
+			.ageRange(String.join(",", requestDto.getAgeRange()))		//이부분은 공부해볼게요
+			.gender(String.join(",", requestDto.getGender()))
 			.keyword(requestDto.getKeyword())
 			.member(member)
 			.contents(new ArrayList<>())

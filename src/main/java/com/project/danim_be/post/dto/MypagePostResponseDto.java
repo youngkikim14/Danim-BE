@@ -1,5 +1,6 @@
 package com.project.danim_be.post.dto;
 
+import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,13 @@ public class MypagePostResponseDto {
         this.id = post.getId();
         this.title = post.getPostTitle();
         this.tripEndDate = post.getTripEndDate();
-        this.imageUrl = post.getContents().get(0).getImage().getImageUrl();
+        this.imageUrl = null;
+        for (Content content : post.getContents()){
+            if("image".equals(content.getType())){
+                imageUrl=content.getImage().getImageUrl();
+                break;
+            }
+        }
+
     }
 }
