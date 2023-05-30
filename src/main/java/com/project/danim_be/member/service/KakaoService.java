@@ -142,15 +142,10 @@ public class KakaoService {
 		JsonNode jsonNode = objectMapper.readTree(responseBody);
 		Long id = jsonNode.get("id").asLong();//아이디
 		String email = jsonNode.get("kakao_account").get("email").asText();	// 이메일
-		String gender = jsonNode.get("kakao_account").get("gender").asText();//성별
-		String age_range = jsonNode.get("kakao_account").get("age_range").asText(); // 연령대
-		System.out.println("id = "+id);
 		System.out.println("email = "+email);
-		System.out.println("gender = "+gender);
-		System.out.println("ageRange = "+ age_range);
 
 		log.info("카카오 사용자 정보: " + id +"// email"+email);
-		return new KakaoMemberInfoDto(email,gender,age_range);
+		return new KakaoMemberInfoDto(email);
 	}
 
 	public Member kakaoSignup(KakaoMemberInfoDto kakaoMemberInfoDto) {
@@ -165,8 +160,8 @@ public class KakaoService {
 			// kakaoMember = new Member(email, password, ageRange,gender,nickname);
 			Member member = Member.builder()
 				.userId(kakaoMemberInfoDto.getEmail())
-				.ageRange(kakaoMemberInfoDto.getAgeRange())
-				.gender(kakaoMemberInfoDto.getGender())
+				.ageRange("Test ageRange")
+				.gender("Test gender")
 				.nickname(nickname)
 				.password(password)
 				.provider("KAKAO")

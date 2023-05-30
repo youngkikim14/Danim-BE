@@ -150,7 +150,7 @@ public class MemberService {
 
 	// 회원 탈퇴
 	@Transactional
-	public ResponseEntity<Message> signout(Member member) {
+	public ResponseEntity<Message> signOut(Member member) {
 		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
 		switch (member.getProvider()) {
