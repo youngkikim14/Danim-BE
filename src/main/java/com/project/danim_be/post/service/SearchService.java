@@ -32,8 +32,10 @@ public class SearchService {
 
     public ResponseEntity<Message> searchPost(Pageable pageable,
             String ageRange, String typeOfMeeting, String location, String keyword, String searchKeyword){
-
-
+        
+        
+        
+        return null; //추가하기
     }
 
 }
