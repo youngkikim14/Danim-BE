@@ -15,7 +15,7 @@ public class RandomNickname {
 
 	public static String getRandomNickname() {
 		Random rand = new Random();
-		return adjectives[rand.nextInt(adjectives.length)] +" " + nouns[rand.nextInt(nouns.length)];
+		return adjectives[rand.nextInt(adjectives.length)] + nouns[rand.nextInt(nouns.length)];
 	}
 
 
