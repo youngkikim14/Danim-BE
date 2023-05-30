@@ -26,11 +26,12 @@ public class PostResponseDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date tripStartDate;					//여행 시작날짜
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date tripEndDate;					//여행 마감날짜
-	private String 		ageRange;				//연령대
-	private String 		keyword;				//키워드
-	private int 		groupSize;				//인원수
-	private String 		location;				//지역
+	private Date 		tripEndDate;			//여행 마감날짜
+	private List<String> ageRange;				//연령대
+	private List<String> gender;				//연령대
+	private String 		 keyword;				//키워드
+	private int 		 groupSize;				//인원수
+	private String 		 location;				//지역
 
 
 	private List<ContentResponseDto> contents;		//게시글

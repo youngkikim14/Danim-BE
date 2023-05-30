@@ -31,6 +31,8 @@ public class QPost extends EntityPathBase<Post> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final StringPath gender = createString("gender");
+
     public final NumberPath<Integer> groupSize = createNumber("groupSize", Integer.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
