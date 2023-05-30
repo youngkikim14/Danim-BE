@@ -31,8 +31,6 @@ public class QPost extends EntityPathBase<Post> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final DateTimePath<java.util.Date> endDate = createDateTime("endDate", java.util.Date.class);
-
     public final NumberPath<Integer> groupSize = createNumber("groupSize", Integer.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -48,7 +46,13 @@ public class QPost extends EntityPathBase<Post> {
 
     public final StringPath postTitle = createString("postTitle");
 
-    public final DateTimePath<java.util.Date> startDate = createDateTime("startDate", java.util.Date.class);
+    public final DateTimePath<java.util.Date> recruitmentEndDate = createDateTime("recruitmentEndDate", java.util.Date.class);
+
+    public final DateTimePath<java.util.Date> recruitmentStartDate = createDateTime("recruitmentStartDate", java.util.Date.class);
+
+    public final DateTimePath<java.util.Date> tripEndDate = createDateTime("tripEndDate", java.util.Date.class);
+
+    public final DateTimePath<java.util.Date> tripStartDate = createDateTime("tripStartDate", java.util.Date.class);
 
     public final BooleanPath typeOfMeeting = createBoolean("typeOfMeeting");
 

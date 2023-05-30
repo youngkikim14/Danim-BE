@@ -24,7 +24,7 @@ public class QContent extends EntityPathBase<Content> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<Image, QImage> imageLists = this.<Image, QImage>createList("imageLists", Image.class, QImage.class, PathInits.DIRECT2);
+    public final QImage image;
 
     public final StringPath level = createString("level");
 
@@ -32,7 +32,7 @@ public class QContent extends EntityPathBase<Content> {
 
     public final StringPath text = createString("text");
 
-    public final EnumPath<ContentType> type = createEnum("type", ContentType.class);
+    public final StringPath type = createString("type");
 
     public QContent(String variable) {
         this(Content.class, forVariable(variable), INITS);
@@ -52,6 +52,7 @@ public class QContent extends EntityPathBase<Content> {
 
     public QContent(Class<? extends Content> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.image = inits.isInitialized("image") ? new QImage(forProperty("image"), inits.get("image")) : null;
         this.post = inits.isInitialized("post") ? new QPost(forProperty("post"), inits.get("post")) : null;
     }
 
