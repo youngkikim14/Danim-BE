@@ -111,6 +111,13 @@ public class MemberController {
 		return googleService.socialLogin(code, response);
 	}
 
+	// 소셜 로그인 시 추가 회원 정보 작성
+	@Operation(summary = "추가 사용자 정보 작성 API", description = "추가 사용자 정보 작성")
+	@PostMapping("/userInfo")
+	public ResponseEntity<Message> addUserInfo(@RequestBody UserInfoRequestDto userInfoRequestDto) {
+		return memberService.addUserInfo(userInfoRequestDto);
+	}
+
 	//회원 탈퇴
 	@Operation(summary = "회원 탈퇴 API", description = "회원 탈퇴")
 	@DeleteMapping("/delete")
@@ -132,12 +139,12 @@ public class MemberController {
 		return memberService.memberPosts(ownerId, userDetails.getMember().getId());
 	}
 
-	//마이페이지 - 회원정보 수정
-	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
-	@PutMapping("/myInfo")
-	public ResponseEntity<Message> editMember(@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-		return memberService.editMemeber(mypageRequestDto, userDetails.getMember());
-	}
+//	//마이페이지 - 회원정보 수정
+//	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
+//	@PutMapping("/myInfo")
+//	public ResponseEntity<Message> editMember(@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+//		return memberService.editMemeber(mypageRequestDto, userDetails.getMember());
+//	}
 
 }
 
