@@ -23,7 +23,6 @@ public class SwaggerConfig {
                 .description("실전프로젝트 다님 API 명세서입니다.");
 
         String access_key = JwtUtil.ACCESS_KEY;
-        System.out.println(access_key);
 
         // Security 스키마 설정
         SecurityScheme bearerAuth = new SecurityScheme()
@@ -35,6 +34,7 @@ public class SwaggerConfig {
 
         // Security 요청 설정
         SecurityRequirement addSecurityItem = new SecurityRequirement();
+        addSecurityItem.addList(access_key);
 
         return new OpenAPI()
                 // Security 인증 컴포넌트 설정
