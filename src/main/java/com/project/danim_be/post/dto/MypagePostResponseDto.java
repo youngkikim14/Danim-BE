@@ -19,6 +19,6 @@ public class MypagePostResponseDto {
         this.id = post.getId();
         this.title = post.getPostTitle();
         this.endDate = post.getEndDate();
-//        this.imageUrl = post.get
+        this.imageUrl = post.getImageList().get(0).getImageUrl();
     }
 }
