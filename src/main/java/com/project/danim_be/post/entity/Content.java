@@ -28,8 +28,7 @@ public class Content {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-
-	private String type;
+	private ContentType type;
 
 	private String level;
 
@@ -37,8 +36,6 @@ public class Content {
 
 	@OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
 	private List<Image> imageLists;
-
-	private String alt; //..?
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id")

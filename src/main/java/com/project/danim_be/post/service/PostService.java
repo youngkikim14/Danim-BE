@@ -61,7 +61,6 @@ public class PostService {
 					.type(contentDto.getType())
 					.level(contentDto.getLevel())
 					.text(contentDto.getText())
-					.alt(contentDto.getAlt())
 					.post(post)
 					.imageLists(new ArrayList<>())
 					.build();
