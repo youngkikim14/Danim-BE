@@ -16,6 +16,7 @@ import lombok.Setter;
 @Setter
 public class PostResponseDto {
 
+
 	private Long 		postId;					//게시글번호
 	private String 		postTitle;				//게시글제목
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -30,6 +31,7 @@ public class PostResponseDto {
 	private String 		keyword;				//키워드
 	private int 		groupSize;				//인원수
 	private String 		location;				//지역
+
 
 	private List<ContentResponseDto> contents;		//게시글
 

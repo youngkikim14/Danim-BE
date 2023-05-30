@@ -59,6 +59,10 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private int groupSize;	//인원수
 
+	@Column(nullable = false)
+	private Boolean typeOfMeeting; // 1명이면 true, 2명부터 false
+
+
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
 	@Builder.Default
 	private List<Content> contents =  new ArrayList<>();		//내용
@@ -66,4 +70,7 @@ public class Post extends Timestamped {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member member;
 
+	public void setTypeOfMeeting(Boolean typeOfMeeting) {
+		this.typeOfMeeting = typeOfMeeting;
+	}
 }
