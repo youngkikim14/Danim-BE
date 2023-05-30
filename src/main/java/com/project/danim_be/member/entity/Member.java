@@ -1,6 +1,7 @@
 package com.project.danim_be.member.entity;
 
 import com.project.danim_be.common.entity.Timestamped;
+import com.project.danim_be.member.dto.MypageRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,6 +64,12 @@ public class Member extends Timestamped {
 		this.ageRange = ageRange;
 		this.provider = provider;
 		this.isDeleted = isDeleted;
+	}
+
+	public void editMemeber (MypageRequestDto mypageRequestDto, String imageUrl) {
+		this.imageUrl = imageUrl;
+		this.content = mypageRequestDto.getContent();
+		this.nickname = mypageRequestDto.getNickname();
 	}
 
 
