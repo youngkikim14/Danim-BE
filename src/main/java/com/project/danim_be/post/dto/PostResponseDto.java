@@ -19,7 +19,7 @@ public class PostResponseDto {
 	private Date  		endDate;		//여행 종료날짜
 	private String 		ageRange;		//연령대
 	private String 		keyword;		//키워드
-	private int 		recruitMember;	//인원수
+	private int 		groupSize;	//인원수
 	private String 		location;		//지역
 
 	private List<ContentResponseDto> contents;		//게시글
@@ -32,7 +32,7 @@ public class PostResponseDto {
 		this.endDate = post.getEndDate();
 		this.ageRange = post.getAgeRange();
 		this.keyword = post.getKeyword();
-		this.recruitMember = post.getRecruitMember();
+		this.groupSize = post.getGroupSize();
 		this.location = post.getLocation();
 		this.contents = post.getContents().stream()
 			.map(ContentResponseDto::new)
