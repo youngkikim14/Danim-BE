@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class Image {
 
 	private String imageName;
 
-	@ManyToOne(fetch = FetchType.LAZY )
+	@OneToOne(fetch = FetchType.LAZY )
 	@JoinColumn(name = "content_id")
 	private Content content;
 

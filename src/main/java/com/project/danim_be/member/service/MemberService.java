@@ -231,6 +231,17 @@ public class MemberService {
 		}
 	}
 
+
+	//마이페이지 회원정보 수정
+	@Transactional
+	public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
+		Member memeber = memberRepository.findById(member.getId()).orElseThrow(
+				() -> new CustomException(USER_NOT_FOUND)
+		);
+		String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
+		memeber.editMemeber(mypageRequestDto, imageUrl);
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
+
 //	//마이페이지 회원정보 수정
 //	@Transactional
 //	public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
@@ -241,6 +252,7 @@ public class MemberService {
 //		memeber.editMemeber(mypageRequestDto, imageUrl);
 //		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
 //	}
+
 
 	// 헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {

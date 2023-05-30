@@ -39,9 +39,9 @@ public class ReviewService {
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
 
-        Date endDate = post.getEndDate();
+        Date tripEndDate = post.getTripEndDate();
         // LocalDate 타입으로 변환
-        LocalDate localDate = new java.sql.Date(endDate.getTime()).toLocalDate();
+        LocalDate localDate = new java.sql.Date(tripEndDate.getTime()).toLocalDate();
         LocalDate today = LocalDate.now();
 
         // 현재 날짜가 여행 종료일보다 늦다면 true

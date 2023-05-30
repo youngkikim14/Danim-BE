@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,14 +29,14 @@ public class Content {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private ContentType type;
+	private String  type;
 
 	private String level;
 
 	private String text;
 
-	@OneToMany(mappedBy = "content", cascade = CascadeType.ALL)
-	private List<Image> imageLists;
+	@OneToOne(mappedBy = "content", cascade = CascadeType.ALL)
+	private Image image;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id")
