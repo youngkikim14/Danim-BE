@@ -48,12 +48,15 @@ public class PostService {
 			.startDate(requestDto.getStartDate())
 			.endDate(requestDto.getEndDate())
 			.location(requestDto.getLocation())
-			.recruitMember(requestDto.getRecruitMember())
+			.groupSize(requestDto.getGroupSize())
 			.ageRange(requestDto.getAgeRange())
 			.keyword(requestDto.getKeyword())
 			.member(member)
 			.contents(new ArrayList<>())
 			.build();
+		if (requestDto.getGroupSize() == 1){
+			post.setTypeOfMeeting(true);
+		} else {post.setTypeOfMeeting(false);}
 		postRepository.save(post);
 		if (requestDto.getContents() != null) {
 			for (ContentRequestDto contentDto : requestDto.getContents()) {

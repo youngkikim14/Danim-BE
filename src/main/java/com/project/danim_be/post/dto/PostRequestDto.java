@@ -21,7 +21,7 @@ public class PostRequestDto {
 	private Date startDate;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date endDate;
-	private int recruitMember;
+	private int groupSize;
 	private String location;
 	private String ageRange;
 	private String keyword;

@@ -13,7 +13,7 @@ public class CardPostResponseDto {
     private Date endDate;
     private String imageUrl;
     private String nickname;
-    private int recruitMember;
+    private int groupSize;
     private String location;
     private String keyword;
     private String ageRange;
@@ -24,7 +24,7 @@ public class CardPostResponseDto {
         this.endDate = post.getEndDate();
         this.imageUrl = post.getContents().get(0).getImageLists().get(0).getImageUrl();
         this.nickname = post.getMember().getNickname();
-        this.recruitMember = post.getRecruitMember();
+        this.groupSize = post.getGroupSize();
         this.location = post.getLocation();
         this.keyword = post.getKeyword();
         this.ageRange = post.getAgeRange();
