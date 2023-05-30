@@ -102,7 +102,7 @@ public class MemberController {
 	//회원 탈퇴
 	@DeleteMapping("/delete")
 	public ResponseEntity<Message> signOut(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return memberService.signout(userDetails.getMember());
+		return memberService.signOut(userDetails.getMember());
 	}
 
 	// 마이페이지 - 사용자 정보

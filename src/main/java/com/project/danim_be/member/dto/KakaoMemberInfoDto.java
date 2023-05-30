@@ -8,13 +8,9 @@ import lombok.NoArgsConstructor;
 public class KakaoMemberInfoDto {
 
 	private String email;
-	private String gender;
-	private String ageRange;
 
-	public KakaoMemberInfoDto(String email, String gender, String ageRange) {
+	public KakaoMemberInfoDto(String email) {
 		this.email = email;
-		this.gender=gender;
-		this.ageRange=ageRange;
 	}
 
 }
