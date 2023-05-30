@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.danim_be.post.entity.Content;
+import com.project.danim_be.post.entity.ContentType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContentResponseDto {
 	private Long contentId;
-	private String type;
+	private ContentType type;
 	private String level;
 	private String text;
 

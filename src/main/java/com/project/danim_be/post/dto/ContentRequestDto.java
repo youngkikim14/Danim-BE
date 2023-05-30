@@ -2,6 +2,8 @@ package com.project.danim_be.post.dto;
 
 import java.util.List;
 
+import com.project.danim_be.post.entity.ContentType;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class ContentRequestDto {
 
-	private String type;
+	private ContentType type;
 	private String level;
 	private String text;
 	private String alt;

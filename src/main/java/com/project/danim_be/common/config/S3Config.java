@@ -3,6 +3,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,22 +13,17 @@ import org.springframework.context.annotation.Configuration;
 public class S3Config {
 	@Value("${cloud.aws.credentials.accessKey}")
 	private String accessKey;
-
 	@Value("${cloud.aws.credentials.secretKey}")
 	private String secretKey;
-
 	@Value("${cloud.aws.region.static}")
 	private String region;
 
 	@Bean
-	public AmazonS3 amazonS3Client() {
-		//accessKey와 secretKey를 통해서사용자인증정보생성
-		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-
-		return AmazonS3ClientBuilder
-			.standard()
-			.withCredentials(new AWSStaticCredentialsProvider(credentials)) //빌더에 인증정보추가
-			.withRegion(region)	//사용할 AWS region 설정
+	public AmazonS3Client amazonS3Client() {
+		BasicAWSCredentials awsCredentials= new BasicAWSCredentials(accessKey, secretKey);
+		return (AmazonS3Client)AmazonS3ClientBuilder.standard()
+			.withRegion(region)
+			.withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
 			.build();
 	}
 
