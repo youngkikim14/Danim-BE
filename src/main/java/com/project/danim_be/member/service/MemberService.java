@@ -4,7 +4,7 @@ import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
-import com.project.danim_be.common.util.S3Uploader;
+//import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
@@ -45,7 +45,7 @@ public class MemberService {
 	private final KakaoService kakaoService;
 	private final GoogleService googleService;
 	private final PostRepository postRepository;
-	private final S3Uploader s3Uploader;
+//	private final S3Uploader s3Uploader;
 
 	//회원가입
 	@Transactional
@@ -101,6 +101,19 @@ public class MemberService {
 			nickname = RandomNickname.getRandomNickname();
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "랜덤 닉네임 생성완료", nickname));
+	}
+
+	// 소셜 로그인 시 추가 회원 정보 작성
+	@Transactional
+	public ResponseEntity<Message> addUserInfo(UserInfoRequestDto userInfoRequestDto) {
+		Member member = memberRepository.findById(userInfoRequestDto.getUserId()).orElseThrow(
+				() -> new CustomException(ErrorCode.ID_NOT_FOUND)
+		);
+
+		member.update(userInfoRequestDto);
+
+		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
 	}
 
 	//로그인
@@ -218,16 +231,16 @@ public class MemberService {
 		}
 	}
 
-	//마이페이지 회원정보 수정
-	@Transactional
-	public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
-		Member memeber = memberRepository.findById(member.getId()).orElseThrow(
-				() -> new CustomException(USER_NOT_FOUND)
-		);
-		String imageUrl = s3Uploader.upload(mypageRequestDto.getImage(), mypageRequestDto.getImagePath());
-		memeber.editMemeber(mypageRequestDto, imageUrl);
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
-	}
+//	//마이페이지 회원정보 수정
+//	@Transactional
+//	public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
+//		Member memeber = memberRepository.findById(member.getId()).orElseThrow(
+//				() -> new CustomException(USER_NOT_FOUND)
+//		);
+//		String imageUrl = s3Uploader.upload(mypageRequestDto.getImage(), mypageRequestDto.getImagePath());
+//		memeber.editMemeber(mypageRequestDto, imageUrl);
+//		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
+//	}
 
 	// 헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
