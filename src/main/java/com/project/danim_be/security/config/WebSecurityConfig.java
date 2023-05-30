@@ -31,19 +31,23 @@ public class WebSecurityConfig {
 	private final JwtAuthenticationFilter jwtUtil;
 
 	private static final String[] PERMIT_URL_ARRAY={
-		"/api/user/kakao/**",
-		"/api/user/google/**",
-		"/api/user/naver/**",
-		"/api/user/signup",
-		"/api/user/login",
-		"/api/user/checkId",
-		"/api/user/checkNickname",
-		// "/api/user/logout",
-		"/api/user/delete",
-		"/api/user/{ownerId}/info",
-		"/api/user/{ownerId}/posts",
-		"/api/user/{ownerId}/review",
-		"/api/user/randomNickname"
+			"/api/user/kakao/**",
+			"/api/user/google/**",
+			"/api/user/naver/**",
+			"/api/user/signup",
+			"/api/user/login",
+			"/api/user/checkId",
+			"/api/user/checkNickname",
+			// "/api/user/logout",
+			"/api/user/delete",
+			"/api/user/{ownerId}/info",
+			"/api/user/{ownerId}/posts",
+			"/api/user/{ownerId}/review",
+			"/api/user/randomNickname",
+			/* swagger v3 */
+			"/v3/api-docs/**",
+			"/swagger-ui/**"
+
 	};
 
 	//정적자원은 인증인가를 하지않겠다.

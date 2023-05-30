@@ -2,10 +2,7 @@ package com.project.danim_be.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.danim_be.common.util.Message;
-import com.project.danim_be.member.dto.CheckIdRequestDto;
-import com.project.danim_be.member.dto.CheckNicknameRequestDto;
-import com.project.danim_be.member.dto.LoginRequestDto;
-import com.project.danim_be.member.dto.SignupRequestDto;
+import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.service.GoogleService;
 import com.project.danim_be.member.service.KakaoService;
 import com.project.danim_be.member.service.MemberService;
@@ -88,7 +85,7 @@ public class MemberController {
 
 	//카카오 소셜 로그인
 	@GetMapping("/kakao/callback")
-	public ResponseEntity<Message> kakaoLogin(@RequestParam String code,HttpServletResponse response) throws JsonProcessingException {
+	public ResponseEntity<Message> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 		System.out.println(code);
 		return kakaoService.kakaoLogin(code,response);
 	}
@@ -118,6 +115,12 @@ public class MemberController {
 	@GetMapping("/{ownerId}/posts")
 	public ResponseEntity<Message> memberPosts(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails){
 		return memberService.memberPosts(ownerId, userDetails.getMember().getId());
+	}
+
+	//마이페이지 - 회원정보 수정
+	@PutMapping("/myInfo")
+	public ResponseEntity<Message> editMember(@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+		return memberService.editMemeber(mypageRequestDto, userDetails.getMember());
 	}
 
 }
