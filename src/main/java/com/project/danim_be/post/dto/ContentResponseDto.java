@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.ContentType;
+import com.project.danim_be.post.entity.Image;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,19 +16,17 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContentResponseDto {
 	private Long contentId;
-	private ContentType type;
+	private String  type;
 	private String level;
 	private String text;
 
-	private List<ImageResponseDto> imageLists;
+	private Image Image;
 
 	public ContentResponseDto(Content content) {
 		this.contentId = content.getId();
 		this.type = content.getType();
 		this.level = content.getLevel();
 		this.text = content.getText();
-		this.imageLists = content.getImageLists().stream()
-			.map(ImageResponseDto::new)
-			.collect(Collectors.toList());
+		this.Image = content.getImage();
 	}
 }

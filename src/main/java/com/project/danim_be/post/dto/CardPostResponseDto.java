@@ -10,10 +10,10 @@ public class CardPostResponseDto {
 
     private Long id;
     private String title;
-    private Date endDate;
+    private Date tripEndDate;
     private String imageUrl;
     private String nickname;
-    private int recruitMember;
+    private int groupSize;
     private String location;
     private String keyword;
     private String ageRange;
@@ -21,10 +21,10 @@ public class CardPostResponseDto {
     public CardPostResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getPostTitle();
-        this.endDate = post.getEndDate();
-        this.imageUrl = post.getContents().get(0).getImageLists().get(0).getImageUrl();
+        this.tripEndDate = post.getTripEndDate();
+        this.imageUrl = post.getContents().get(0).getImage().getImageUrl();
         this.nickname = post.getMember().getNickname();
-        this.recruitMember = post.getRecruitMember();
+        this.groupSize = post.getGroupSize();
         this.location = post.getLocation();
         this.keyword = post.getKeyword();
         this.ageRange = post.getAgeRange();

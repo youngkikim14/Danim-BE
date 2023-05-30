@@ -224,7 +224,7 @@ public class MemberService {
 		Member memeber = memberRepository.findById(member.getId()).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
 		);
-		String imageUrl = s3Uploader.upload(mypageRequestDto.getImage(), mypageRequestDto.getImagePath());
+		String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
 		memeber.editMemeber(mypageRequestDto, imageUrl);
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
 	}

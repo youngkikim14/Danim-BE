@@ -16,29 +16,35 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostRequestDto {
 
-	private String postTitle;
+	private String postTitle;					//게시글제목
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date startDate;
+	private Date recruitmentStartDate;			//모집 시작날짜
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date endDate;
-	private int recruitMember;
-	private String location;
-	private String ageRange;
-	private String keyword;
-	private List<ContentRequestDto> contents;
+	private Date recruitmentEndDate;			//모집 마감날짜
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date tripStartDate;					//여행 시작날짜
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date tripEndDate;					//여행 마감날짜
+	private int groupSize;						//모집인원수
+	private String location;					//출발(모집)지역
+	private String ageRange;					//연령대
+	private String keyword;						//키워드
+	private List<ContentRequestDto> contents;	//글내용
 
-	// @Override
-	// public String toString() {
-	// 	return "Post데이터 로깅" +  '\n' +
-	// 		"PostRequestDto{" + '\n' +
-	// 		"postTitle='" + postTitle + '\n' +
-	// 		", startDate=" + startDate +'\n'+
-	// 		", endDate=" + endDate +'\n'+
-	// 		", recruitMember=" + recruitMember +'\n'+
-	// 		", location='" + location + '\n'+
-	// 		", ageRange='" + ageRange + '\n'+
-	// 		", keyword='" + keyword + '\n'+
-	// 		", contents=" + contents +
-	// 		'}';
-	// }
+	@Override
+	public String toString() {
+		return "Post데이터 로깅" +  '\n' +
+			"PostRequestDto{" + '\n' +
+			"postTitle='" + postTitle + '\n' +
+			", recruitmentStartDate=" + recruitmentStartDate +'\n'+
+			", recruitmentEndDate=" + recruitmentEndDate +'\n'+
+			", tripStartDate=" + tripStartDate +'\n'+
+			", tripEndDate=" + tripEndDate +'\n'+
+			", groupSize=" + groupSize +'\n'+
+			", location='" + location + '\n'+
+			", ageRange='" + ageRange + '\n'+
+			", keyword='" + keyword + '\n'+
+			", contents=" + contents +
+			'}';
+	}
 }

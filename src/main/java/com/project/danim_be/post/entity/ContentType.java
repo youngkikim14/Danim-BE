@@ -3,6 +3,7 @@ package com.project.danim_be.post.entity;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+
 public enum ContentType {
 
 	HEADING("헤더"),

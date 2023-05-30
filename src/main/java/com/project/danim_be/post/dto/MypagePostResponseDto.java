@@ -12,13 +12,13 @@ public class MypagePostResponseDto {
 
     private Long id;
     private String title;
-    private Date endDate;
+    private Date tripEndDate;
     private String imageUrl;
 
     public MypagePostResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getPostTitle();
-        this.endDate = post.getEndDate();
-        this.imageUrl = post.getContents().get(0).getImageLists().get(0).getImageUrl();
+        this.tripEndDate = post.getTripEndDate();
+        this.imageUrl = post.getContents().get(0).getImage().getImageUrl();
     }
 }

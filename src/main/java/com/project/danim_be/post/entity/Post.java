@@ -36,10 +36,16 @@ public class Post extends Timestamped {
 	private String postTitle;	//게시글 제목
 
 	@Column(nullable = false)
-	private Date startDate;		//여행 시작날짜
+	private Date recruitmentStartDate; //모집 등록날짜
 
 	@Column(nullable = false)
-	private Date  endDate;		//여행 종료날짜
+	private Date recruitmentEndDate; //모집 마감날짜
+
+	@Column(nullable = false)
+	private Date tripStartDate;		//여행 시작날짜
+
+	@Column(nullable = false)
+	private Date  tripEndDate;		//여행 종료날짜
 
 	@Column(nullable = false)
 	private String ageRange;	//연령대
@@ -51,7 +57,7 @@ public class Post extends Timestamped {
 	private String location;	//지역
 
 	@Column(nullable = false)
-	private int recruitMember;	//인원수
+	private int groupSize;	//인원수
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
 	@Builder.Default

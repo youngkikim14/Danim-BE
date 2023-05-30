@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.danim_be.post.entity.Post;
 
 import lombok.Getter;
@@ -13,14 +16,20 @@ import lombok.Setter;
 @Setter
 public class PostResponseDto {
 
-	private Long 		postId;			//게시글번호
-	private String 		postTitle;		//게시글제목
-	private Date 		startDate;		//여행 시작날짜
-	private Date  		endDate;		//여행 종료날짜
-	private String 		ageRange;		//연령대
-	private String 		keyword;		//키워드
-	private int 		recruitMember;	//인원수
-	private String 		location;		//지역
+	private Long 		postId;					//게시글번호
+	private String 		postTitle;				//게시글제목
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date recruitmentStartDate;			//모집 시작날짜
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date recruitmentEndDate;			//모집 마감날짜
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date tripStartDate;					//여행 시작날짜
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date tripEndDate;					//여행 마감날짜
+	private String 		ageRange;				//연령대
+	private String 		keyword;				//키워드
+	private int 		groupSize;				//인원수
+	private String 		location;				//지역
 
 	private List<ContentResponseDto> contents;		//게시글
 
@@ -28,11 +37,13 @@ public class PostResponseDto {
 	public PostResponseDto(Post post){
 		this.postId = post.getId();
 		this.postTitle = post.getPostTitle();
-		this.startDate = post.getStartDate();
-		this.endDate = post.getEndDate();
+		this.recruitmentStartDate=post.getRecruitmentStartDate();
+		this.recruitmentEndDate=post.getRecruitmentEndDate();
+		this.tripStartDate = post.getTripStartDate();
+		this.tripEndDate = post.getTripEndDate();
 		this.ageRange = post.getAgeRange();
 		this.keyword = post.getKeyword();
-		this.recruitMember = post.getRecruitMember();
+		this.groupSize = post.getGroupSize();
 		this.location = post.getLocation();
 		this.contents = post.getContents().stream()
 			.map(ContentResponseDto::new)
