@@ -23,6 +23,10 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath ageRange = createString("ageRange");
 
+    public final BooleanPath agreeForAge = createBoolean("agreeForAge");
+
+    public final BooleanPath agreeForGender = createBoolean("agreeForGender");
+
     public final StringPath content = createString("content");
 
     //inherited

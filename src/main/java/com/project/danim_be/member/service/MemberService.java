@@ -5,6 +5,7 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
 //import com.project.danim_be.common.util.S3Uploader;
+import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
@@ -45,7 +46,7 @@ public class MemberService {
 	private final KakaoService kakaoService;
 	private final GoogleService googleService;
 	private final PostRepository postRepository;
-//	private final S3Uploader s3Uploader;
+	private final S3Uploader s3Uploader;
 
 	//회원가입
 	@Transactional
@@ -236,11 +237,12 @@ public class MemberService {
 	@Transactional
 	public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
 		Member memeber = memberRepository.findById(member.getId()).orElseThrow(
-				() -> new CustomException(USER_NOT_FOUND)
+			() -> new CustomException(USER_NOT_FOUND)
 		);
 		String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
 		memeber.editMemeber(mypageRequestDto, imageUrl);
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
+	}
 
 //	//마이페이지 회원정보 수정
 //	@Transactional
