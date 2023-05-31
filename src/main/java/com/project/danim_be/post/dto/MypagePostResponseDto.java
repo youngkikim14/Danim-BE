@@ -15,8 +15,9 @@ public class MypagePostResponseDto {
     private String title;
     private Date tripEndDate;
     private String imageUrl;
+    private Boolean owner;
 
-    public MypagePostResponseDto(Post post) {
+    public MypagePostResponseDto(Post post, Boolean owner) {
         this.id = post.getId();
         this.title = post.getPostTitle();
         this.tripEndDate = post.getTripEndDate();
@@ -27,6 +28,7 @@ public class MypagePostResponseDto {
                 break;
             }
         }
+        this.owner = owner;
 
     }
 }

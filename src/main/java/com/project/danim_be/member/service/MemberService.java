@@ -197,7 +197,7 @@ public class MemberService {
 	}
 
 	// 마이페이지 - 사용자 정보
-	@Transactional
+	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
 		Member owner = memberRepository.findById(ownerId).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
@@ -215,7 +215,7 @@ public class MemberService {
 	}
 
 	// 마이페이지 게시물 정보
-	@Transactional
+	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberPosts(Long ownerId, Long memberId) {
 		Member owner = memberRepository.findById(ownerId).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
@@ -225,11 +225,22 @@ public class MemberService {
 		);
 		List<MypagePostResponseDto> mypagePostResponseDtoList;
 		if (ownerId.equals(memberId)) {
-			mypagePostResponseDtoList = validMember(member);
+			mypagePostResponseDtoList = validMember(member, true);
 		} else {
-			mypagePostResponseDtoList = validMember(owner);
+			mypagePostResponseDtoList = validMember(owner, false);
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
+	}
+
+	// 마이페이지 내가 받은 후기
+	@Transactional(readOnly = true)
+	public ResponseEntity<Message> memberReview(Long ownerId, Long memberId) {
+		Member owner = memberRepository.findById(ownerId).orElseThrow(
+				() -> new CustomException(USER_NOT_FOUND)
+		);
+		Member member = memberRepository.findById(memberId).orElseThrow(
+				() -> new CustomException(USER_NOT_FOUND)
+		);
 	}
 
 
@@ -244,17 +255,6 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
 	}
 
-	// //마이페이지 회원정보 수정
-	// @Transactional
-	// public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
-	// 	Member memeber = memberRepository.findById(member.getId()).orElseThrow(
-	// 			() -> new CustomException(USER_NOT_FOUND)
-	// 	);
-	// 	String imageUrl = s3Uploader.upload(mypageRequestDto.getImage(), mypageRequestDto.getImagePath());
-	// 	memeber.editMemeber(mypageRequestDto, imageUrl);
-	// 	return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
-	// }
-
 
 	// 헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
@@ -263,11 +263,11 @@ public class MemberService {
 	}
 
 	// 마이페이지 게시물 공통 메서드
-	private List<MypagePostResponseDto> validMember(Member member) {
+	private List<MypagePostResponseDto> validMember(Member member, Boolean owner) {
 		List<Post> postList = postRepository.findAllByMemberOrderByCreatedAt(member);
 		List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
 		for (Post post : postList) {
-			mypagePostResponseDtoList.add(new MypagePostResponseDto(post));
+			mypagePostResponseDtoList.add(new MypagePostResponseDto(post, owner));
 		}
 		return mypagePostResponseDtoList;
 	}
