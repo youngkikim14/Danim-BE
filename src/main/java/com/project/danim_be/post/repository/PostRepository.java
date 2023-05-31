@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredicateExecutor<Post> {
 
-    List<Post> findAllByMemberOrderByCreatedAt(Member member);
+    List<Post> findAllByMemberOrderByCreatedAtDesc(Member member);
 
     List<Post> findAllByOrderByCreatedAt(Pageable pageable);
 }

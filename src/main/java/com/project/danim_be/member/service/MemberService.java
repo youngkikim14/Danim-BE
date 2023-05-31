@@ -9,14 +9,21 @@ import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
+import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.dto.MypagePostResponseDto;
 import com.project.danim_be.post.entity.Post;
+import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
+import com.project.danim_be.review.entity.QReview;
+import com.project.danim_be.review.entity.Review;
+import com.project.danim_be.review.repository.ReviewRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +54,8 @@ public class MemberService {
 	private final GoogleService googleService;
 	private final PostRepository postRepository;
 	private final S3Uploader s3Uploader;
+	private final ReviewRepository reviewRepository;
+	private final JPAQueryFactory queryFactory;
 
 	//회원가입
 	@Transactional
@@ -241,6 +250,19 @@ public class MemberService {
 		Member member = memberRepository.findById(memberId).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
 		);
+		List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
+		if (ownerId.equals(memberId)){
+			List<Review> reviewList = getReview(member.getId());
+			for (Review review : reviewList) {
+				mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
+			}
+		} else {
+			List<Review> reviewList = getReview(owner.getId());
+			for (Review review : reviewList) {
+				mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
+			}
+		}
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageReviewResponseDtoList));
 	}
 
 
@@ -264,7 +286,7 @@ public class MemberService {
 
 	// 마이페이지 게시물 공통 메서드
 	private List<MypagePostResponseDto> validMember(Member member, Boolean owner) {
-		List<Post> postList = postRepository.findAllByMemberOrderByCreatedAt(member);
+		List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
 		List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
 		for (Post post : postList) {
 			mypagePostResponseDtoList.add(new MypagePostResponseDto(post, owner));
@@ -272,4 +294,15 @@ public class MemberService {
 		return mypagePostResponseDtoList;
 	}
 
+	// 마이페이지 리뷰 공통 메서드
+	private List<Review> getReview(Long memberId) {
+		QReview qReview = QReview.review1;
+		QPost qPost = QPost.post;
+
+		return queryFactory
+				.selectFrom(qReview)
+				.join(qReview.post, qPost)
+				.where(qPost.member.id.eq(memberId))
+				.fetch();
+	}
 }
