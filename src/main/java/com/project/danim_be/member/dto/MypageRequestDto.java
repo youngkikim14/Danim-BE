@@ -13,6 +13,5 @@ public class MypageRequestDto {
     private String nickname;
     private String content;
     private MultipartFile image;
-    private String imagePath;
 
 }
