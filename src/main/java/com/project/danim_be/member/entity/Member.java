@@ -76,6 +76,8 @@ public class Member extends Timestamped {
 
 	public void signOut() {
 		this.isDeleted = true;
+		this.userId = this.userId + "(withdrawal)";
+		this.nickname = this.nickname + "(withdrawal)";
 	}
 
 	public void update(UserInfoRequestDto userInfoRequestDto) {
