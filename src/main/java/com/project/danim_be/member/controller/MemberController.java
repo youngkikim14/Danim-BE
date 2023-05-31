@@ -15,10 +15,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -139,9 +137,9 @@ public class MemberController {
 
 	//마이페이지 - 회원정보 수정
 	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
-	@PutMapping("/myInfo")
-	public ResponseEntity<Message> editMember(@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-		return memberService.editMemeber(mypageRequestDto, userDetails.getMember());
+	@PutMapping("{ownerId}/myInfo")
+	public ResponseEntity<Message> editMember(@PathVariable Long ownerId,@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+		return memberService.editMember(ownerId ,mypageRequestDto, userDetails.getMember());
 	}
 
 }
