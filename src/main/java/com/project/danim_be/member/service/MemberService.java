@@ -4,12 +4,10 @@ import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
-//import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.dto.MypagePostResponseDto;
 import com.project.danim_be.post.entity.Post;
@@ -22,7 +20,6 @@ import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -208,12 +205,8 @@ public class MemberService {
 	// 마이페이지 - 사용자 정보
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
-		Member owner = memberRepository.findById(ownerId).orElseThrow(
-				() -> new CustomException(USER_NOT_FOUND)
-		);
-		Member member = memberRepository.findById(memberId).orElseThrow(
-				() -> new CustomException(USER_NOT_FOUND)
-		);
+		Member owner = findMemeber(ownerId);
+		Member member = findMemeber(memberId);
 		MypageResponseDto mypageResponseDto;
 		if (ownerId.equals(memberId)){
 			mypageResponseDto = new MypageResponseDto(member, true);
@@ -226,12 +219,8 @@ public class MemberService {
 	// 마이페이지 게시물 정보
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberPosts(Long ownerId, Long memberId) {
-		Member owner = memberRepository.findById(ownerId).orElseThrow(
-				() -> new CustomException(USER_NOT_FOUND)
-		);
-		Member member = memberRepository.findById(memberId).orElseThrow(
-				() -> new CustomException(USER_NOT_FOUND)
-		);
+		Member owner = findMemeber(ownerId);
+		Member member = findMemeber(memberId);
 		List<MypagePostResponseDto> mypagePostResponseDtoList;
 		if (ownerId.equals(memberId)) {
 			mypagePostResponseDtoList = validMember(member, true);
@@ -244,25 +233,15 @@ public class MemberService {
 	// 마이페이지 내가 받은 후기
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberReview(Long ownerId, Long memberId) {
-		Member owner = memberRepository.findById(ownerId).orElseThrow(
-				() -> new CustomException(USER_NOT_FOUND)
-		);
-		Member member = memberRepository.findById(memberId).orElseThrow(
-				() -> new CustomException(USER_NOT_FOUND)
-		);
-		List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
+		Member owner = findMemeber(ownerId);
+		Member member = findMemeber(memberId);
 		if (ownerId.equals(memberId)){
-			List<Review> reviewList = getReview(member.getId());
-			for (Review review : reviewList) {
-				mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
-			}
+			List<MypageReviewResponseDto> reviewList = getReview(member.getId());
+			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
 		} else {
-			List<Review> reviewList = getReview(owner.getId());
-			for (Review review : reviewList) {
-				mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
-			}
+			List<MypageReviewResponseDto> reviewList = getReview(owner.getId());
+			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
 		}
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageReviewResponseDtoList));
 	}
 
 
@@ -294,15 +273,27 @@ public class MemberService {
 		return mypagePostResponseDtoList;
 	}
 
+	// 멤버 검증 공통 메서드
+	private Member findMemeber(Long id) {
+		return memberRepository.findById(id).orElseThrow(
+				() -> new CustomException(USER_NOT_FOUND)
+		);
+	}
+
 	// 마이페이지 리뷰 공통 메서드
-	private List<Review> getReview(Long memberId) {
+	private List<MypageReviewResponseDto> getReview(Long memberId) {
 		QReview qReview = QReview.review1;
 		QPost qPost = QPost.post;
 
-		return queryFactory
+		List<Review> reviewList = queryFactory
 				.selectFrom(qReview)
 				.join(qReview.post, qPost)
 				.where(qPost.member.id.eq(memberId))
 				.fetch();
+		List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
+		for (Review review : reviewList) {
+			mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
+		}
+		return mypageReviewResponseDtoList;
 	}
 }
