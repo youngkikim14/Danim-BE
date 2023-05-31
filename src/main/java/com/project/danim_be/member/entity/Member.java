@@ -52,14 +52,6 @@ public class Member extends Timestamped {
 		this.provider = "GOOGLE";
   }
 
-
-	public Member(String userId, String password, String ageRange,String nickname) {
-		this.userId = userId;
-		this.nickname = nickname;
-		this.password = password;
-		this.ageRange = ageRange;
-	}
-
 	@Builder
 	public Member(String userId, String gender,  String password, String nickname, String ageRange, String provider, Boolean isDeleted) {
 		this.userId = userId;

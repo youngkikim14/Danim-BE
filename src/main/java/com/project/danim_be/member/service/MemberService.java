@@ -4,6 +4,7 @@ import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
+//import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.*;
@@ -53,6 +54,7 @@ public class MemberService {
 	private final S3Uploader s3Uploader;
 	private final ReviewRepository reviewRepository;
 	private final JPAQueryFactory queryFactory;
+	private final RandomNickname randomNickname;
 
 	//회원가입
 	@Transactional
@@ -103,10 +105,7 @@ public class MemberService {
 	//랜덤 닉네임 생성
 	@Transactional
 	public ResponseEntity<Message> nicknameCreate() {
-		String nickname = RandomNickname.getRandomNickname();
-		while (memberRepository.findByNickname(nickname).isPresent()){
-			nickname = RandomNickname.getRandomNickname();
-		}
+		String nickname = randomNickname.getRandomNickname();
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "랜덤 닉네임 생성완료", nickname));
 	}
 
