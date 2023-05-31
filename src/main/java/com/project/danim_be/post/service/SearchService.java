@@ -37,6 +37,7 @@ public class SearchService {
     // 상세 검색
     @Transactional(readOnly = true)
     public Page<CardPostResponseDto> searchPost(SearchRequestDto searchRequestDto, Pageable pageable) {
+
         // QueryDSL을 활용하여 동적 쿼리 작성
         BooleanBuilder predicate = new BooleanBuilder();
         QPost qPost = QPost.post;

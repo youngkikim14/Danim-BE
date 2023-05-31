@@ -2,6 +2,7 @@ package com.project.danim_be.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,7 +26,7 @@ public class PostController {
 
 	@Operation(summary = "게시글 작성 API", description = "게시글 작성")
 	@PostMapping(value = "api/post",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-		public ResponseEntity<Message> createPost(@AuthenticationPrincipal final UserDetailsImpl userDetails, @ModelAttribute final PostRequestDto requestDto){
+		public ResponseEntity<Message> createPost(@AuthenticationPrincipal final UserDetailsImpl userDetails,@Valid @ModelAttribute final PostRequestDto requestDto){
 
 		return	postService.createPost(userDetails.getMember(),requestDto);
 
