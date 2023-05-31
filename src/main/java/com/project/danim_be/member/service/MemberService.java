@@ -205,8 +205,8 @@ public class MemberService {
 	// 마이페이지 - 사용자 정보
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
-		Member owner = findMemeber(ownerId);
-		Member member = findMemeber(memberId);
+		Member owner = findMember(ownerId);
+		Member member = findMember(memberId);
 		MypageResponseDto mypageResponseDto;
 		if (ownerId.equals(memberId)){
 			mypageResponseDto = new MypageResponseDto(member, true);
@@ -219,8 +219,8 @@ public class MemberService {
 	// 마이페이지 게시물 정보
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberPosts(Long ownerId, Long memberId) {
-		Member owner = findMemeber(ownerId);
-		Member member = findMemeber(memberId);
+		Member owner = findMember(ownerId);
+		Member member = findMember(memberId);
 		List<MypagePostResponseDto> mypagePostResponseDtoList;
 		if (ownerId.equals(memberId)) {
 			mypagePostResponseDtoList = validMember(member, true);
@@ -233,8 +233,8 @@ public class MemberService {
 	// 마이페이지 내가 받은 후기
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberReview(Long ownerId, Long memberId) {
-		Member owner = findMemeber(ownerId);
-		Member member = findMemeber(memberId);
+		Member owner = findMember(ownerId);
+		Member member = findMember(memberId);
 		if (ownerId.equals(memberId)){
 			List<MypageReviewResponseDto> reviewList = getReview(member.getId());
 			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
@@ -274,7 +274,7 @@ public class MemberService {
 	}
 
 	// 멤버 검증 공통 메서드
-	private Member findMemeber(Long id) {
+	private Member findMember(Long id) {
 		return memberRepository.findById(id).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
 		);
