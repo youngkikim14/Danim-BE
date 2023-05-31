@@ -1,5 +1,6 @@
 package com.project.danim_be.review.entity;
 
+import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.entity.Post;
 
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Review {
+public class Review extends Timestamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
