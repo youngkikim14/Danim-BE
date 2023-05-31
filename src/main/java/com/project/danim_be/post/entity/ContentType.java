@@ -6,15 +6,12 @@ import lombok.NoArgsConstructor;
 
 public enum ContentType {
 
-	HEADING("헤더"),
-	IMAGE("이미지"),
-	PARAGRAPH("문단");
+	HEADING,
+	IMAGE,
+	PARAGRAPH;
 
-	private String value;
 
-	ContentType(String value){
-		this.value = value;
-	}
+
 
 
 }

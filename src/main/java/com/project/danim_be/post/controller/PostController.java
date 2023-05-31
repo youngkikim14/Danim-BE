@@ -25,7 +25,7 @@ public class PostController {
 
 	@Operation(summary = "게시글 작성 API", description = "게시글 작성")
 	@PostMapping(value = "api/post",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-		public ResponseEntity<Message> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute final PostRequestDto requestDto){
+		public ResponseEntity<Message> createPost(@AuthenticationPrincipal final UserDetailsImpl userDetails, @ModelAttribute final PostRequestDto requestDto){
 
 		return	postService.createPost(userDetails.getMember(),requestDto);
 

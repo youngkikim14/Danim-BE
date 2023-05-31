@@ -223,13 +223,13 @@ public class MemberService {
 		Member member = memberRepository.findById(memberId).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
 		);
+		List<MypagePostResponseDto> mypagePostResponseDtoList;
 		if (ownerId.equals(memberId)) {
-			List<MypagePostResponseDto> mypagePostResponseDtoList = validMember(member);
-			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
+			mypagePostResponseDtoList = validMember(member);
 		} else {
-			List<MypagePostResponseDto> mypagePostResponseDtoList = validMember(owner);
-			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
+			mypagePostResponseDtoList = validMember(owner);
 		}
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
 	}
 
 
@@ -244,16 +244,16 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
 	}
 
-//	//마이페이지 회원정보 수정
-//	@Transactional
-//	public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
-//		Member memeber = memberRepository.findById(member.getId()).orElseThrow(
-//				() -> new CustomException(USER_NOT_FOUND)
-//		);
-//		String imageUrl = s3Uploader.upload(mypageRequestDto.getImage(), mypageRequestDto.getImagePath());
-//		memeber.editMemeber(mypageRequestDto, imageUrl);
-//		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
-//	}
+	// //마이페이지 회원정보 수정
+	// @Transactional
+	// public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
+	// 	Member memeber = memberRepository.findById(member.getId()).orElseThrow(
+	// 			() -> new CustomException(USER_NOT_FOUND)
+	// 	);
+	// 	String imageUrl = s3Uploader.upload(mypageRequestDto.getImage(), mypageRequestDto.getImagePath());
+	// 	memeber.editMemeber(mypageRequestDto, imageUrl);
+	// 	return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
+	// }
 
 
 	// 헤더 셋팅

@@ -195,6 +195,9 @@ public class NaverService {
 
         Member naverMember = memberRepository.findByUserId(memberRequestDto.getUserId()).orElse(null);
         String nickname = RandomNickname.getRandomNickname();
+        while (memberRepository.findByNickname(nickname).isPresent()){
+            nickname = RandomNickname.getRandomNickname();
+        }
         if(naverMember == null) {
             Member member = Member.builder()
                     .userId(memberRequestDto.getUserId())
