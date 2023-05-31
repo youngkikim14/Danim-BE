@@ -251,7 +251,7 @@ public class MemberService {
 		if (owner == member) {
 			String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
 			member.editMemeber(mypageRequestDto, imageUrl);
-		}
+		} else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
 	}
 
