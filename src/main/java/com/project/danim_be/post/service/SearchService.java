@@ -42,11 +42,11 @@ public class SearchService {
         BooleanBuilder predicate = new BooleanBuilder();
         QPost qPost = QPost.post;
 
-        if (searchRequestDto.getAgeRange() != null && !searchRequestDto.getAgeRange().isEmpty()) {
-            predicate.and(qPost.ageRange.in(searchRequestDto.getAgeRange()));
+        if (searchRequestDto.getAgeRange() != null) {
+            predicate.and(qPost.ageRange.containsIgnoreCase(searchRequestDto.getAgeRange()));
         }
-        if (searchRequestDto.getKeyword() != null && !searchRequestDto.getKeyword().isEmpty()) {
-            predicate.and(qPost.keyword.in(searchRequestDto.getKeyword()));
+        if (searchRequestDto.getKeyword() != null) {
+            predicate.and(qPost.keyword.containsIgnoreCase(searchRequestDto.getKeyword()));
         }
         if (searchRequestDto.getTypeOfMeeting() != null) {
             predicate.and(qPost.typeOfMeeting.eq(searchRequestDto.getTypeOfMeeting()));

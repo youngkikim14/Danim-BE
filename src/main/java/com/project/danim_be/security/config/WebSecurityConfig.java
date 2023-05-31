@@ -46,7 +46,8 @@ public class WebSecurityConfig {
 			"/api/user/userInfo",
 			/* swagger v3 */
 			"/v3/api-docs/**",
-			"/swagger-ui/**"
+			"/swagger-ui/**",
+			"/api/posts/**"
 
 	};
 

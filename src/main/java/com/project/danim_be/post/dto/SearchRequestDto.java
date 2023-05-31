@@ -7,9 +7,9 @@ import java.util.List;
 @Getter
 public class SearchRequestDto {
 
-    private List<String> ageRange;
+    private String ageRange;
     private Boolean typeOfMeeting;
     private String location;
-    private List<String> keyword;
+    private String keyword;
     private String searchKeyword;
 }
