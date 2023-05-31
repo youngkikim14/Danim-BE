@@ -38,17 +38,9 @@ public class MemberController {
 	//일반 회원가입
 	@Operation(summary = "일반 회원가입 API", description = "일반 회원가입")
 	@PostMapping("/signup")
-	public ResponseEntity<Message> signup(@Valid @RequestBody SignupRequestDto signupRequestDto, BindingResult bindingResult){
-		if(bindingResult.hasErrors()){
-			String errMessage =  bindingResult.getAllErrors().get(0).getDefaultMessage();
-			Message apiResult = Message.builder()
-					.statusCode(HttpStatus.BAD_REQUEST.value())
-					.message(errMessage)
-					.build();
-			return ResponseEntity.badRequest().body(apiResult);
-		}else{
-			return memberService.signup(signupRequestDto);
-		}
+	public ResponseEntity<Message> signup(@Valid @RequestBody SignupRequestDto signupRequestDto){
+
+		return memberService.signup(signupRequestDto);
 	}
 
 	//일반 회원가입 아이디 중복 검사
@@ -139,12 +131,12 @@ public class MemberController {
 		return memberService.memberPosts(ownerId, userDetails.getMember().getId());
 	}
 
-//	//마이페이지 - 회원정보 수정
-//	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
-//	@PutMapping("/myInfo")
-//	public ResponseEntity<Message> editMember(@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-//		return memberService.editMemeber(mypageRequestDto, userDetails.getMember());
-//	}
+	//마이페이지 - 회원정보 수정
+	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
+	@PutMapping("/myInfo")
+	public ResponseEntity<Message> editMember(@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+		return memberService.editMemeber(mypageRequestDto, userDetails.getMember());
+	}
 
 }
 

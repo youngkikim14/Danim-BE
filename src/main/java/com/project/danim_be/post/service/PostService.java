@@ -112,9 +112,7 @@ public class PostService {
 		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
-	
 	//게시글 조회
-
 	public String uploader(MultipartFile imageFile){
 		String file = null;
 		try {

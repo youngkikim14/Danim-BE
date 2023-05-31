@@ -20,7 +20,6 @@ public class PostRequestDto {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date recruitmentStartDate;			//모집 시작날짜
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-
 	private Date recruitmentEndDate;			//모집 마감날짜
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date tripStartDate;					//여행 시작날짜

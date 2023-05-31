@@ -34,34 +34,34 @@ public class Post extends Timestamped {
 	private Long id;
 
 	@Column(nullable = false)
-	private String postTitle;	//게시글 제목
+	private String postTitle;			//게시글 제목
 
 	@Column(nullable = false)
-	private Date recruitmentStartDate; //모집 등록날짜
+	private Date recruitmentStartDate; 	//모집 등록날짜
 
 	@Column(nullable = false)
-	private Date recruitmentEndDate; //모집 마감날짜
+	private Date recruitmentEndDate; 	//모집 마감날짜
 
 	@Column(nullable = false)
-	private Date tripStartDate;		//여행 시작날짜
+	private Date tripStartDate;			//여행 시작날짜
 
 	@Column(nullable = false)
-	private Date  tripEndDate;		//여행 종료날짜
+	private Date  tripEndDate;			//여행 종료날짜
 
 	@Column(nullable = false)
-	private String ageRange;	//연령대
+	private String ageRange;			//연령대
 
 	@Column(nullable = false)
-	private String gender;		//성별
+	private String gender;				//성별
 
 	@Column(nullable = false)
-	private String keyword;		//키워드
+	private String keyword;				//키워드
 
 	// @Column(nullable = false)
-	private String location;	//지역
+	private String location;			//지역
 
 	@Column(nullable = false)
-	private int groupSize;	//인원수
+	private int groupSize;				//인원수
 
 	@Column(nullable = false)
 	private Boolean typeOfMeeting; // 1명이면 true, 2명부터 false
