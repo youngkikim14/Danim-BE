@@ -1,5 +1,7 @@
 package com.project.danim_be.post.dto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +34,8 @@ public class PostResponseDto {
 	private String 		 keyword;				//키워드
 	private int 		 groupSize;				//인원수
 	private String 		 location;				//지역
+	private LocalDateTime createdAt;
+	private LocalDateTime modifiedAt;
 
 
 	private List<ContentResponseDto> contents;		//게시글
@@ -51,6 +55,8 @@ public class PostResponseDto {
 		this.contents = post.getContents().stream()
 			.map(ContentResponseDto::new)
 			.collect(Collectors.toList());
+		this.createdAt = post.getCreatedAt();
+		this.modifiedAt = post.getModifiedAt();
 
 
 	}
