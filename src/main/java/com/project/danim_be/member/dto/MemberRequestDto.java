@@ -8,13 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberRequestDto {
     private String userId;
-    private String ageRange;
-    private String gender;
 
     @Builder
-    public MemberRequestDto(String email, String age, String gender) {
+    public MemberRequestDto(String email) {
         this.userId = email;
-        this.ageRange = age;
-        this.gender = gender;
     }
 }

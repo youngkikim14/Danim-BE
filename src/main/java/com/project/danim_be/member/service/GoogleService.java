@@ -31,6 +31,7 @@ public class GoogleService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RandomNickname randomNickname;
     private final RestTemplate restTemplate = new RestTemplate();
 
     public ResponseEntity<Message> socialLogin(String code, HttpServletResponse response) { // 컨트롤러에서 registrationId 값이 들어왔다면 각 메서드에 대입하여 그에 맞는 소셜 로그인 구현
@@ -47,7 +48,7 @@ public class GoogleService {
         Optional<Member> member = memberRepository.findByUserId(email);
         if(member.isEmpty()){
             String password = passwordEncoder.encode(UUID.randomUUID().toString());
-            String nickname = RandomNickname.getRandomNickname();
+            String nickname = randomNickname.getRandomNickname();
             Member createMember = new Member(email, password, nickname);
             memberRepository.saveAndFlush(createMember);
 

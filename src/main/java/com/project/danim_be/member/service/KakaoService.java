@@ -10,7 +10,7 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
-import com.project.danim_be.member.dto.KakaoMemberInfoDto;
+import com.project.danim_be.member.dto.MemberRequestDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.security.auth.UserDetailsImpl;
@@ -46,6 +46,7 @@ public class KakaoService {
 
 	private final JwtUtil jwtUtil;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final RandomNickname randomNickname;
 
 	private final MemberRepository memberRepository;
 	@Value("${kakao.client.id}")
@@ -65,12 +66,12 @@ public class KakaoService {
 		String accessToken = tokenData.get("access_token").asText();
 		System.out.println("accessToken : "+accessToken);
 
-		KakaoMemberInfoDto kakaoUserInfo = getKakaoMemberInfo(accessToken);
-		Member kakaoUser = kakaoSignup(kakaoUserInfo);
+		MemberRequestDto memberRequestDto = getKakaoMemberInfo(accessToken);
+		Member kakaoUser = kakaoSignup(memberRequestDto);
 
 		String refreshTokenValue = tokenData.get("refresh_token").asText();
 		System.out.println("refreshToken : "+refreshTokenValue);
-		RefreshToken refreshToken = new RefreshToken(refreshTokenValue, kakaoUserInfo.getEmail(), "KAKAO");
+		RefreshToken refreshToken = new RefreshToken(refreshTokenValue, memberRequestDto.getUserId(), "KAKAO");
 		refreshTokenRepository.save(refreshToken);
 
 		forceLogin(kakaoUser);
@@ -122,7 +123,7 @@ public class KakaoService {
 		return jsonNode;
 	}
 
-	private KakaoMemberInfoDto getKakaoMemberInfo(String accessToken) throws JsonProcessingException {
+	private MemberRequestDto getKakaoMemberInfo(String accessToken) throws JsonProcessingException {
 		// HTTP Header 생성
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + accessToken);
@@ -146,13 +147,13 @@ public class KakaoService {
 		System.out.println("email = "+email);
 
 		log.info("카카오 사용자 정보: " + id +"// email"+email);
-		return new KakaoMemberInfoDto(email);
+		return new MemberRequestDto(email);
 	}
 
-	public Member kakaoSignup(KakaoMemberInfoDto kakaoMemberInfoDto) {
+	public Member kakaoSignup(MemberRequestDto memberRequestDto) {
 		// DB 에 중복된 Kakao Id 가 있는지 확인
-		String email = kakaoMemberInfoDto.getEmail();
-		String nickname = RandomNickname.getRandomNickname();
+		String email = memberRequestDto.getUserId();
+		String nickname = randomNickname.getRandomNickname();
 		Member kakaoMember = memberRepository.findByUserId(email)
 			.orElse(null);
 		if (kakaoMember == null) {
@@ -160,9 +161,7 @@ public class KakaoService {
 			String password = UUID.randomUUID().toString();
 			// kakaoMember = new Member(email, password, ageRange,gender,nickname);
 			Member member = Member.builder()
-				.userId(kakaoMemberInfoDto.getEmail())
-				.ageRange("Test ageRange")
-				.gender("Test gender")
+				.userId(memberRequestDto.getUserId())
 				.nickname(nickname)
 				.password(password)
 				.provider("KAKAO")
@@ -188,7 +187,6 @@ public class KakaoService {
 	public void kakaoSignout(Member member) throws IOException {
 
 		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "KAKAO");
-		System.out.println("여기");
 		JsonElement newToken = newTokenOrDelete(refreshToken.get().getRefreshToken(), "newToken");
 		String accessToken = newToken.getAsJsonObject().get("access_token").getAsString();
 

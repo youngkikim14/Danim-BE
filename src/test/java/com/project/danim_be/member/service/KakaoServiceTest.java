@@ -19,7 +19,7 @@
 //
 // import com.nimbusds.jose.shaded.gson.JsonElement;
 // import com.nimbusds.jose.shaded.gson.JsonObject;
-// import com.project.danim_be.member.dto.KakaoMemberInfoDto;
+// import com.project.danim_be.member.dto.MemberRequestDto;
 // import com.project.danim_be.member.entity.Member;
 // import com.project.danim_be.member.repository.MemberRepository;
 // import com.project.danim_be.security.refreshToken.RefreshToken;
@@ -38,10 +38,8 @@
 //
 // 	@BeforeEach
 // 	void signup(){
-// 		// KakaoMemberInfoDto kakaoMemberInfoDto= new KakaoMemberInfoDto(
-// 		// 	"test@kakao.com",
-// 		// 	"male",
-// 		// 	"30~39"
+// 		// MemberRequestDto memberRequestDto= new MemberRequestDto(
+// 		// 	"test@kakao.com"
 // 		// );
 //
 // 	}
@@ -64,7 +62,7 @@
 //
 // 			// String nickname = RandomNickname.getRandomNickname();
 // 			// String password = UUID.randomUUID().toString();
-// 			KakaoMemberInfoDto kakaoMemberInfoDto= new KakaoMemberInfoDto(userId,gender,ageRange);
+// 			MemberRequestDto memberRequestDto= new MemberRequestDto(userId);
 //
 // 			//when
 // 			when(memberRepository.findByUserId(userId)).thenReturn(Optional.empty());

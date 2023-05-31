@@ -50,6 +50,7 @@ public class NaverService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RandomNickname randomNickname;
 
     @Transactional
     public ResponseEntity<Message> naverLogin(String code, HttpServletResponse response) throws IOException {
@@ -158,51 +159,17 @@ public class NaverService {
         // JSON 파싱해서 access_token만 리턴
         JsonElement userInfoData = JsonParser.parseString(result.toString());
         String email = String.valueOf(userInfoData.getAsJsonObject().get("response").getAsJsonObject().get("email"));
-        String age = String.valueOf(userInfoData.getAsJsonObject().get("response").getAsJsonObject().get("age"));
-        String gender = String.valueOf(userInfoData.getAsJsonObject().get("response").getAsJsonObject().get("gender"));
-
         email = email.substring(1, email.length()-1);
-        age = age.substring(1, age.length()-1).replace('-', '~');
-        gender = gender.substring(1, gender.length()-1).equals("M") ? "male" : "female";
-
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Authorization", "Bearer " + accessToken);
-//        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-//
-//        // HTTP 요청 보내기
-//        HttpEntity<MultiValueMap<String, String>> naverUserInfoRequest = new HttpEntity<>(headers);
-//        RestTemplate rt = new RestTemplate();
-//        ResponseEntity<String> response = rt.exchange(
-//                userInfoUrl,
-//                HttpMethod.POST,
-//                naverUserInfoRequest,
-//                String.class
-//        );
-//
-//        String responseBody = response.getBody();
-//        ObjectMapper objectMapper2 = new ObjectMapper();
-//        JsonNode jsonNode2 = objectMapper2.readTree(responseBody);
-//
-////        Long id = jsonNode2.get("response").get("id").asLong();
-//        String email = jsonNode2.get("response").get("email").asText();
-//        String age = jsonNode2.get("response").get("age").asText();
-//        String gender = jsonNode2.get("response").get("gender").asText();
-//
-        return new MemberRequestDto(email, age, gender);
+        return new MemberRequestDto(email);
     }
 
     private Member saveMember(MemberRequestDto memberRequestDto) {
 
         Member naverMember = memberRepository.findByUserId(memberRequestDto.getUserId()).orElse(null);
-        String nickname = RandomNickname.getRandomNickname();
-        while (memberRepository.findByNickname(nickname).isPresent()){
-            nickname = RandomNickname.getRandomNickname();
-        }
+        String nickname = randomNickname.getRandomNickname();
         if(naverMember == null) {
             Member member = Member.builder()
                     .userId(memberRequestDto.getUserId())
-                    .ageRange(memberRequestDto.getAgeRange())
-                    .gender(memberRequestDto.getGender())
                     .nickname(nickname)
                     .provider("NAVER")
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
@@ -210,8 +177,6 @@ public class NaverService {
                     .build();
 
             System.out.println(memberRequestDto.getUserId());
-            System.out.println(memberRequestDto.getAgeRange());
-            System.out.println(memberRequestDto.getGender());
             System.out.println(passwordEncoder.encode(UUID.randomUUID().toString()));
             memberRepository.save(member);
             return member;
