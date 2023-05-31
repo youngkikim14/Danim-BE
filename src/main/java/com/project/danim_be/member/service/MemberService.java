@@ -235,24 +235,24 @@ public class MemberService {
 	public ResponseEntity<Message> memberReview(Long ownerId, Long memberId) {
 		Member owner = findMember(ownerId);
 		Member member = findMember(memberId);
+		List<MypageReviewResponseDto> reviewList;
 		if (ownerId.equals(memberId)){
-			List<MypageReviewResponseDto> reviewList = getReview(member.getId());
-			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
+			reviewList = getReview(member.getId());
 		} else {
-			List<MypageReviewResponseDto> reviewList = getReview(owner.getId());
-			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
+			reviewList = getReview(owner.getId());
 		}
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
 	}
 
 
 	//마이페이지 회원정보 수정
 	@Transactional
-	public ResponseEntity<Message> editMemeber(MypageRequestDto mypageRequestDto, Member member) throws IOException {
-		Member memeber = memberRepository.findById(member.getId()).orElseThrow(
-			() -> new CustomException(USER_NOT_FOUND)
-		);
-		String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
-		memeber.editMemeber(mypageRequestDto, imageUrl);
+	public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
+		Member owner = findMember(ownerId);
+		if (owner == member) {
+			String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
+			member.editMemeber(mypageRequestDto, imageUrl);
+		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
 	}
 
