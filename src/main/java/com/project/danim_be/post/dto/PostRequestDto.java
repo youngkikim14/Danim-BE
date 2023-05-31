@@ -3,6 +3,8 @@ package com.project.danim_be.post.dto;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +27,8 @@ public class PostRequestDto {
 	private Date tripStartDate;					//여행 시작날짜
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date tripEndDate;					//여행 마감날짜
-	private int groupSize;						//모집인원수
+	@Max(value = 10)
+	private Integer groupSize;						//모집인원수
 	private String location;					//출발(모집)지역
 	private List<String> ageRange;				//연령대
 	private List<String> gender;				//성별

@@ -131,6 +131,12 @@ public class MemberController {
 		return memberService.memberPosts(ownerId, userDetails.getMember().getId());
 	}
 
+	@Operation(summary = "마이페이지 내가 받은 후기목록 API", description = "마이페이지 내가 받은 후기목록")
+	@GetMapping("{ownerId}/review")
+	public ResponseEntity<Message> memberReview(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return memberService.memberReview(ownerId, userDetails.getMember().getId());
+	}
+
 	//마이페이지 - 회원정보 수정
 	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
 	@PutMapping("/myInfo")

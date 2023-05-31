@@ -30,7 +30,7 @@ public class SearchController {
         return searchService.allPosts(pageable);
     }
 
-    @Operation(summary = "게시글 검색 API", description = "게시글 검색")
+    @Operation(summary = "게시글 상세 검색 API", description = "게시글 상세 검색")
     @PostMapping("/search")
     public ResponseEntity<Message> searchPosts(@RequestBody SearchRequestDto searchRequestDto, Pageable pageable){
         Page<CardPostResponseDto> searchResult = searchService.searchPost(searchRequestDto, pageable);

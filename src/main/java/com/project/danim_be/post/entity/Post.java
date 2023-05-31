@@ -61,7 +61,7 @@ public class Post extends Timestamped {
 	private String location;			//지역
 
 	@Column(nullable = false)
-	private int groupSize;				//인원수
+	private Integer groupSize;				//인원수
 
 	@Column(nullable = false)
 	private Boolean typeOfMeeting; // 1명이면 true, 2명부터 false
