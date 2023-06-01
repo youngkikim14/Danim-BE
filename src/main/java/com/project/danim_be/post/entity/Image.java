@@ -1,5 +1,7 @@
 package com.project.danim_be.post.entity;
 
+import com.project.danim_be.post.dto.ImageRequestDto;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,9 +30,15 @@ public class Image {
 
 	private String imageName;
 
-	@OneToOne(fetch = FetchType.LAZY )
-	@JoinColumn(name = "content_id")
+	@OneToOne
 	private Content content;
+
+	private boolean isDeleted;
+
+	public void delete() {
+		this.isDeleted = true;
+	}
+
 
 
 }

@@ -37,6 +37,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final StringPath keyword = createString("keyword");
 
     public final StringPath location = createString("location");

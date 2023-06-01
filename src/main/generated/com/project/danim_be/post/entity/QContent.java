@@ -26,6 +26,8 @@ public class QContent extends EntityPathBase<Content> {
 
     public final QImage image;
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final StringPath level = createString("level");
 
     public final QPost post;
