@@ -1,33 +1,29 @@
 package com.project.danim_be.post.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.dto.ContentRequestDto;
 import com.project.danim_be.post.dto.PostRequestDto;
-import com.project.danim_be.post.dto.PostResponseDto;
 import com.project.danim_be.post.entity.Content;
-import com.project.danim_be.post.entity.ContentType;
 import com.project.danim_be.post.entity.Image;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.ContentRepository;
 import com.project.danim_be.post.repository.ImageRepository;
 import com.project.danim_be.post.repository.PostRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 @Slf4j
 @Service
@@ -64,9 +60,6 @@ public class PostService {
 			.member(member)
 			.contents(new ArrayList<>())
 			.build();
-		if (requestDto.getGroupSize() == 1){
-			post.setTypeOfMeeting(true);
-		} else {post.setTypeOfMeeting(false);}
 		postRepository.save(post);
 		if (requestDto.getContents() != null) {
 			for (ContentRequestDto contentDto : requestDto.getContents()) {

@@ -63,20 +63,12 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private Integer groupSize;				//인원수
 
-	@Column(nullable = false)
-	private Boolean typeOfMeeting; // 1명이면 true, 2명부터 false
-
-
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
 	@Builder.Default
 	private List<Content> contents =  new ArrayList<>();		//내용
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member member;
-
-	public void setTypeOfMeeting(Boolean typeOfMeeting) {
-		this.typeOfMeeting = typeOfMeeting;
-	}
 
 
 	//연령대 복수선택가능

@@ -2,7 +2,6 @@ package com.project.danim_be.member.service;
 
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.util.Message;
-import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.member.dto.CheckIdRequestDto;
 import com.project.danim_be.member.dto.CheckNicknameRequestDto;
 import com.project.danim_be.member.dto.LoginRequestDto;
@@ -150,19 +149,6 @@ class MemberServiceTest {
 
     }
 
-    @Test
-    @DisplayName("랜덤 닉네임 생성")
-    void nicknameCreate() {
-
-        // given
-        String nickname = "우아한 사자";
-
-        // when
-        ResponseEntity<Message> response = memberService.nicknameCreate();
-
-        // then
-        assertEquals(response.getBody().getMessage(),"랜덤 닉네임 생성완료");
-    }
 //
 //    @Test
 //    @DisplayName("마이페이지 유저정보")
