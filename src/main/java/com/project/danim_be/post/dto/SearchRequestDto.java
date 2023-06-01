@@ -8,7 +8,7 @@ import java.util.List;
 public class SearchRequestDto {
 
     private String ageRange;
-    private Boolean typeOfMeeting;
+    private Integer groupSize;
     private String location;
     private String keyword;
     private String searchKeyword;
