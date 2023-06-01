@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
@@ -23,13 +24,14 @@ class SearchServiceTest {
     private PostRepository postRepository;
     @InjectMocks
     private SearchService searchService;
-
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
     @Test
     void allPosts() {
         //given
         Pageable pageable = Pageable.ofSize(10);
-        List<Post> mockPostList = new ArrayList<>();
-        when(postRepository.findAllByOrderByCreatedAt(pageable)).thenReturn(mockPostList);
 
         //when
         ResponseEntity<Message> allPosts = searchService.allPosts(pageable);
