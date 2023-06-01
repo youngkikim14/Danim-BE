@@ -106,9 +106,7 @@ public class Post extends Timestamped {
 			this.keyword =requestDto.getKeyword();
 			this.setAgeRange(requestDto.getAgeRange());
 			this.setGender(requestDto.getGender());
-
 	}
-
 	public void delete() {
 		this.isDeleted = true;
 
