@@ -257,7 +257,7 @@ public class MemberService {
 
 		if (owner.getId().equals(member.getId())) {
 			String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
-			member.editMemeber(mypageRequestDto, imageUrl);
+			member.editMember(mypageRequestDto, imageUrl);
 
 			memberRepository.save(member);
 
