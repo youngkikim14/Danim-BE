@@ -20,6 +20,7 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.dto.ContentRequestDto;
 import com.project.danim_be.post.dto.PostRequestDto;
+import com.project.danim_be.post.dto.PostResponseDto;
 import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.Image;
 import com.project.danim_be.post.entity.Post;
@@ -86,7 +87,7 @@ public class PostService {
 			->new CustomException(ErrorCode.POST_NOT_FOUND));
 
 		if (!post.getMember().getId().equals(member.getId())) {
-			throw new CustomException(ErrorCode.NOT_AUTHORIZED_MEMBER);
+			throw new CustomException(ErrorCode.NOT_MOD_AUTHORIZED_MEMBER);
 		}
 
 		post.update(requestDto);
@@ -117,7 +118,7 @@ public class PostService {
 			->new CustomException(ErrorCode.POST_NOT_FOUND));
 
 		if (!post.getMember().getId().equals(member.getId())) {
-			throw new CustomException(ErrorCode.NOT_AUTHORIZED_MEMBER);
+			throw new CustomException(ErrorCode.NOT_DEL_AUTHORIZED_MEMBER);
 		}
 		
 		post.delete();
@@ -199,5 +200,17 @@ public class PostService {
 			.build();
 		imageRepository.saveAndFlush(image);
 		return content;
+	}
+
+	public ResponseEntity<Message> readPost(Long id) {
+
+		Post post = postRepository.findById(id).orElseThrow(()
+			->new CustomException(ErrorCode.POST_NOT_FOUND));
+
+		PostResponseDto postResponseDto = new PostResponseDto(post);
+
+		Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공",postResponseDto);
+		return new ResponseEntity<>(message, HttpStatus.OK);
+
 	}
 }

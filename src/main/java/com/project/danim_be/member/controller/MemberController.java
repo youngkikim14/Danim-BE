@@ -15,9 +15,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -137,8 +140,8 @@ public class MemberController {
 
 	//마이페이지 - 회원정보 수정
 	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
-	@PutMapping("{ownerId}/myInfo")
-	public ResponseEntity<Message> editMember(@PathVariable Long ownerId,@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+	@PutMapping(value = "{ownerId}/myInfo",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Message> editMember(@PathVariable Long ownerId, @ModelAttribute MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 		return memberService.editMember(ownerId ,mypageRequestDto, userDetails.getMember());
 	}
 
