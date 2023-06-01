@@ -108,11 +108,7 @@ public class Post extends Timestamped {
 			this.keyword =requestDto.getKeyword();
 			this.setAgeRange(requestDto.getAgeRange());
 			this.setGender(requestDto.getGender());
-			if (requestDto.getGroupSize() == 1){
-				this.setTypeOfMeeting(true);
-			} else {
-				this.setTypeOfMeeting(false);
-			}
+
 
 	}
 
