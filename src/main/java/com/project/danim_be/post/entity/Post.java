@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.entity.Member;
+import com.project.danim_be.post.dto.PostRequestDto;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,8 +16,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,10 +64,12 @@ public class Post extends Timestamped {
 	private String location;			//지역
 
 	@Column(nullable = false)
-	private Integer groupSize;				//인원수
+	private Integer groupSize;			//인원수
 
 	@Column(nullable = false)
 	private Boolean typeOfMeeting; // 1명이면 true, 2명부터 false
+
+	private Boolean isDeleted;
 
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
@@ -72,6 +77,7 @@ public class Post extends Timestamped {
 	private List<Content> contents =  new ArrayList<>();		//내용
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "memberId")
 	private Member member;
 
 	public void setTypeOfMeeting(Boolean typeOfMeeting) {
@@ -92,6 +98,33 @@ public class Post extends Timestamped {
 	}
 	public List<String> getGender() {
 		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
+	}
+
+	public void update(PostRequestDto requestDto){
+			this.postTitle =requestDto.getPostTitle();
+			this.recruitmentStartDate =requestDto.getRecruitmentStartDate();
+			this.recruitmentEndDate =requestDto.getRecruitmentEndDate();
+			this.tripStartDate =requestDto.getTripStartDate();
+			this.tripEndDate =requestDto.getTripEndDate();
+			this.location =requestDto.getLocation();
+			this.groupSize =requestDto.getGroupSize();
+			this.keyword =requestDto.getKeyword();
+			this.setAgeRange(requestDto.getAgeRange());
+			this.setGender(requestDto.getGender());
+			if (requestDto.getGroupSize() == 1){
+				this.setTypeOfMeeting(true);
+			} else {
+				this.setTypeOfMeeting(false);
+			}
+
+	}
+
+	public void delete() {
+		this.isDeleted = true;
+
+		for(Content content : contents){
+			content.delete();
+		}
 	}
 
 }

@@ -30,6 +30,8 @@ public class QImage extends EntityPathBase<Image> {
 
     public final StringPath imageUrl = createString("imageUrl");
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public QImage(String variable) {
         this(Image.class, forVariable(variable), INITS);
     }

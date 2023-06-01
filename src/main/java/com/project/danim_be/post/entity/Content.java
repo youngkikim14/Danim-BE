@@ -2,6 +2,9 @@ package com.project.danim_be.post.entity;
 
 import java.util.List;
 
+import com.project.danim_be.post.dto.ContentRequestDto;
+import com.project.danim_be.post.dto.PostRequestDto;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,7 +25,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class Content {
 
 	@Id
@@ -35,11 +37,27 @@ public class Content {
 
 	private String text;
 
-	@OneToOne(mappedBy = "content", cascade = CascadeType.ALL)
+	private Boolean isDeleted;
+
+
+	@OneToOne(mappedBy = "content",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Image image;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id")
 	private Post post;
+
+	public void delete() {
+		this.isDeleted = true;
+
+		if(this.image!=null){
+			this.image.delete();
+		}
+
+
+	}
+
+
+
 
 }
