@@ -66,8 +66,7 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private Integer groupSize;			//인원수
 
-	@Column(nullable = false)
-	private Boolean typeOfMeeting; // 1명이면 true, 2명부터 false
+
 
 	private Boolean isDeleted;
 
@@ -79,10 +78,6 @@ public class Post extends Timestamped {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
-
-	public void setTypeOfMeeting(Boolean typeOfMeeting) {
-		this.typeOfMeeting = typeOfMeeting;
-	}
 
 
 	//연령대 복수선택가능
@@ -111,11 +106,6 @@ public class Post extends Timestamped {
 			this.keyword =requestDto.getKeyword();
 			this.setAgeRange(requestDto.getAgeRange());
 			this.setGender(requestDto.getGender());
-			if (requestDto.getGroupSize() == 1){
-				this.setTypeOfMeeting(true);
-			} else {
-				this.setTypeOfMeeting(false);
-			}
 
 	}
 

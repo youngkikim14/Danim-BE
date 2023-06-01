@@ -61,9 +61,7 @@ public class PostService {
 			.member(member)
 			.contents(new ArrayList<>())
 			.build();
-		if (requestDto.getGroupSize() == 1){
-			post.setTypeOfMeeting(true);
-		} else {post.setTypeOfMeeting(false);}
+
 		postRepository.save(post);
 		saveContents(requestDto, post);
 
