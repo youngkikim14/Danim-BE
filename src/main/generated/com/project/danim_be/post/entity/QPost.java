@@ -58,8 +58,6 @@ public class QPost extends EntityPathBase<Post> {
 
     public final DateTimePath<java.util.Date> tripStartDate = createDateTime("tripStartDate", java.util.Date.class);
 
-    public final BooleanPath typeOfMeeting = createBoolean("typeOfMeeting");
-
     public QPost(String variable) {
         this(Post.class, forVariable(variable), INITS);
     }
