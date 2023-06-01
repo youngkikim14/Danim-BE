@@ -63,7 +63,7 @@ public class Member extends Timestamped {
 		this.isDeleted = isDeleted;
 	}
 
-	public void editMemeber (MypageRequestDto mypageRequestDto, String imageUrl) {
+	public void editMemeber (MypageRequestDto mypageRequestDto,String imageUrl) {
 		this.imageUrl = imageUrl;
 		this.content = mypageRequestDto.getContent();
 		this.nickname = mypageRequestDto.getNickname();

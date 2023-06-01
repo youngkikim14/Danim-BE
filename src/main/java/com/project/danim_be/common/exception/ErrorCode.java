@@ -24,8 +24,9 @@ public enum ErrorCode {
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "찾을수 없는 회원입니다.","사용자 등록 오류입니다."),
 	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.", "사용자 등록 오류입니다."),
 	//Forbidden
-	DO_NOT_HAVE_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다", "권한이 없는 사용자입니다"),
-	NOT_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 수정할 수 있습니다." ,"권한이 없는 사용자입니다");
+	DO_NOT_HAVE_PERMISSION(HttpStatus.FORBIDDEN, "자신만 수정할수 있습니다", "권한이 없는 사용자입니다"),
+	NOT_MOD_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 수정할 수 있습니다." ,"권한이 없는 사용자입니다"),
+	NOT_DEL_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 삭제할 수 있습니다." ,"권한이 없는 사용자입니다");
 
 	private final HttpStatus httpStatus;
 	private final String detail;

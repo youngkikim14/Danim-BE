@@ -63,6 +63,12 @@ public class MemberService {
 		String password = passwordEncoder.encode(signupRequestDto.getPassword());
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
+		if(memberRepository.findByUserId(userId).isPresent()){
+			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
+		}
+		if(memberRepository.findByNickname(nickname).isPresent()){
+			throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+		}
 
 		Member member = Member.builder()
 				.userId(userId)
@@ -234,6 +240,7 @@ public class MemberService {
 		Member owner = findMember(ownerId);
 		Member member = findMember(memberId);
 		List<MypageReviewResponseDto> reviewList;
+
 		if (ownerId.equals(memberId)){
 			reviewList = getReview(member.getId());
 		} else {
@@ -247,11 +254,15 @@ public class MemberService {
 	@Transactional
 	public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
 		Member owner = findMember(ownerId);
-		if (owner == member) {
+
+		if (owner.getId().equals(member.getId())) {
 			String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
 			member.editMemeber(mypageRequestDto, imageUrl);
+
+			memberRepository.save(member);
+
 		} else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료",member));
 	}
 
 
