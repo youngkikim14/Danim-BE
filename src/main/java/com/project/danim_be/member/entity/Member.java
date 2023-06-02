@@ -1,5 +1,8 @@
 package com.project.danim_be.member.entity;
 
+import java.util.List;
+
+import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.dto.MypageRequestDto;
 import com.project.danim_be.member.dto.UserInfoRequestDto;
@@ -42,6 +45,9 @@ public class Member extends Timestamped {
 	private String content;		//(간략한)자기소개
 
 	private Boolean isDeleted;		//탈퇴 여부
+
+	@OneToMany(mappedBy = "member")
+	private List<MemberChatRoom> memberChatRoomList;
 
 
 	public Member(String userId, String password, String nickname) {

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.Post;
 
