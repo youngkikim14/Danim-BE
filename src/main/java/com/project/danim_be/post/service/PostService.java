@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.danim_be.chat.entity.ChatRoom;
+import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 
@@ -48,6 +50,9 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final ContentRepository contentRepository;
 	private final ImageRepository imageRepository;
+	private final ChatRoomRepository chatRoomRepository;
+
+
 	private final S3Uploader s3Uploader;
 
 	private static final Logger logger = LoggerFactory.getLogger(PostService.class);
@@ -69,11 +74,19 @@ public class PostService {
 			.ageRange(String.join(",", requestDto.getAgeRange()))		//이부분은 공부해볼게요
 			.gender(String.join(",", requestDto.getGender()))
 			.keyword(requestDto.getKeyword())
+			.numberOfParticipants(0)
 			.member(member)
 			.contents(new ArrayList<>())
 			.build();
 		postRepository.save(post);
 		saveContents(requestDto, post);
+
+		//roomid생성
+		ChatRoom chatRoom = new ChatRoom();
+		String roomId = UUID.randomUUID().toString();
+		chatRoom.setRoomId(roomId);
+		chatRoomRepository.save(chatRoom);
+
 
 		// PostResponseDto postResponseDto = new PostResponseDto(post);
 		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공");

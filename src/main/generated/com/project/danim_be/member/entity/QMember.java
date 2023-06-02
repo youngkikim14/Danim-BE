@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -39,6 +40,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath imageUrl = createString("imageUrl");
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
+
+    public final ListPath<com.project.danim_be.chat.entity.MemberChatRoom, com.project.danim_be.chat.entity.QMemberChatRoom> memberChatRoomList = this.<com.project.danim_be.chat.entity.MemberChatRoom, com.project.danim_be.chat.entity.QMemberChatRoom>createList("memberChatRoomList", com.project.danim_be.chat.entity.MemberChatRoom.class, com.project.danim_be.chat.entity.QMemberChatRoom.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
