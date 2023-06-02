@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.dto.PostRequestDto;
@@ -19,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -66,6 +68,11 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private Integer groupSize;			//인원수
 
+	@Column(nullable = false)
+	private Integer numberOfParticipants = 0 ;	//현재참여자수
+
+	// private String roomId;
+
 	private Boolean isDeleted;
 
 
@@ -76,6 +83,9 @@ public class Post extends Timestamped {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
+
+	@OneToOne
+	private ChatRoom chatRoom;
 
 
 	//연령대 복수선택가능
