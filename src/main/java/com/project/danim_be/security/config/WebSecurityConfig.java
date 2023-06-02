@@ -47,7 +47,9 @@ public class WebSecurityConfig {
 			/* swagger v3 */
 			"/v3/api-docs/**",
 			"/swagger-ui/**",
-			"/api/posts/**"
+			"/api/posts/**",
+			"/ws-stomp/**"
+
 
 	};
 
@@ -88,6 +90,7 @@ public class WebSecurityConfig {
 				.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/status", "/images/**").permitAll()
+				.requestMatchers("/ws/**").permitAll()
 				.anyRequest()
 				.authenticated()
 
