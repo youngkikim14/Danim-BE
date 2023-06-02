@@ -74,7 +74,7 @@ public class MemberController {
 
 	//로그아웃
 	@Operation(summary = "로그아웃 API", description = "로그아웃")
-	@PostMapping("/logout")
+	@Mapping("/logout")
 	public ResponseEntity<Message> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request){
 		return memberService.logout(userDetails.getMember(), request);
 	}
