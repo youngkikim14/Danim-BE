@@ -114,4 +114,7 @@ public class Post extends Timestamped {
 		}
 	}
 
+	public void incNumberOfParticipants() {
+		++numberOfParticipants;
+	}
 }
