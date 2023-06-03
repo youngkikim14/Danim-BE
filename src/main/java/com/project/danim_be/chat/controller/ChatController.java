@@ -1,22 +1,12 @@
 package com.project.danim_be.chat.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
+import com.project.danim_be.chat.dto.ChatDto;
+import com.project.danim_be.chat.service.ChatMessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import com.project.danim_be.chat.dto.ChatDto;
-import com.project.danim_be.chat.service.ChatMessageService;
-import com.project.danim_be.common.util.Message;
-import com.project.danim_be.security.auth.UserDetailsImpl;
-
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor

@@ -1,9 +1,9 @@
 package com.project.danim_be.common.exception;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @Getter
 @Builder

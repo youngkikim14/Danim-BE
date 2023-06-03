@@ -1,7 +1,6 @@
 package com.project.danim_be.member.dto;
 
 import com.project.danim_be.member.entity.Member;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

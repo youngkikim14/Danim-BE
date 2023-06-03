@@ -1,7 +1,6 @@
 package com.project.danim_be.common.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

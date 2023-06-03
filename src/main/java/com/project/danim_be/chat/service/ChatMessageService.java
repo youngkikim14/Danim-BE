@@ -1,32 +1,26 @@
 package com.project.danim_be.chat.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.project.danim_be.chat.entity.QMemberChatRoom;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
 import com.project.danim_be.chat.entity.ChatRoom;
-import com.project.danim_be.chat.entity.MemberChatRoom;
-import com.project.danim_be.chat.entity.QChatRoom;
-import com.project.danim_be.chat.repository.ChatRoomRepository;
+import com.project.danim_be.chat.entity.QMemberChatRoom;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ChatMessageService {
 
-	private final ChatRoomRepository chatRoomRepository;
 	private final PostRepository postRepository;
 	private final JPAQueryFactory queryFactory;
 
