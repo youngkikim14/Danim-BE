@@ -15,4 +15,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredi
     List<Post> findAllByOrderByCreatedAt(Pageable pageable);
 
     List<Post> findByMember_Id(Long id);
+
+
 }

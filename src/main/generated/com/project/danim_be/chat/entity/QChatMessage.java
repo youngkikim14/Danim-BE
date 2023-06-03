@@ -36,6 +36,10 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
+    public final StringPath sender = createString("sender");
+
+    public final EnumPath<com.project.danim_be.chat.dto.ChatDto.MessageType> type = createEnum("type", com.project.danim_be.chat.dto.ChatDto.MessageType.class);
+
     public QChatMessage(String variable) {
         this(ChatMessage.class, forVariable(variable), INITS);
     }

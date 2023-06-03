@@ -1,6 +1,7 @@
 package com.project.danim_be.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class PostResponseDto {
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
 	private List<ContentResponseDto> contents;		//게시글
+	private ChatRoom chatRoomId;
 
 
 
