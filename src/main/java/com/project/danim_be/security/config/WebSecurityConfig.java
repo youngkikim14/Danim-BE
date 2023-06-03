@@ -100,29 +100,29 @@ public class WebSecurityConfig {
 
 		return http.build();
 	}
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-
-		//접근할수있는 포트설정
-		configuration.addAllowedOrigin("http://localhost:3000");
-		configuration.addAllowedOrigin("http://localhost:8080");
-		configuration.addAllowedOrigin("http://127.0.0.1:3000");
-
-		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
-		configuration.addExposedHeader(JwtUtil.REFRESH_KEY);
-		//어떤데이터
-		configuration.addAllowedHeader("*");
-		//모든 방식(GET, POST, PUT, DELETE 등)으로 데이터를 요청할 수 있게함
-		configuration.addAllowedMethod("*");
-
-		configuration.setAllowCredentials(true);
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		//이 부분은 위에서 설정한 CORS 설정을 모든 경로에 적용
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
-	}
+	// @Bean
+	// public CorsConfigurationSource corsConfigurationSource() {
+	// 	CorsConfiguration configuration = new CorsConfiguration();
+	//
+	// 	//접근할수있는 포트설정
+	// 	configuration.addAllowedOrigin("http://localhost:3000");
+	// 	configuration.addAllowedOrigin("http://localhost:8080");
+	// 	configuration.addAllowedOrigin("http://127.0.0.1:3000");
+	//
+	// 	configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
+	// 	configuration.addExposedHeader(JwtUtil.REFRESH_KEY);
+	// 	//어떤데이터
+	// 	configuration.addAllowedHeader("*");
+	// 	//모든 방식(GET, POST, PUT, DELETE 등)으로 데이터를 요청할 수 있게함
+	// 	configuration.addAllowedMethod("*");
+	//
+	// 	configuration.setAllowCredentials(true);
+	//
+	// 	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	// 	//이 부분은 위에서 설정한 CORS 설정을 모든 경로에 적용
+	// 	source.registerCorsConfiguration("/**", configuration);
+	// 	return source;
+	// }
 }
 
 
