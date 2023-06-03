@@ -3,6 +3,7 @@ package com.project.danim_be.chat.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.project.danim_be.chat.entity.QMemberChatRoom;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -43,15 +44,17 @@ public class ChatMessageService {
 
 	//내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
-
-		QChatRoom qChatRoom = QChatRoom.chatRoom;
+		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
 		List<ChatRoom> chatRoomList = queryFactory
-			.selectFrom(qChatRoom)
-			.where(qChatRoom.post.member.id.ne(id))
+			.select(qMemberChatRoom.chatRoom)
+			.from(qMemberChatRoom)
+			.where(qMemberChatRoom.member.id.eq(id))
 			.fetch();
 		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
 		for (ChatRoom chatroom : chatRoomList) {
-			chatRoomResponseDtoList.add(new ChatRoomResponseDto(chatroom));
+			if (!chatroom.getPost().getMember().getId().equals(id)){
+				chatRoomResponseDtoList.add(new ChatRoomResponseDto(chatroom));
+			}
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
 	}
