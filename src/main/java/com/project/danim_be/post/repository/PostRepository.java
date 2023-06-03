@@ -16,5 +16,5 @@ public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredi
 
     List<Post> findByMember_Id(Long id);
 
-
+    Post findByChatRoom_Id(Long roomId);
 }
