@@ -1,86 +1,118 @@
 package com.project.danim_be.chat.service;
 
+
 import com.project.danim_be.chat.dto.ChatDto;
-import com.project.danim_be.chat.dto.ChatRoomResponseDto;
-import com.project.danim_be.chat.entity.ChatRoom;
-import com.project.danim_be.chat.entity.QMemberChatRoom;
+import com.project.danim_be.common.exception.CustomException;
+import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
+import com.project.danim_be.chat.entity.ChatMessage;
+import com.project.danim_be.chat.entity.ChatRoom;
+import com.project.danim_be.chat.entity.MemberChatRoom;
+import com.project.danim_be.chat.repository.ChatMessageRepository;
+import com.project.danim_be.chat.repository.ChatRoomRepository;
+import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
+import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ChatMessageService {
 
+	private final ChatRoomRepository chatRoomRepository;
+	private final ChatMessageRepository chatMessageRepository;
+	private final MemberChatRoomRepository memberChatRoomRepository;
+	private final MemberRepository memberRepository;
 	private final PostRepository postRepository;
-	private final JPAQueryFactory queryFactory;
 
-	//내가 쓴글의 채팅방 목록조회
-	public ResponseEntity<Message> myChatRoom(Long id) {
-		List<Post> postList = postRepository.findByMember_Id(id);
-		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
-		for (Post post : postList) {
-			ChatRoom chatRoom = post.getChatRoom();
-			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom);
-			chatRoomResponseDtoList.add(chatRoomResponseDto);
-		}
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 만든 채팅방",chatRoomResponseDtoList));
+	@Transactional
+	public void visitMember(ChatDto chatDto){
+		String roomId = chatDto.getRoomId();
+		String sender = chatDto.getSender();
+
+		Member member = memberRepository.findByNickname(sender)
+			.orElseThrow(() -> new IllegalArgumentException("낫파운드유저"));
+
+		ChatRoom chatRoom= chatRoomRepository.findByRoomId(roomId)
+			.orElseThrow(() -> new IllegalArgumentException("낫파운드룸"));
+		MemberChatRoom memberChatRoom = new MemberChatRoom(member, chatRoom);
+
+		memberChatRoomRepository.save(memberChatRoom);
+
 	}
 
-	//내가 신청한 채팅방 목록조회
-	public ResponseEntity<Message> myJoinChatroom(Long id) {
-		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
-		List<ChatRoom> chatRoomList = queryFactory
-			.select(qMemberChatRoom.chatRoom)
-			.from(qMemberChatRoom)
-			.where(qMemberChatRoom.member.id.eq(id))
-			.fetch();
-		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
-		for (ChatRoom chatroom : chatRoomList) {
-			if (!chatroom.getPost().getMember().getId().equals(id)){
-				chatRoomResponseDtoList.add(new ChatRoomResponseDto(chatroom));
-			}
-		}
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
+	//메시지저장
+	@Transactional
+	public void sendMessage(ChatDto chatDto) {
+		String roomId = chatDto.getRoomId();
+		ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
+			.orElseThrow(() -> new IllegalArgumentException("채팅방없음 커스텀필요 NOT_FOUND_ROOM"));;
+
+		ChatMessage chatMessage= new ChatMessage(chatDto,chatRoom);
+		chatMessageRepository.save(chatMessage);
+
 	}
 
-	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
-	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
-		return null;
-	}
+	//메시지조회
+	@Transactional(readOnly = true)
+	public ResponseEntity<Message> chatList(ChatDto chatDto){
+		String roomId = chatDto.getRoomId();
+		String nickName= chatDto.getSender();
 
-	//메시지 보내기
-	public void sendMessage(String roomId, ChatDto chatDto) {
+		Member member = memberRepository.findByNickname(nickName)
+			.orElseThrow(() -> new IllegalArgumentException("MEMBERNOTFOUND"));;;
 
-		switch (chatDto.getType()){
-			case TALK -> {
-
-
-			}
-			case LEAVE -> {
-
-
-
-
-			}
-			case ENTER -> {
-
-
-			}
-			default -> {
-			}
+		if (chatDto.getSender().equals(member.getNickname()) && isFirstVisit(member.getId(),roomId)){
+			List<ChatDto> allChats = allChatList(chatDto);
+			Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공");
+			return new ResponseEntity<>(message, HttpStatus.OK);
 		}
 
 
+		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공");
+		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+
+	private boolean isFirstVisit(Long memberId, String roomId){
+		return !memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(memberId, roomId);
+		//xistsBy 메소드는 특정 조건을 만족하는 데이터가 존재하는지를 검사하고
+		// 그 결과를 boolean으로 반환
+	}
+
+	private List<ChatDto> allChatList(ChatDto chatDto){
+		String roomId = chatDto.getRoomId();
+		ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
+			.orElseThrow(() -> new IllegalArgumentException("채팅방없음 커스텀필요 NOT_FOUND_ROOM"));
+
+		List<ChatMessage> chatList = chatMessageRepository.findAllByChatRoom(chatRoom);
+
+		// Convert ChatMessage list to ChatDto list
+		List<ChatDto> chatDtoList = chatList.stream()
+			.map(chatMessage -> ChatDto.builder()
+				.type(chatMessage.getType())
+				.roomId(chatMessage.getChatRoom().getRoomId())
+				.sender(chatMessage.getSender())
+				.message(chatMessage.getMessage())
+				.build())
+			.collect(Collectors.toList());
+
+		return chatDtoList;
+
+	}
+
+	public void leaveChatRoom(String sender, String roomId) {
 
 	}
 }

@@ -1,9 +1,23 @@
 package com.project.danim_be.chat.entity;
 
+import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.common.entity.Timestamped;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChatMessage extends Timestamped {
 
 	@Id
@@ -12,7 +26,18 @@ public class ChatMessage extends Timestamped {
 
 	private String message;
 
+	@Enumerated(EnumType.STRING)
+	private ChatDto.MessageType type;
+
+	private String sender;
+
 	@ManyToOne
 	private ChatRoom chatRoom;
 
+	public ChatMessage(ChatDto chatDto, ChatRoom chatRoom) {
+		this.message = chatDto.getMessage();
+		this.type = chatDto.getType();
+		this.sender = chatDto.getSender();
+		this.chatRoom = chatRoom;
+	}
 }

@@ -2,10 +2,14 @@ package com.project.danim_be.chat.entity;
 
 import com.project.danim_be.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MemberChatRoom {
 
 	@Id
@@ -13,12 +17,16 @@ public class MemberChatRoom {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@ManyToOne
-	@JoinColumn(name = "chatRoom_id")
 	private ChatRoom chatRoom;
+
+
+	public MemberChatRoom(Member member, ChatRoom chatRoom) {
+		this.member = member;
+		this.chatRoom = chatRoom;
+	}
 	/*
 		member			chatRoom
 		1					1
