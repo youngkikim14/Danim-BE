@@ -37,6 +37,7 @@ public class ChatMessageService {
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final MemberRepository memberRepository;
 	private final PostRepository postRepository;
+	private final NotificationService notificationService;
 
 
 	//채팅방 입장멤버 저장메서드
@@ -66,6 +67,7 @@ public class ChatMessageService {
 		}
 		memberChatRoom.setRecentConnect(LocalDateTime.now());  //최근 접속한 시간
 		memberChatRoomRepository.save(memberChatRoom);
+
 	}
 
 	//메시지저장
@@ -73,9 +75,19 @@ public class ChatMessageService {
 	public void sendMessage(ChatDto chatDto) {
 		String roomId = chatDto.getRoomId();
 		ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));;
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		Member sendMember = memberRepository.findByNickname(chatDto.getSender()).orElseThrow(
+				() -> new CustomException(ErrorCode.USER_NOT_FOUND)
+		);
+		List<Member> members = memberChatRoomRepository.findByChatRoom(chatRoom);
+		List<Long> memberIdlist = new ArrayList<>();
+		for (Member member : members) {
+			memberIdlist.add(member.getId());
+		}
+		memberIdlist.remove(sendMember.getId());
 		ChatMessage chatMessage= new ChatMessage(chatDto,chatRoom);
-		chatMessageRepository.save(chatMessage);
+		chatMessageRepository.saveAndFlush(chatMessage);
+		notificationService.send(memberIdlist, chatMessage.getId());
 	}
 
 	//메시지조회
