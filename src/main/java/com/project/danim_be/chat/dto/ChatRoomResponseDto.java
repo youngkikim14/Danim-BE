@@ -1,10 +1,9 @@
 package com.project.danim_be.chat.dto;
 
-import java.time.LocalDateTime;
-
 import com.project.danim_be.chat.entity.ChatRoom;
-
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class ChatRoomResponseDto {

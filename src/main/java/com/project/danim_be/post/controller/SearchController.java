@@ -4,7 +4,6 @@ import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.post.dto.CardPostResponseDto;
 import com.project.danim_be.post.dto.SearchRequestDto;
-import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -3,7 +3,6 @@ package com.project.danim_be.security.config;
 
 import com.project.danim_be.security.jwt.JwtAuthenticationFilter;
 import com.project.danim_be.security.jwt.JwtUtil;
-
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;

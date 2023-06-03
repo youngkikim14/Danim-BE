@@ -1,12 +1,10 @@
 package com.project.danim_be.member.repository;
 
 
-import java.util.Map;
-import java.util.Optional;
-
+import com.project.danim_be.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.project.danim_be.member.entity.Member;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByUserId(String userId);

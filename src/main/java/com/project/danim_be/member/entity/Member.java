@@ -1,7 +1,5 @@
 package com.project.danim_be.member.entity;
 
-import java.util.List;
-
 import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.dto.MypageRequestDto;
@@ -11,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
