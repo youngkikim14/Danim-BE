@@ -67,6 +67,9 @@ public class Post extends Timestamped {
 	private Integer groupSize;			//인원수
 
 	private Boolean isDeleted;
+	
+	@Column(nullable = false)
+	private Integer numberOfParticipants = 0 ;	//현재참여자수
 
 
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
