@@ -29,7 +29,7 @@ public class PostController {
 	}
 	@Operation(summary = "이미지 업로드 API", description = "이미지 업로드")
 	@PostMapping(value = "api/post/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Message> imageUpload(@Valid @ModelAttribute final ImageRequestDto requestDto){
+	public ResponseEntity<Message> imageUpload(@ModelAttribute final ImageRequestDto requestDto){
 		return	postService.imageUpload(requestDto);
 
 	}

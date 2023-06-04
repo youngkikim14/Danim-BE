@@ -59,7 +59,19 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private Integer numberOfParticipants ;    //현재참여자수
 
-	// private String roomId;
+	@OneToOne
+	private ChatRoom chatRoom;
+
+	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+	private Content content;        //내용
+
+	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+	private MapApi map;				//지도 api정보
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "memberId")
+	private Member member;
 
 	private Boolean isDeleted;
 	
