@@ -2,7 +2,6 @@ package com.project.danim_be.post.dto;
 
 
 import com.project.danim_be.post.entity.Content;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,11 +17,11 @@ public class ContentResponseDto {
 	private ImageResponseDto image;
 
 
-	public ContentResponseDto(Content content) {
-		this.contentId = content.getId();
-		this.type = content.getType();
-		this.level = content.getLevel();
-		this.text = content.getText();
-
-	}
+	// public ContentResponseDto(Content content) {
+	// 	this.contentId = content.getId();
+	// 	this.type = content.getType();
+	// 	this.level = content.getLevel();
+	// 	this.text = content.getText();
+	//
+	// }
 }

@@ -22,15 +22,13 @@ public class QImage extends EntityPathBase<Image> {
 
     public static final QImage image = new QImage("image");
 
-    public final QContent content;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final StringPath imageName = createString("imageName");
 
     public final StringPath imageUrl = createString("imageUrl");
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
+
+    public final QPost post;
 
     public QImage(String variable) {
         this(Image.class, forVariable(variable), INITS);
@@ -50,7 +48,7 @@ public class QImage extends EntityPathBase<Image> {
 
     public QImage(Class<? extends Image> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.content = inits.isInitialized("content") ? new QContent(forProperty("content"), inits.get("content")) : null;
+        this.post = inits.isInitialized("post") ? new QPost(forProperty("post"), inits.get("post")) : null;
     }
 
 }

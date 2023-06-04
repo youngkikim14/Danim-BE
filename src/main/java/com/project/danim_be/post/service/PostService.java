@@ -1,24 +1,17 @@
 package com.project.danim_be.post.service;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.danim_be.chat.entity.ChatRoom;
+import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
-
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.dto.ContentRequestDto;
+import com.project.danim_be.post.dto.ImageRequestDto;
 import com.project.danim_be.post.dto.PostRequestDto;
 import com.project.danim_be.post.dto.PostResponseDto;
 import com.project.danim_be.post.entity.Content;
@@ -39,6 +32,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -48,6 +44,9 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final ContentRepository contentRepository;
 	private final ImageRepository imageRepository;
+	private final ChatRoomRepository chatRoomRepository;
+
+
 	private final S3Uploader s3Uploader;
 
 	private static final Logger logger = LoggerFactory.getLogger(PostService.class);
@@ -57,8 +56,6 @@ public class PostService {
 	public ResponseEntity<Message> createPost(Member member, PostRequestDto requestDto) {
 		// logger.info("Received PostRequestDto: {}", requestDto.toString());
 		// logger.info("Received PostRequestDto: {}", requestDto.getContents().toString());
-		System.out.println("map====================" + requestDto.getMapAPI());
-		
 
 		Post post = Post.builder()
 			.postTitle(requestDto.getPostTitle())
@@ -68,20 +65,43 @@ public class PostService {
 			.tripEndDate(requestDto.getTripEndDate())
 			.location(requestDto.getLocation())
 			.groupSize(requestDto.getGroupSize())
-			.ageRange(String.join(",", requestDto.getAgeRange()))		//이부분은 공부해볼게요
+			.ageRange(String.join(",", requestDto.getAgeRange()))
 			.gender(String.join(",", requestDto.getGender()))
 			.keyword(requestDto.getKeyword())
 			.numberOfParticipants(0)
 			.member(member)
-			.mapAPI(requestDto.getMapAPI())
-			.contents(new ArrayList<>())
 			.build();
+		Content content = Content.builder()
+			.post(post)
+			.content(requestDto.getContent())
+			.build();
+		contentRepository.save(content);
+
+		String roomId = UUID.randomUUID().toString();
+		ChatRoom chatRoom = new ChatRoom();
+		chatRoom.setRoomId(roomId);
+		chatRoom.setPost(post);
+
+		post.setChatRoom(chatRoom);
+		chatRoomRepository.save(chatRoom);
+
 		postRepository.save(post);
-		saveContents(requestDto, post);
+
 
 		// PostResponseDto postResponseDto = new PostResponseDto(post);
 		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+	//이미지 업로드
+	@Transactional
+	public ResponseEntity<Message> imageUpload(ImageRequestDto requestDto) {
+		MultipartFile imageFile = requestDto.getImage();
+
+		String imageUrl = uploader(imageFile);
+
+		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공",imageUrl);
+		return new ResponseEntity<>(message, HttpStatus.OK);
+
 	}
 	//게시글 수정
 	@Transactional
@@ -107,9 +127,6 @@ public class PostService {
 		// 		s3Uploader.delete(imageUrl);
 		// 	}
 		// }
-
-
-		saveContents(requestDto, post);
 
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 수정 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
@@ -141,70 +158,7 @@ public class PostService {
 		return file;
 	}
 
-	private void saveContents(PostRequestDto requestDto, Post post) {
-		if (requestDto.getContents() != null) {
-			for (ContentRequestDto contentDto : requestDto.getContents()) {
-				Content content = switch (contentDto.getType()) {
-					case "heading" -> Heading(contentDto, post);
-					case "paragraph" -> Paragraph(contentDto, post);
-					case "image" -> Image(contentDto, post);
-					case "enter" -> Enter(contentDto, post);
-					default -> null;
-				};
-				if (content != null) {
-					post.getContents().add(content);
-				}
-			}
-		}
-	}
 
-	private Content Enter(ContentRequestDto contentDto, Post post) {
-		Content content = Content.builder()
-			.type(contentDto.getType())
-			.text(contentDto.getText())
-			.post(post)
-			.build();
-		contentRepository.save(content);
-		return content;
-	}
-
-	private Content Heading(ContentRequestDto contentDto, Post post) {
-		Content content = Content.builder()
-			.type(contentDto.getType())
-			.level(contentDto.getLevel())
-			.text(contentDto.getText())
-			.post(post)
-			.build();
-		contentRepository.save(content);
-		return content;
-	}
-
-	private Content Paragraph(ContentRequestDto contentDto, Post post) {
-		Content content = Content.builder()
-			.type(contentDto.getType())
-			.text(contentDto.getText())
-			.post(post)
-			.build();
-		contentRepository.save(content);
-		return content;
-	}
-
-	private Content Image(ContentRequestDto contentDto, Post post) {
-		MultipartFile imageFile = contentDto.getSrc();
-		String imageUrl = uploader(imageFile);
-		Content content = Content.builder()
-			.type(contentDto.getType())
-			.post(post)
-			.build();
-		contentRepository.save(content);
-		Image image = Image.builder()
-			.imageUrl(imageUrl)
-			.imageName(contentDto.getSrc().getOriginalFilename())
-			.content(content)
-			.build();
-		imageRepository.saveAndFlush(image);
-		return content;
-	}
 
 	public ResponseEntity<Message> readPost(Long id) {
 
@@ -217,4 +171,6 @@ public class PostService {
 		return new ResponseEntity<>(message, HttpStatus.OK);
 
 	}
+
+
 }

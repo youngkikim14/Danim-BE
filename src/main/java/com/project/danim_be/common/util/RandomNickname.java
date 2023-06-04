@@ -1,11 +1,10 @@
 package com.project.danim_be.common.util;
 
-import java.util.Random;
-
 import com.project.danim_be.member.repository.MemberRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor

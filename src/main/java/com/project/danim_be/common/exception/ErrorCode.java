@@ -1,9 +1,8 @@
 package com.project.danim_be.common.exception;
 
-import org.springframework.http.HttpStatus;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -23,10 +22,13 @@ public enum ErrorCode {
 	ID_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 아이디 입니다.","사용자 등록 오류입니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "찾을수 없는 회원입니다.","사용자 등록 오류입니다."),
 	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.", "사용자 등록 오류입니다."),
+
+	ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방 입니다.","채팅방 접근오류 입니다."),
 	//Forbidden
 	DO_NOT_HAVE_PERMISSION(HttpStatus.FORBIDDEN, "자신만 수정할수 있습니다", "권한이 없는 사용자입니다"),
 	NOT_MOD_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 수정할 수 있습니다." ,"권한이 없는 사용자입니다"),
-	NOT_DEL_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 삭제할 수 있습니다." ,"권한이 없는 사용자입니다");
+	NOT_DEL_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 삭제할 수 있습니다." ,"권한이 없는 사용자입니다"),
+	FAIL_FIND_MEMBER_CHAT_ROOM(HttpStatus.NOT_FOUND, "이전에 접속했던 채팅방 정보를 찾을 수 없습니다.", "문제가 지속될 경우 관리자에게 문의해주세요.");
 
 	private final HttpStatus httpStatus;
 	private final String detail;

@@ -1,5 +1,6 @@
 package com.project.danim_be.member.entity;
 
+import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.dto.MypageRequestDto;
 import com.project.danim_be.member.dto.UserInfoRequestDto;
@@ -8,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,6 +46,9 @@ public class Member extends Timestamped {
 
 	private Boolean isDeleted;		//탈퇴 여부
 
+	@OneToMany(mappedBy = "member")
+	private List<MemberChatRoom> memberChatRoomList;
+
 
 	public Member(String userId, String password, String nickname) {
 		this.userId = userId;
@@ -63,7 +69,7 @@ public class Member extends Timestamped {
 		this.isDeleted = isDeleted;
 	}
 
-	public void editMemeber (MypageRequestDto mypageRequestDto,String imageUrl) {
+	public void editMember (MypageRequestDto mypageRequestDto,String imageUrl) {
 		this.imageUrl = imageUrl;
 		this.content = mypageRequestDto.getContent();
 		this.nickname = mypageRequestDto.getNickname();

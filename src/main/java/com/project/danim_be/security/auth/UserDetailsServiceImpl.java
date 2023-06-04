@@ -1,14 +1,12 @@
 package com.project.danim_be.security.auth;
 
+import com.project.danim_be.member.entity.Member;
+import com.project.danim_be.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.member.repository.MemberRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

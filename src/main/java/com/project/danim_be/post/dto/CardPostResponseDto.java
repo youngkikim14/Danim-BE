@@ -1,7 +1,6 @@
 package com.project.danim_be.post.dto;
 
 import com.project.danim_be.post.entity.Content;
-import com.project.danim_be.post.entity.Image;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 
@@ -27,12 +26,7 @@ public class CardPostResponseDto {
         this.tripEndDate = post.getTripEndDate();
         this.imageUrl = null;
 
-        for (Content content : post.getContents()) {
-            if ("image".equals(content.getType())) {
-                imageUrl = content.getImage().getImageUrl();
-                break;
-            }
-        }
+
 
         this.nickname = post.getMember().getNickname();
         this.groupSize = post.getGroupSize();
