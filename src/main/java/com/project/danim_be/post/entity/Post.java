@@ -68,6 +68,8 @@ public class Post extends Timestamped {
 
 	private Boolean isDeleted;
 	
+	private String mapAPI;
+	
 	@Column(nullable = false)
 	private Integer numberOfParticipants = 0 ;	//현재참여자수
 
