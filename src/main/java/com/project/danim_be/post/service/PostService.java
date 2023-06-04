@@ -69,6 +69,7 @@ public class PostService {
 			.ageRange(String.join(",", requestDto.getAgeRange()))		//이부분은 공부해볼게요
 			.gender(String.join(",", requestDto.getGender()))
 			.keyword(requestDto.getKeyword())
+			.numberOfParticipants(0)
 			.member(member)
 			.contents(new ArrayList<>())
 			.build();
