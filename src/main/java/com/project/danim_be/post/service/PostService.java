@@ -57,7 +57,8 @@ public class PostService {
 	public ResponseEntity<Message> createPost(Member member, PostRequestDto requestDto) {
 		// logger.info("Received PostRequestDto: {}", requestDto.toString());
 		// logger.info("Received PostRequestDto: {}", requestDto.getContents().toString());
-		System.out.println("map====================" + request.getMapAPI());
+		System.out.println("map====================" + requestDto.getMapAPI());
+		
 
 		Post post = Post.builder()
 			.postTitle(requestDto.getPostTitle())
@@ -72,7 +73,7 @@ public class PostService {
 			.keyword(requestDto.getKeyword())
 			.numberOfParticipants(0)
 			.member(member)
-			.mapAPI(request.getMapAPI())
+			.mapAPI(requestDto.getMapAPI())
 			.contents(new ArrayList<>())
 			.build();
 		postRepository.save(post);
