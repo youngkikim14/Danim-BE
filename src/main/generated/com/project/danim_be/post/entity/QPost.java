@@ -45,7 +45,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public final StringPath location = createString("location");
 
-    public final StringPath mapAPI = createString("mapAPI");
+    public final QMapApi map;
 
     public final com.project.danim_be.member.entity.QMember member;
 
@@ -84,6 +84,7 @@ public class QPost extends EntityPathBase<Post> {
         super(type, metadata, inits);
         this.chatRoom = inits.isInitialized("chatRoom") ? new com.project.danim_be.chat.entity.QChatRoom(forProperty("chatRoom"), inits.get("chatRoom")) : null;
         this.content = inits.isInitialized("content") ? new QContent(forProperty("content"), inits.get("content")) : null;
+        this.map = inits.isInitialized("map") ? new QMapApi(forProperty("map"), inits.get("map")) : null;
         this.member = inits.isInitialized("member") ? new com.project.danim_be.member.entity.QMember(forProperty("member")) : null;
     }
 
