@@ -5,22 +5,15 @@ import java.security.Principal;
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.service.ChatMessageService;
 import com.project.danim_be.chat.service.ChatRoomService;
-import com.project.danim_be.common.util.Message;
-import com.project.danim_be.security.auth.UserDetailsImpl;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,56 +21,58 @@ public class ChatController {
 
 	@Autowired
 	private SimpMessagingTemplate template;
-	private final SimpMessageSendingOperations operations;
+	@Autowired
+	private  SimpMessageSendingOperations messagingTemplate;
 	private final ChatMessageService chatMessageService;
 	private final ChatRoomService chatRoomService;
 
-	//채팅방입장
-	@MessageMapping("/chat/enter")
-	public void enterChatRoom(@Payload ChatDto chatDto, Principal principal	) {
-		System.out.println("Enter");
-		System.out.println(chatDto.getType());
-		System.out.println(chatDto.getSender());
-		System.out.println("chatDto.getRoomId() = " + chatDto.getRoomId());
-		chatMessageService.visitMember(chatDto);
+	// 메시지가왔을때 실행
+	@MessageMapping("/chat/message")
+	public void message(@Payload ChatDto chatDto, Principal principal){
 
-		ChatDto message = ChatDto.builder()
-			.type(ChatDto.MessageType.ENTER)
-			.roomId(chatDto.getRoomId())
-			.sender(chatDto.getSender())
-			.message(chatDto.getSender() + "님이 입장하셨습니다.")
-			.build();
+		switch (chatDto.getType()) {
 
-		template.convertAndSend("/pub/chat/room/" + chatDto.getRoomId(), message);
-	}
+			case TALK -> {
+				System.out.println("TYPE : TALK");
+				String message = chatDto.getSender();
+				message += " : ";
+				message += chatDto.getMessage();
+				chatMessageService.sendMessage(chatDto);
 
-	//메시지 보내기
-	@MessageMapping("/chat/send")
-	public void sendMessage(@Payload ChatDto chatDto,Principal principal) {
-		System.out.println("Talk");
-		System.out.println(chatDto.getMessage());
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
+			}
 
-		chatMessageService.sendMessage(chatDto);
+			case ENTER -> {
+				System.out.println("TYPE : ENTER");
+				chatMessageService.visitMember(chatDto);
 
-		operations.convertAndSend("/pub/chat/room/" + chatDto.getRoomId(), chatDto);
-	}
+				ChatDto message = ChatDto.builder()
+					.type(ChatDto.MessageType.ENTER)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())
+					.message(chatDto.getSender() + "님이 입장하셨습니다.")
+					.build();
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
+			}
 
-	//채팅방 나가기
-	@MessageMapping("/chat/leave")
-	public void leaveChatRoom(@Payload ChatDto chatDto, Principal principal) {
-		String sender = principal.getName();
-		String roomId = chatDto.getRoomId();
+			case LEAVE -> {
+				System.out.println("TYPE : LEAVE");
+				chatMessageService.leaveChatRoom(chatDto);
+				//SSE요청시작!
+				ChatDto leaveMessage = ChatDto.builder()
+					.type(ChatDto.MessageType.LEAVE)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())
+					.message(chatDto.getSender() + "님이 접속을 끊었습니다.")
+					.build();
 
-		chatMessageService.leaveChatRoom(sender, roomId);
+				template.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
+			}
+			// case KICK ->{
+		}
 
-		ChatDto leaveMessage = ChatDto.builder()
-			.type(ChatDto.MessageType.LEAVE)
-			.roomId(chatDto.getRoomId())
-			.sender(chatDto.getSender())
-			.message(chatDto.getSender() + "님이 퇴장하셨습니다.")
-			.build();
 
-		template.convertAndSend("/pub/chat/room/" + chatDto.getRoomId(), leaveMessage);
+		}
 
 	}
 
@@ -117,4 +112,4 @@ public class ChatController {
 	//신청취소(나가기)
 	//=================================================================================================================================
 
-}
+

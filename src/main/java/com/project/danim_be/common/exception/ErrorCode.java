@@ -27,7 +27,8 @@ public enum ErrorCode {
 	//Forbidden
 	DO_NOT_HAVE_PERMISSION(HttpStatus.FORBIDDEN, "자신만 수정할수 있습니다", "권한이 없는 사용자입니다"),
 	NOT_MOD_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 수정할 수 있습니다." ,"권한이 없는 사용자입니다"),
-	NOT_DEL_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 삭제할 수 있습니다." ,"권한이 없는 사용자입니다");
+	NOT_DEL_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN,"글작성자만 삭제할 수 있습니다." ,"권한이 없는 사용자입니다"),
+	FAIL_FIND_MEMBER_CHAT_ROOM(HttpStatus.NOT_FOUND, "이전에 접속했던 채팅방 정보를 찾을 수 없습니다.", "문제가 지속될 경우 관리자에게 문의해주세요.");
 
 	private final HttpStatus httpStatus;
 	private final String detail;

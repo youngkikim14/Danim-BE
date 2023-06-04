@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,20 +38,34 @@ public class ChatMessageService {
 	private final MemberRepository memberRepository;
 	private final PostRepository postRepository;
 
+
+	//채팅방 입장멤버 저장메서드
 	@Transactional
 	public void visitMember(ChatDto chatDto){
 		String roomId = chatDto.getRoomId();
 		String sender = chatDto.getSender();
 
+		//sender(nickName)을 통해서 멤버를찾고
 		Member member = memberRepository.findByNickname(sender)
-			.orElseThrow(() -> new IllegalArgumentException("낫파운드유저"));
-
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		//roomId를 통해서 생성된 채팅룸을 찾고
 		ChatRoom chatRoom= chatRoomRepository.findByRoomId(roomId)
-			.orElseThrow(() -> new IllegalArgumentException("낫파운드룸"));
-		MemberChatRoom memberChatRoom = new MemberChatRoom(member, chatRoom);
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 
+		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
+
+		//첫 연결시도이면
+		if(isFirstVisit(member.getId(),roomId)){
+			memberChatRoom = new MemberChatRoom(member, chatRoom);
+			memberChatRoom.setFirstJoinRoom(LocalDateTime.now());	//맨처음 연결한시간과
+		}else{
+			if(memberChatRoom==null){
+				throw new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM);
+			}
+		}
+		memberChatRoom.setRecentConnect(LocalDateTime.now());  //최근 접속한 시간
 		memberChatRoomRepository.save(memberChatRoom);
-
 	}
 
 	//메시지저장
@@ -58,11 +73,9 @@ public class ChatMessageService {
 	public void sendMessage(ChatDto chatDto) {
 		String roomId = chatDto.getRoomId();
 		ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
-			.orElseThrow(() -> new IllegalArgumentException("채팅방없음 커스텀필요 NOT_FOUND_ROOM"));;
-
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));;
 		ChatMessage chatMessage= new ChatMessage(chatDto,chatRoom);
 		chatMessageRepository.save(chatMessage);
-
 	}
 
 	//메시지조회
@@ -72,7 +85,7 @@ public class ChatMessageService {
 		String nickName= chatDto.getSender();
 
 		Member member = memberRepository.findByNickname(nickName)
-			.orElseThrow(() -> new IllegalArgumentException("MEMBERNOTFOUND"));;;
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		if (chatDto.getSender().equals(member.getNickname()) && isFirstVisit(member.getId(),roomId)){
 			List<ChatDto> allChats = allChatList(chatDto);
@@ -94,7 +107,7 @@ public class ChatMessageService {
 	private List<ChatDto> allChatList(ChatDto chatDto){
 		String roomId = chatDto.getRoomId();
 		ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
-			.orElseThrow(() -> new IllegalArgumentException("채팅방없음 커스텀필요 NOT_FOUND_ROOM"));
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 		List<ChatMessage> chatList = chatMessageRepository.findAllByChatRoom(chatRoom);
 
@@ -112,7 +125,21 @@ public class ChatMessageService {
 
 	}
 
-	public void leaveChatRoom(String sender, String roomId) {
+	public void leaveChatRoom(ChatDto chatDto) {
+		String roomId = chatDto.getRoomId();
+		String sender = chatDto.getSender();
+
+		Member member = memberRepository.findByNickname(sender)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		ChatRoom chatRoom= chatRoomRepository.findByRoomId(roomId)
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom)
+			.orElseThrow(() -> new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM));
+		memberChatRoom.setRecentDisConnect(LocalDateTime.now());
+
+		memberChatRoomRepository.save(memberChatRoom);
+
+
 
 	}
 }
