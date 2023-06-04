@@ -65,8 +65,7 @@ public class Post extends Timestamped {
 	
 	private String mapAPI;
 	
-	@Column(nullable = false)
-	private Integer numberOfParticipants = 0 ;	//현재참여자수
+	
 
 	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
 	private Content content;        //내용
