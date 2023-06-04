@@ -56,7 +56,7 @@ public class PostService {
 	public ResponseEntity<Message> createPost(Member member, PostRequestDto requestDto) {
 		// logger.info("Received PostRequestDto: {}", requestDto.toString());
 		// logger.info("Received PostRequestDto: {}", requestDto.getContents().toString());
-		System.out.println(requestDto.getMapAPI());
+
 		Post post = Post.builder()
 			.postTitle(requestDto.getPostTitle())
 			.recruitmentStartDate(requestDto.getRecruitmentStartDate())
