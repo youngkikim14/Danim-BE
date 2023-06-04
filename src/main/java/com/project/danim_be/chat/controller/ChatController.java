@@ -68,7 +68,9 @@ public class ChatController {
 
 				template.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
 			}
-			// case KICK ->{
+			case KICK ->{
+
+			}
 		}
 
 
@@ -96,15 +98,7 @@ public class ChatController {
 	// 	return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
 	// }
 	//
-	// //메시지 보내기
-	// @MessageMapping("/chat/send")
-	// public void sendMessage(@Payload ChatDto chatDto){
-	// 	System.out.println(chatDto.getMessage());
-	// 	if(ChatDto.MessageType.TALK.equals(chatDto.getType()))
-	// 		chatDto.setMessage(chatDto.getSender()+"님이 입장하셧습니다.");
-	// 		template.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), chatDto);
-	// 	// chatMessageService.sendMessage(roomId,chatDto);
-	// }
+
 
 	//추방하기
 
