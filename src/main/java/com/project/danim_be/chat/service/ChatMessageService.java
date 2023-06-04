@@ -2,22 +2,21 @@ package com.project.danim_be.chat.service;
 
 
 import com.project.danim_be.chat.dto.ChatDto;
-import com.project.danim_be.common.exception.CustomException;
-import com.project.danim_be.common.exception.ErrorCode;
-import com.project.danim_be.common.util.Message;
 import com.project.danim_be.chat.entity.ChatMessage;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.repository.ChatMessageRepository;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
+import com.project.danim_be.common.exception.CustomException;
+import com.project.danim_be.common.exception.ErrorCode;
+import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
-import com.project.danim_be.post.entity.Post;
+import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -79,7 +78,11 @@ public class ChatMessageService {
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender()).orElseThrow(
 				() -> new CustomException(ErrorCode.USER_NOT_FOUND)
 		);
-		List<Member> members = memberChatRoomRepository.findByChatRoom(chatRoom);
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findByChatRoom(chatRoom);
+		List<Member> members = new ArrayList<>();
+		for (MemberChatRoom memberChatroom : memberChatRoomList) {
+			members.add(memberChatroom.getMember());
+		}
 		List<Long> memberIdlist = new ArrayList<>();
 		for (Member member : members) {
 			memberIdlist.add(member.getId());
