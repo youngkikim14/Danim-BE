@@ -107,7 +107,7 @@ public class PostService {
 		MultipartFile imageFile = requestDto.getImage();
 
 		String imageUrl = uploader(imageFile);
-
+		System.out.println("imageUrl : " + imageUrl);
 		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공",imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 
