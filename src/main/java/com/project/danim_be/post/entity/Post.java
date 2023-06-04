@@ -57,15 +57,14 @@ public class Post extends Timestamped {
 	private Integer groupSize;            //인원수
 
 	@Column(nullable = false)
-	private Integer numberOfParticipants = 0;    //현재참여자수
+	private Integer numberOfParticipants ;    //현재참여자수
 
 	// private String roomId;
 
 	private Boolean isDeleted;
 
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-	@Builder.Default
-	private List<Content> contents = new ArrayList<>();        //내용
+	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+	private Content content;        //내용
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
@@ -108,10 +107,7 @@ public class Post extends Timestamped {
 
 	public void delete() {
 		this.isDeleted = true;
-
-		for (Content content : contents) {
-			content.delete();
-		}
+		content.delete();
 	}
 
 	public void setChatRoom(ChatRoom chatRoom) {
@@ -124,4 +120,3 @@ public class Post extends Timestamped {
 
 		}
 	}
-

@@ -17,11 +17,11 @@ public class ContentResponseDto {
 	private ImageResponseDto image;
 
 
-	public ContentResponseDto(Content content) {
-		this.contentId = content.getId();
-		this.type = content.getType();
-		this.level = content.getLevel();
-		this.text = content.getText();
-
-	}
+	// public ContentResponseDto(Content content) {
+	// 	this.contentId = content.getId();
+	// 	this.type = content.getType();
+	// 	this.level = content.getLevel();
+	// 	this.text = content.getText();
+	//
+	// }
 }

@@ -31,7 +31,7 @@ public class PostRequestDto {
 	private List<String> ageRange;				//연령대
 	private List<String> gender;				//성별
 	private String keyword;						//키워드
-	private List<ContentRequestDto> contents;	//글내용
+	private String content;						//글내용
 	private String mapAPI;
 
 
@@ -48,7 +48,7 @@ public class PostRequestDto {
 			", location='" + location + '\n'+
 			", ageRange='" + ageRange + '\n'+
 			", keyword='" + keyword + '\n'+
-			", contents=" + contents +
+			", contents=" + content +
 			'}';
 	}
 }

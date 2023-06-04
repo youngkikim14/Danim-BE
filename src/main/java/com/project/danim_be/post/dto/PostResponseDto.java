@@ -34,7 +34,7 @@ public class PostResponseDto {
 	private String 		 location;				//지역
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
-	private List<ContentResponseDto> contents;		//게시글
+	private Content content;		//게시글
 	private ChatRoom chatRoomId;
 
 
@@ -50,11 +50,7 @@ public class PostResponseDto {
 		this.keyword = post.getKeyword();
 		this.groupSize = post.getGroupSize();
 		this.location = post.getLocation();
-		List<ContentResponseDto> contentResponseDtoList = new ArrayList<>();
-		for (Content content : post.getContents()) {
-			contentResponseDtoList.add(new ContentResponseDto(content));
-		}
-		this.contents = contentResponseDtoList;
+		this.content = getContent();
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();
 	}
