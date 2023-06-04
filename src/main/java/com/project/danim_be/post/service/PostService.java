@@ -12,13 +12,16 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.dto.ContentRequestDto;
 import com.project.danim_be.post.dto.ImageRequestDto;
+import com.project.danim_be.post.dto.ImageResponseDto;
 import com.project.danim_be.post.dto.PostRequestDto;
 import com.project.danim_be.post.dto.PostResponseDto;
 import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.Image;
+import com.project.danim_be.post.entity.MapApi;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.ContentRepository;
 import com.project.danim_be.post.repository.ImageRepository;
+import com.project.danim_be.post.repository.MapApiRepository;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +48,7 @@ public class PostService {
 	private final ContentRepository contentRepository;
 	private final ImageRepository imageRepository;
 	private final ChatRoomRepository chatRoomRepository;
+	private final MapApiRepository mapApiRepository;
 
 
 	private final S3Uploader s3Uploader;
@@ -76,6 +80,11 @@ public class PostService {
 			.content(requestDto.getContent())
 			.build();
 		contentRepository.save(content);
+		MapApi map = new MapApi();
+		map.setMap(requestDto.getMapAPI());
+		mapApiRepository.save(map);
+
+
 
 		String roomId = UUID.randomUUID().toString();
 		ChatRoom chatRoom = new ChatRoom();
