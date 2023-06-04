@@ -113,7 +113,12 @@ public class Post extends Timestamped {
 		}
 	}
 
+
 	public void setChatRoom(ChatRoom chatRoom) {
 		this.chatRoom = chatRoom;
+
+	public void incNumberOfParticipants() {
+		++numberOfParticipants;
+
 	}
 }
