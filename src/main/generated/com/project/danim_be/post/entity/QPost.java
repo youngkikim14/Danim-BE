@@ -45,6 +45,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final StringPath location = createString("location");
 
+    public final StringPath mapAPI = createString("mapAPI");
+
     public final com.project.danim_be.member.entity.QMember member;
 
     //inherited
