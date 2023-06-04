@@ -6,7 +6,6 @@ on:
       - 'release/**'
 #  pull_request_target:
 #    branches: [ "develop" ]
-# 하지마.
 jobs:
   build:
     # 실행 환경 지정
