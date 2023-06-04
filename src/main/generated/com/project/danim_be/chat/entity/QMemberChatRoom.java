@@ -24,9 +24,15 @@ public class QMemberChatRoom extends EntityPathBase<MemberChatRoom> {
 
     public final QChatRoom chatRoom;
 
+    public final DateTimePath<java.time.LocalDateTime> firstJoinRoom = createDateTime("firstJoinRoom", java.time.LocalDateTime.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.project.danim_be.member.entity.QMember member;
+
+    public final DateTimePath<java.time.LocalDateTime> recentConnect = createDateTime("recentConnect", java.time.LocalDateTime.class);
+
+    public final DateTimePath<java.time.LocalDateTime> recentDisConnect = createDateTime("recentDisConnect", java.time.LocalDateTime.class);
 
     public QMemberChatRoom(String variable) {
         this(MemberChatRoom.class, forVariable(variable), INITS);

@@ -52,6 +52,7 @@ public class PostService {
 	public ResponseEntity<Message> createPost(Member member, PostRequestDto requestDto) {
 		// logger.info("Received PostRequestDto: {}", requestDto.toString());
 		// logger.info("Received PostRequestDto: {}", requestDto.getContents().toString());
+		System.out.println(requestDto.getMapAPI());
 
 		Post post = Post.builder()
 			.postTitle(requestDto.getPostTitle())
@@ -68,14 +69,24 @@ public class PostService {
 			.member(member)
 			.contents(new ArrayList<>())
 			.build();
+
+		String roomId = UUID.randomUUID().toString();
+		ChatRoom chatRoom = new ChatRoom();
+		chatRoom.setRoomId(roomId);
+		chatRoom.setPost(post);
+
+		post.setChatRoom(chatRoom);
+		chatRoomRepository.save(chatRoom);
+
 		postRepository.save(post);
+
 		saveContents(requestDto, post);
 
+
+
+
 		//roomid생성
-		ChatRoom chatRoom = new ChatRoom();
-		String roomId = UUID.randomUUID().toString();
-		chatRoom.setRoomId(roomId);
-		chatRoomRepository.save(chatRoom);
+
 
 
 		// PostResponseDto postResponseDto = new PostResponseDto(post);

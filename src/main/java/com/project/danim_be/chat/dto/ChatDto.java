@@ -14,7 +14,8 @@ public class ChatDto {
 	public enum MessageType{
 		ENTER,
 		TALK,
-		LEAVE
+		LEAVE,
+		KICK
 	}
 
 	private MessageType type;

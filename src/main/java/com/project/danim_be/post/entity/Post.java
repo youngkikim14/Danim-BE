@@ -103,7 +103,6 @@ public class Post extends Timestamped {
 			this.setAgeRange(requestDto.getAgeRange());
 			this.setGender(requestDto.getGender());
 
-
 	}
 
 	public void delete() {
@@ -114,4 +113,7 @@ public class Post extends Timestamped {
 		}
 	}
 
+	public void setChatRoom(ChatRoom chatRoom) {
+		this.chatRoom = chatRoom;
+	}
 }
