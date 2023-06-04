@@ -71,6 +71,7 @@ public class PostService {
 			.keyword(requestDto.getKeyword())
 			.numberOfParticipants(0)
 			.member(member)
+			.mapAPI(request.getMapAPI())
 			.contents(new ArrayList<>())
 			.build();
 		postRepository.save(post);
