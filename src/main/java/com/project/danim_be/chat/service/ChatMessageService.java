@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -153,6 +152,33 @@ public class ChatMessageService {
 		memberChatRoom.setRecentDisConnect(LocalDateTime.now());
 
 		memberChatRoomRepository.save(memberChatRoom);
+
+
+
+	}
+	//강퇴기능
+	public void kickMember(ChatDto chatDto) {
+
+		ChatRoom chatRoom = chatRoomRepository.findByRoomId(chatDto.getRoomId())
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+
+		Post post = postRepository.findById(chatRoom.getPost().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+		//방장
+		Member superMember = memberRepository.findById(post.getMember().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+
+		//강퇴당하는사람
+		Member imposter = memberRepository.findByNickname(chatDto.getImposter())
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		chatRoom.removeMember(imposter);
+		chatRoomRepository.save(chatRoom);
+
+
+
 
 
 
