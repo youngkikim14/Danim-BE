@@ -20,11 +20,10 @@ public class MapApi {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-
 	@OneToOne
 	private Post post;
 
-	@Column(nullable = false)
+	@Column(columnDefinition = "TEXT")
 	private String map;
 
 	public void setMap(String map) {

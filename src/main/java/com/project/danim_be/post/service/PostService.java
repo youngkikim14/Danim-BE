@@ -80,11 +80,10 @@ public class PostService {
 			.content(requestDto.getContent())
 			.build();
 		contentRepository.save(content);
+		//내일 빌더로 고치기
 		MapApi map = new MapApi();
 		map.setMap(requestDto.getMapAPI());
 		mapApiRepository.save(map);
-
-
 
 		String roomId = UUID.randomUUID().toString();
 		ChatRoom chatRoom = new ChatRoom();
@@ -95,7 +94,6 @@ public class PostService {
 		chatRoomRepository.save(chatRoom);
 
 		postRepository.save(post);
-
 
 		// PostResponseDto postResponseDto = new PostResponseDto(post);
 		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공");

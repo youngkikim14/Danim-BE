@@ -70,9 +70,17 @@ public class ChatController {
 			}
 			case KICK ->{
 
+				chatMessageService.kickMember(chatDto);
+
+				ChatDto kickMessage = ChatDto.builder()
+					.type(ChatDto.MessageType.KICK)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())   // 강퇴 담당자
+					.message(chatDto.getSender() + "님이 " + "a" + "을(를) 강퇴하였습니다.")   // 강퇴 대상자
+					.build();
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), kickMessage);
 			}
 		}
-
 
 		}
 
