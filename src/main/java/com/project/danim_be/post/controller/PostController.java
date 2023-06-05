@@ -1,6 +1,7 @@
 package com.project.danim_be.post.controller;
 
 import com.project.danim_be.common.util.Message;
+import com.project.danim_be.post.dto.ImageRequestDto;
 import com.project.danim_be.post.dto.PostRequestDto;
 import com.project.danim_be.post.service.PostService;
 import com.project.danim_be.security.auth.UserDetailsImpl;
@@ -24,6 +25,12 @@ public class PostController {
 	@PostMapping(value = "api/post",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 		public ResponseEntity<Message> createPost(@AuthenticationPrincipal final UserDetailsImpl userDetails,@Valid @ModelAttribute final PostRequestDto requestDto){
 			return	postService.createPost(userDetails.getMember(),requestDto);
+
+	}
+	@Operation(summary = "이미지 업로드 API", description = "이미지 업로드")
+	@PostMapping(value = "api/post/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Message> imageUpload(@ModelAttribute final ImageRequestDto requestDto){
+		return	postService.imageUpload(requestDto);
 
 	}
 

@@ -21,7 +21,7 @@ public class ChatRoom {
 	@OneToMany(mappedBy = "chatRoom")
 	private List<MemberChatRoom> memberChatRoomList;
 
-	@OneToOne
+	@OneToOne(mappedBy = "chatRoom",cascade = CascadeType.ALL)
 	private Post post;
 
 	@OneToMany

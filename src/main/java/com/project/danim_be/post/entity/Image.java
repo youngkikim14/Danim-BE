@@ -19,16 +19,12 @@ public class Image {
 
 	private String imageUrl;
 
-	private String imageName;
-
-	@OneToOne
-	private Content content;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Post post;
 
 	private boolean isDeleted;
 
-	public void delete() {
-		this.isDeleted = true;
-	}
+	public void delete() {this.isDeleted = true;}
 
 
 

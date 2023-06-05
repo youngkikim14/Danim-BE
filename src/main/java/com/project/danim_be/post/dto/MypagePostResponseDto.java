@@ -22,12 +22,7 @@ public class MypagePostResponseDto {
         this.title = post.getPostTitle();
         this.tripEndDate = post.getTripEndDate();
         this.imageUrl = null;
-        for (Content content : post.getContents()){
-            if("image".equals(content.getType())){
-                imageUrl=content.getImage().getImageUrl();
-                break;
-            }
-        }
+
         this.owner = owner;
 
     }

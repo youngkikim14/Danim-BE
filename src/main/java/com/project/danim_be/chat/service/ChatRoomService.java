@@ -2,7 +2,6 @@ package com.project.danim_be.chat.service;
 
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
 import com.project.danim_be.chat.entity.ChatRoom;
-import com.project.danim_be.chat.entity.QMemberChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
@@ -41,22 +40,22 @@ public class ChatRoomService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 만든 채팅방",chatRoomResponseDtoList));
 	}
 
-	//내가 신청한 채팅방 목록조회
-	public ResponseEntity<Message> myJoinChatroom(Long id) {
-		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
-		List<ChatRoom> chatRoomList = queryFactory
-			.select(qMemberChatRoom.chatRoom)
-			.from(qMemberChatRoom)
-			.where(qMemberChatRoom.member.id.eq(id))
-			.fetch();
-		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
-		for (ChatRoom chatroom : chatRoomList) {
-			if (!chatroom.getPost().getMember().getId().equals(id)){
-				chatRoomResponseDtoList.add(new ChatRoomResponseDto(chatroom));
-			}
-		}
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
-	}
+	// //내가 신청한 채팅방 목록조회
+	// public ResponseEntity<Message> myJoinChatroom(Long id) {
+	// 	QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
+	// 	List<ChatRoom> chatRoomList = queryFactory
+	// 		.select(qMemberChatRoom.chatRoom)
+	// 		.from(qMemberChatRoom)
+	// 		.where(qMemberChatRoom.member.id.eq(id))
+	// 		.fetch();
+	// 	List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
+	// 	for (ChatRoom chatroom : chatRoomList) {
+	// 		if (!chatroom.getPost().getMember().getId().equals(id)){
+	// 			chatRoomResponseDtoList.add(new ChatRoomResponseDto(chatroom));
+	// 		}
+	// 	}
+	// 	return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
+	// }
 
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
