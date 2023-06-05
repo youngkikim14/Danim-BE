@@ -1,5 +1,6 @@
 package com.project.danim_be.chat.entity;
 
+import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,4 +28,8 @@ public class ChatRoom {
 	@OneToMany
 	private List<ChatMessage> chatMessages;
 
+	public void removeMember(Member imposter) {
+
+
+	}
 }
