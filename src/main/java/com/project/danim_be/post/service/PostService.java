@@ -86,9 +86,11 @@ public class PostService {
 		mapApiRepository.save(map);
 
 		String roomId = UUID.randomUUID().toString();
-		ChatRoom chatRoom = new ChatRoom();
-		chatRoom.setRoomId(roomId);
-		chatRoom.setPost(post);
+		ChatRoom chatRoom =ChatRoom.builder()
+			.roomId(roomId)
+			.post(post)
+			.adminMemberId(post.getMember().getId())
+			.build();
 
 		post.setChatRoom(chatRoom);
 		chatRoomRepository.save(chatRoom);

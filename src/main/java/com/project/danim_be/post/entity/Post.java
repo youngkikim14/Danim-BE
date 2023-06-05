@@ -46,7 +46,7 @@ public class Post extends Timestamped {
 	private Integer groupSize;            		//인원수
 	@Column(nullable = false)
 	private Integer numberOfParticipants ;    	//현재참여자수
-	@OneToOne
+	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL)
 	private ChatRoom chatRoom;
 	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
 	private Content content;        //내용
@@ -99,7 +99,7 @@ public class Post extends Timestamped {
 		this.chatRoom = chatRoom;
 	}
 
-		public void incNumberOfParticipants() {
+	public void incNumberOfParticipants() {
 			++numberOfParticipants;
 
 		}
