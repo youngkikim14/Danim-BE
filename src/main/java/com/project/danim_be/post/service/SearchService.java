@@ -8,6 +8,8 @@ import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,11 +31,13 @@ public class SearchService {
     //전체 조회
     public ResponseEntity<Message> allPosts(Pageable pageable){
         QPost qPost = QPost.post;
+        NumberExpression<Integer> condition = new CaseBuilder().when(qPost.groupSize.eq(qPost.numberOfParticipants))
+                .then(1)
+                .otherwise(0);
         List<Post> postList = queryFactory
                 .selectFrom(qPost)
                 .where(qPost.isDeleted.eq(false))
-                .orderBy(qPost.groupSize.eq(qPost.numberOfParticipants).asc(),
-                        qPost.recruitmentEndDate.asc())
+                .orderBy(condition.asc(), qPost.recruitmentEndDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
