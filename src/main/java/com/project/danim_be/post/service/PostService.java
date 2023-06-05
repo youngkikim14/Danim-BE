@@ -31,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -70,6 +72,7 @@ public class PostService {
 			.member(member)
 			.isDeleted(false)
 			.build();
+
 		Content content = Content.builder()
 			.post(post)
 			.content(requestDto.getContent())
@@ -82,16 +85,21 @@ public class PostService {
 			.build();
 		mapApiRepository.save(map);
 
+		for(String url : requestDto.getImageUrls()) {
+			Image image = Image.builder()
+				.post(post)
+				.imageUrl(url)
+				.build();
+			imageRepository.save(image);
+		}
 		String roomId = UUID.randomUUID().toString();
 		ChatRoom chatRoom =ChatRoom.builder()
 			.roomId(roomId)
 			.post(post)
 			.adminMemberId(post.getMember().getId())
 			.build();
-
 		post.setChatRoom(chatRoom);
 		chatRoomRepository.save(chatRoom);
-
 		postRepository.save(post);
 
 		// PostResponseDto postResponseDto = new PostResponseDto(post);

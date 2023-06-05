@@ -30,6 +30,7 @@ public class ChatRoom {
 	private List<MemberChatRoom> memberChatRoomList;
 
 	@OneToOne
+	@JoinColumn(name = "post_id")
 	private Post post;
 
 	@OneToMany

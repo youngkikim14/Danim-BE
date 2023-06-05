@@ -65,11 +65,7 @@ public class ChatController {
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
 			}
 			case KICK ->{
-				//핑퐁
-				//Talk일때 닉네임검사(완료)
-				//Enter시 첫방문일시 post의 참여자수 +1 (완료)
-				//jwt-주석처리하기(완료)
-				//강퇴 (완료)
+
 				chatMessageService.kickMember(chatDto);
 
 				ChatDto kickMessage = ChatDto.builder()
