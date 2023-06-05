@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class MapApi {
 
 	@Id
