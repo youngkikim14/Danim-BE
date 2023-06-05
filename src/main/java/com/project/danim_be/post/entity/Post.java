@@ -52,8 +52,8 @@ public class Post extends Timestamped {
 	private Content content;        //내용
 	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
 	private MapApi map;							//지도 api정보
-	@Column(nullable = false)
-	private String imageUrls;
+	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+	private List<Image> imageUrls;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
