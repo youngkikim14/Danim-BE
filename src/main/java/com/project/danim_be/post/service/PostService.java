@@ -88,11 +88,13 @@ public class PostService {
 			.build();
 		mapApiRepository.save(map);
 
-		Image image = Image.builder()
-			.post(post)
-			.imageUrl(String.join(",", requestDto.getImageUrls()))
-			.build();
-		imageRepository.save(image);
+		for(String url : requestDto.getImageUrls()) {
+			Image image = Image.builder()
+				.post(post)
+				.imageUrl(url)
+				.build();
+			imageRepository.save(image);
+		}
 
 
 		String roomId = UUID.randomUUID().toString();
