@@ -79,6 +79,7 @@ public class WebSecurityConfig {
 			http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 				.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/post/{postId}").permitAll()
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/status", "/images/**").permitAll()
 				.requestMatchers("/ws/**").permitAll()
