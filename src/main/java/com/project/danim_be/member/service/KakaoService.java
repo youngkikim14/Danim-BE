@@ -10,9 +10,11 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
+import com.project.danim_be.member.dto.LoginResponseDto;
 import com.project.danim_be.member.dto.MemberRequestDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.security.auth.UserDetailsImpl;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
@@ -31,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -59,6 +62,7 @@ public class KakaoService {
 	private String userInfoUrl;
 	@Value("${kakao.unlink.url}")
 	private String unlinkUrl;
+	private final NotificationService notificationService;
 
 
 	public ResponseEntity<Message> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
@@ -86,7 +90,10 @@ public class KakaoService {
 
 		System.out.println(tokenDto.getAccessToken());
 
-		Message message = Message.setSuccess(StatusEnum.OK,"로그인 성공", kakaoUser.getId());
+		SseEmitter sseEmitter = notificationService.connectNotification(kakaoUser.getId());
+		LoginResponseDto loginResponseDto = new LoginResponseDto(kakaoUser, sseEmitter);
+
+		Message message = Message.setSuccess(StatusEnum.OK,"로그인 성공", loginResponseDto);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 		// return accessToken;
 	}

@@ -74,6 +74,7 @@ public class PostService {
 			.content(requestDto.getContent())
 			.build();
 		contentRepository.save(content);
+    
 		MapApi map = MapApi.builder()
 			.post(post)
 			.map(requestDto.getMapAPI())

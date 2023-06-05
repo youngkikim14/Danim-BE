@@ -20,7 +20,7 @@ public class MapApi {
 	@OneToOne
 	private Post post;
 
-	@Column(nullable = false)
+	@Column(columnDefinition = "TEXT")
 	private String map;
 
 }

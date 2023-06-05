@@ -2,22 +2,22 @@ package com.project.danim_be.chat.service;
 
 
 import com.project.danim_be.chat.dto.ChatDto;
-import com.project.danim_be.common.exception.CustomException;
-import com.project.danim_be.common.exception.ErrorCode;
-import com.project.danim_be.common.util.Message;
 import com.project.danim_be.chat.entity.ChatMessage;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.repository.ChatMessageRepository;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
+import com.project.danim_be.common.exception.CustomException;
+import com.project.danim_be.common.exception.ErrorCode;
+import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,6 +37,7 @@ public class ChatMessageService {
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final MemberRepository memberRepository;
 	private final PostRepository postRepository;
+	private final NotificationService notificationService;
 
 
 	//채팅방 입장멤버 저장메서드
@@ -66,6 +67,7 @@ public class ChatMessageService {
 		}
 		memberChatRoom.setRecentConnect(LocalDateTime.now());  //최근 접속한 시간
 		memberChatRoomRepository.save(memberChatRoom);
+
 	}
 
 	//메시지저장
@@ -73,9 +75,23 @@ public class ChatMessageService {
 	public void sendMessage(ChatDto chatDto) {
 		String roomId = chatDto.getRoomId();
 		ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));;
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		Member sendMember = memberRepository.findByNickname(chatDto.getSender()).orElseThrow(
+				() -> new CustomException(ErrorCode.USER_NOT_FOUND)
+		); // 메세지를 보낸사람. 이 사람에겐 알람을 안보내기 위해
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findByChatRoom(chatRoom);
+		List<Member> members = new ArrayList<>();
+		for (MemberChatRoom memberChatroom : memberChatRoomList) {
+			members.add(memberChatroom.getMember());
+		}
+		List<Long> memberIdlist = new ArrayList<>();
+		for (Member member : members) {
+			memberIdlist.add(member.getId());
+		}
+		memberIdlist.remove(sendMember.getId());
 		ChatMessage chatMessage= new ChatMessage(chatDto,chatRoom);
-		chatMessageRepository.save(chatMessage);
+		chatMessageRepository.saveAndFlush(chatMessage);
+		notificationService.send(memberIdlist, chatMessage.getId());
 	}
 
 	//메시지조회
@@ -138,6 +154,33 @@ public class ChatMessageService {
 		memberChatRoom.setRecentDisConnect(LocalDateTime.now());
 
 		memberChatRoomRepository.save(memberChatRoom);
+
+
+
+	}
+	//강퇴기능
+	public void kickMember(ChatDto chatDto) {
+
+		ChatRoom chatRoom = chatRoomRepository.findByRoomId(chatDto.getRoomId())
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+
+		Post post = postRepository.findById(chatRoom.getPost().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+		//방장
+		Member superMember = memberRepository.findById(post.getMember().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+
+		//강퇴당하는사람
+		Member imposter = memberRepository.findByNickname(chatDto.getImposter())
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		chatRoom.removeMember(imposter);
+		chatRoomRepository.save(chatRoom);
+
+
+
 
 
 

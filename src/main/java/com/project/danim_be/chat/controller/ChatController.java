@@ -1,19 +1,17 @@
 package com.project.danim_be.chat.controller;
 
-import java.security.Principal;
-
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.service.ChatMessageService;
 import com.project.danim_be.chat.service.ChatRoomService;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -69,10 +67,22 @@ public class ChatController {
 				template.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
 			}
 			case KICK ->{
+				//핑퐁
+				//jwt-주석처리하기
+				//Talk일때 닉네임검사
+				//강퇴
 
+				chatMessageService.kickMember(chatDto);
+
+				ChatDto kickMessage = ChatDto.builder()
+					.type(ChatDto.MessageType.KICK)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())   // 강퇴 담당자
+					.message(chatDto.getSender() + "님이 " + "a" + "을(를) 강퇴하였습니다.")   // 강퇴 대상자
+					.build();
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), kickMessage);
 			}
 		}
-
 
 		}
 
