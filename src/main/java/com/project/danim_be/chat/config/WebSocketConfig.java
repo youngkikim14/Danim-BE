@@ -2,15 +2,26 @@ package com.project.danim_be.chat.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+// import com.project.danim_be.chat.handler.StompHandler;
+
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+	// private final StompHandler stompHandler; // jwt 인증
+	//
+	//
+	// @Override
+	// public void configureClientInboundChannel(ChannelRegistration registration) {
+	// 	registration.interceptors(stompHandler);
+	// }
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry ){
