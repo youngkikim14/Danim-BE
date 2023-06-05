@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -74,13 +75,23 @@ public class ChatRoomService {
 		for (MemberChatRoom memberChatRoom : memberChatRoomList) {
 			chatRoomDtoList.add(new ChatRoomDto(memberChatRoom));
 		}
-
-		// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
-		if(!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())){
-			Post post = postRepository.findByChatRoom_Id(id);
-			post.incNumberOfParticipants();
-			postRepository.save(post);
-		}
+    
+		Post validPost = postRepository.findById(id).orElseThrow(
+				() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
+    
+		String ageRange = validPost.getAgeRange().toString();
+		String[] ageRangeArray = ageRange.split(",");
+		String gender = validPost.getGender().toString();
+		String[] genderArray = gender.split(",");
+		if (Arrays.asList(ageRangeArray).contains(member.getGender()) && Arrays.asList(genderArray).contains(member.getGender())){
+			// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
+			if(!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())){
+				Post post = postRepository.findByChatRoom_Id(id);
+				post.incNumberOfParticipants();
+        postRepository.save(post);
+			}
+		} else throw new CustomException(ErrorCode.NOT_MATCHING);
 
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"채팅방 입장", chatRoomDtoList));
 	}
