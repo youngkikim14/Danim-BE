@@ -77,7 +77,7 @@ public class ChatMessageService {
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender()).orElseThrow(
 				() -> new CustomException(ErrorCode.USER_NOT_FOUND)
-		);
+		); // 메세지를 보낸사람. 이 사람에겐 알람을 안보내기 위해
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findByChatRoom(chatRoom);
 		List<Member> members = new ArrayList<>();
 		for (MemberChatRoom memberChatroom : memberChatRoomList) {

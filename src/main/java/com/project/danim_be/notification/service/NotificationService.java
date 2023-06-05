@@ -59,7 +59,7 @@ public class NotificationService {
             MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMember(member).orElseThrow(
                     () -> new NoSuchElementException("없는 멤버챗룸임")
             );
-            if (memberChatRoom.getRecentDisConnect().isBefore(memberChatRoom.getRecentConnect())) {
+            if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
                 emitterRepository.get(userId).ifPresentOrElse(sseEmitter -> {
                     try {
                         sseEmitter.send(SseEmitter.event().id(messageId.toString()).name(NOTIFICATION_NAME).data("New notification"));
