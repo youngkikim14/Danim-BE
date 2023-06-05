@@ -90,7 +90,7 @@ public class PostService {
 
 		Image image = Image.builder()
 			.post(post)
-			.imageUrl(String.join(",", requestDto.getImage()))
+			.imageUrl(String.join(",", requestDto.getImageUrls()))
 			.build();
 		imageRepository.save(image);
 
