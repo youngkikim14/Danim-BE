@@ -75,15 +75,24 @@ public class PostService {
 			.numberOfParticipants(0)
 			.member(member)
 			.build();
+		
 		Content content = Content.builder()
 			.post(post)
 			.content(requestDto.getContent())
 			.build();
 		contentRepository.save(content);
-		MapApi map = new MapApi();
-		map.setMap(requestDto.getMapAPI());
+    
+		MapApi map = MapApi.builder()
+			.post(post)
+			.map(requestDto.getMapAPI())
+			.build();
 		mapApiRepository.save(map);
 
+		Image image = Image.builder()
+			.post(post)
+			.imageUrl(String.join(",", requestDto.getImage()))
+			.build();
+		imageRepository.save(image);
 
 
 		String roomId = UUID.randomUUID().toString();
