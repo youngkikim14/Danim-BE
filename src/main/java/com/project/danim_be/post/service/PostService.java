@@ -74,6 +74,7 @@ public class PostService {
 			.keyword(requestDto.getKeyword())
 			.numberOfParticipants(0)
 			.member(member)
+			.isDeleted(false)
 			.build();
 		
 		Content content = Content.builder()
@@ -103,7 +104,7 @@ public class PostService {
 		chatRoom.setPost(post);
 
 		post.setChatRoom(chatRoom);
-		chatRoomRepository.save(chatRoom);
+		chatRoomRepository.saveAndFlush(chatRoom);
 
 		postRepository.save(post);
 
