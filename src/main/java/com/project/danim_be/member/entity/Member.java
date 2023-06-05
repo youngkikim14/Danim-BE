@@ -46,10 +46,6 @@ public class Member extends Timestamped {
 
 	private Boolean isDeleted;		//탈퇴 여부
 
-	@OneToMany(mappedBy = "member")
-	private List<MemberChatRoom> memberChatRoomList;
-
-
 	public Member(String userId, String password, String nickname) {
 		this.userId = userId;
 		this.password = password;
