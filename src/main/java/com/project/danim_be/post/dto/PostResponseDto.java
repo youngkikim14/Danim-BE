@@ -34,8 +34,8 @@ public class PostResponseDto {
 	private String 		 location;				//지역
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
-	private Content content;		//게시글
-	private ChatRoom chatRoomId;
+	private String content;		//게시글
+	private Long chatRoomId;
 
 
 
@@ -47,11 +47,13 @@ public class PostResponseDto {
 		this.tripStartDate = post.getTripStartDate();
 		this.tripEndDate = post.getTripEndDate();
 		this.ageRange = post.getAgeRange();
+		this.gender = post.getGender();
 		this.keyword = post.getKeyword();
 		this.groupSize = post.getGroupSize();
 		this.location = post.getLocation();
-		this.content = getContent();
+		this.content = post.getContent().getContent();
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();
+		this.chatRoomId = post.getChatRoom().getId();
 	}
 }
