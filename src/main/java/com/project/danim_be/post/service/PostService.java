@@ -68,6 +68,7 @@ public class PostService {
 			.keyword(requestDto.getKeyword())
 			.numberOfParticipants(0)
 			.member(member)
+			.isDeleted(false)
 			.build();
 		Content content = Content.builder()
 			.post(post)
