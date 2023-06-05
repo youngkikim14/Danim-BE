@@ -102,9 +102,14 @@ public class PostService {
 	//이미지 업로드
 	@Transactional
 	public ResponseEntity<Message> imageUpload(ImageRequestDto requestDto) {
+		Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(
+				() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 		MultipartFile imageFile = requestDto.getImage();
 
 		String imageUrl = uploader(imageFile);
+
+		Image image = new Image(imageUrl, post);
+		imageRepository.save(image);
 
 		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공",imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);
