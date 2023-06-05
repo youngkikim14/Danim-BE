@@ -259,10 +259,10 @@ public class MemberService {
 			String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
 			member.editMember(mypageRequestDto, imageUrl);
 
-			// memberRepository.save(member);
+			memberRepository.save(member);
 
 		} else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료",member));
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료", member));
 	}
 
 
