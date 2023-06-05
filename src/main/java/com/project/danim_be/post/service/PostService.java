@@ -104,7 +104,7 @@ public class PostService {
 		chatRoom.setPost(post);
 
 		post.setChatRoom(chatRoom);
-		chatRoomRepository.saveAndFlush(chatRoom);
+		chatRoomRepository.save(chatRoom);
 
 		postRepository.save(post);
 
