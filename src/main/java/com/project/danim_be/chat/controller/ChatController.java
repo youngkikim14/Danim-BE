@@ -67,6 +67,10 @@ public class ChatController {
 				template.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
 			}
 			case KICK ->{
+				//핑퐁
+				//jwt-주석처리하기
+				//Talk일때 닉네임검사
+				//강퇴
 
 				chatMessageService.kickMember(chatDto);
 
