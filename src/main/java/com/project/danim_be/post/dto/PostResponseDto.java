@@ -1,14 +1,11 @@
 package com.project.danim_be.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.danim_be.chat.entity.ChatRoom;
-import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +32,7 @@ public class PostResponseDto {
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
 	private String content;		//게시글
+	private String map;			//지도 api 정보
 	private Long chatRoomId;
 
 
@@ -55,5 +53,6 @@ public class PostResponseDto {
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();
 		this.chatRoomId = post.getChatRoom().getId();
+		this.map = post.getMap().getMap();
 	}
 }
