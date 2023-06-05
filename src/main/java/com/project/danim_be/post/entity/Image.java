@@ -24,9 +24,8 @@ public class Image {
 
 	private boolean isDeleted;
 
-	public Image(String imageUrl, Post post) {
+	public Image(String imageUrl) {
 		this.imageUrl = imageUrl;
-		this.post = post;
 	}
 
 	public void delete() {this.isDeleted = true;}

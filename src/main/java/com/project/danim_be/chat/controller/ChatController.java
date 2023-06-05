@@ -18,8 +18,6 @@ import java.security.Principal;
 public class ChatController {
 
 	@Autowired
-	private SimpMessagingTemplate template;
-	@Autowired
 	private  SimpMessageSendingOperations messagingTemplate;
 	private final ChatMessageService chatMessageService;
 	private final ChatRoomService chatRoomService;
@@ -29,16 +27,6 @@ public class ChatController {
 	public void message(@Payload ChatDto chatDto, Principal principal){
 
 		switch (chatDto.getType()) {
-
-			case TALK -> {
-				System.out.println("TYPE : TALK");
-				String message = chatDto.getSender();
-				message += " : ";
-				message += chatDto.getMessage();
-				chatMessageService.sendMessage(chatDto);
-
-				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
-			}
 
 			case ENTER -> {
 				System.out.println("TYPE : ENTER");
@@ -53,6 +41,16 @@ public class ChatController {
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
 			}
 
+			case TALK -> {
+				System.out.println("TYPE : TALK");
+				String message = chatDto.getSender();
+				message += " : ";
+				message += chatDto.getMessage();
+				chatMessageService.sendMessage(chatDto);
+
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
+			}
+
 			case LEAVE -> {
 				System.out.println("TYPE : LEAVE");
 				chatMessageService.leaveChatRoom(chatDto);
@@ -64,21 +62,21 @@ public class ChatController {
 					.message(chatDto.getSender() + "님이 접속을 끊었습니다.")
 					.build();
 
-				template.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
 			}
 			case KICK ->{
 				//핑퐁
-				//jwt-주석처리하기
-				//Talk일때 닉네임검사
-				//강퇴
-
+				//Talk일때 닉네임검사(완료)
+				//Enter시 첫방문일시 post의 참여자수 +1 (완료)
+				//jwt-주석처리하기(완료)
+				//강퇴 (완료)
 				chatMessageService.kickMember(chatDto);
 
 				ChatDto kickMessage = ChatDto.builder()
 					.type(ChatDto.MessageType.KICK)
 					.roomId(chatDto.getRoomId())
-					.sender(chatDto.getSender())   // 강퇴 담당자
-					.message(chatDto.getSender() + "님이 " + "a" + "을(를) 강퇴하였습니다.")   // 강퇴 대상자
+					.sender(chatDto.getSender())
+					.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
 					.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), kickMessage);
 			}
