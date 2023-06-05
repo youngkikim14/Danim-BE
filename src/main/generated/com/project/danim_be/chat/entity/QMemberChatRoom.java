@@ -28,6 +28,8 @@ public class QMemberChatRoom extends EntityPathBase<MemberChatRoom> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath kickMember = createBoolean("kickMember");
+
     public final com.project.danim_be.member.entity.QMember member;
 
     public final DateTimePath<java.time.LocalDateTime> recentConnect = createDateTime("recentConnect", java.time.LocalDateTime.class);
