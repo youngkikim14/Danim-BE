@@ -56,6 +56,8 @@ public class Post extends Timestamped {
 	@JoinColumn(name = "memberId")
 	private Member member;
 	private Boolean isDeleted;
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+	private List<Image> imageList;
 
 	//연령대 복수선택가능
 	public void setAgeRange(List<String> ageRange) {
