@@ -51,10 +51,13 @@ public class Post extends Timestamped {
 	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
 	private Content content;        //내용
 	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-	private MapApi map;				//지도 api정보
+	private MapApi map;							//지도 api정보
+	@Column(nullable = false)
+	private String images;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
+
 	private Boolean isDeleted;
 
 	//연령대 복수선택가능
