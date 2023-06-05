@@ -1,7 +1,6 @@
 package com.project.danim_be.post.service;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
@@ -10,9 +9,7 @@ import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.post.dto.ContentRequestDto;
 import com.project.danim_be.post.dto.ImageRequestDto;
-import com.project.danim_be.post.dto.ImageResponseDto;
 import com.project.danim_be.post.dto.PostRequestDto;
 import com.project.danim_be.post.dto.PostResponseDto;
 import com.project.danim_be.post.entity.Content;
@@ -34,10 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -80,9 +74,11 @@ public class PostService {
 			.content(requestDto.getContent())
 			.build();
 		contentRepository.save(content);
-		//내일 빌더로 고치기
-		MapApi map = new MapApi();
-		map.setMap(requestDto.getMapAPI());
+    
+		MapApi map = MapApi.builder()
+			.post(post)
+			.map(requestDto.getMapAPI())
+			.build();
 		mapApiRepository.save(map);
 
 		String roomId = UUID.randomUUID().toString();
@@ -170,8 +166,7 @@ public class PostService {
 		return file;
 	}
 
-
-
+	// 게시글 상세 조회
 	public ResponseEntity<Message> readPost(Long id) {
 
 		Post post = postRepository.findById(id).orElseThrow(()
@@ -179,7 +174,7 @@ public class PostService {
 
 		PostResponseDto postResponseDto = new PostResponseDto(post);
 
-		Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공",postResponseDto);
+		Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공", postResponseDto);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 
 	}
