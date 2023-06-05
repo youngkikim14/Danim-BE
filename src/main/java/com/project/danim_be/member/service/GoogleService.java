@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
+import com.project.danim_be.member.dto.LoginResponseDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +37,7 @@ public class GoogleService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RandomNickname randomNickname;
     private final RestTemplate restTemplate = new RestTemplate();
+    private final NotificationService notificationService;
 
     public ResponseEntity<Message> socialLogin(String code, HttpServletResponse response) { // 컨트롤러에서 registrationId 값이 들어왔다면 각 메서드에 대입하여 그에 맞는 소셜 로그인 구현
         String accessToken = getAccessToken(code);
@@ -72,7 +76,9 @@ public class GoogleService {
             }
             response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
             response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
-            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", member.get().getId()));
+            SseEmitter sseEmitter = notificationService.connectNotification(member.get().getId());
+            LoginResponseDto loginResponseDto = new LoginResponseDto(member.get(), sseEmitter);
+            return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
         }
     }
 
