@@ -88,8 +88,9 @@ public class ChatMessageService {
 		}
 
 		//강퇴당한사람인지 검사한다.
-		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom).orElse(null);
-		if (memberChatRoom != null && memberChatRoom.getKickMember()) {
+		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
+			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		if ( memberChatRoom.getKickMember()) {
 			throw new CustomException(ErrorCode.USER_KICKED);
 		}
 
@@ -105,8 +106,8 @@ public class ChatMessageService {
 		}
 		memberIdlist.remove(sendMember.getId());
 		ChatMessage chatMessage= new ChatMessage(chatDto,chatRoom);
-		chatMessageRepository.saveAndFlush(chatMessage);
-		notificationService.send(memberIdlist, chatMessage.getId());
+		notificationService.send(memberIdlist, chatMessage.getId(), memberChatRoom.getId());
+		chatMessageRepository.save(chatMessage);
 	}
 	//방을 나갔는지확인해야함 	LEAVE
 	@Transactional

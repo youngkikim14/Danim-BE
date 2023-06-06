@@ -1,6 +1,10 @@
 package com.project.danim_be.notification.service;
 
+import com.project.danim_be.chat.entity.ChatMessage;
+import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.entity.MemberChatRoom;
+import com.project.danim_be.chat.repository.ChatMessageRepository;
+import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
@@ -25,6 +29,8 @@ public class NotificationService {
     private final EmitterRepository emitterRepository;
     private final MemberChatRoomRepository memberChatRoomRepository;
     private final MemberRepository memberRepository;
+    private final ChatMessageRepository chatMessageRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     public SseEmitter connectNotification(Long userId) {
         // 새로운 SseEmitter를 만든다
@@ -50,15 +56,17 @@ public class NotificationService {
 //        Notification notification = notificationRepository.findByUserId(userId).orElseThrow()
 //    }
 
-    public void send(List<Long> userIdList, Long messageId) {
+    public void send(List<Long> userIdList, Long messageId,Long memberChatRoomId) {
         // 유저 ID로 SseEmitter를 찾아 이벤트를 발생 시킨다.
         for (Long userId : userIdList) {
-            Member member = memberRepository.findById(userId).orElseThrow(
-                    () -> new CustomException(ErrorCode.ID_NOT_FOUND)
-            );
-            MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMember(member).orElseThrow(
+
+
+            MemberChatRoom memberChatRoom = memberChatRoomRepository.findById(memberChatRoomId).orElseThrow(
+
                     () -> new NoSuchElementException("없는 멤버챗룸임")
             );
+
+
             if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
                 emitterRepository.get(userId).ifPresentOrElse(sseEmitter -> {
                     try {
