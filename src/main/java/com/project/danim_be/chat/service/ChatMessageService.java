@@ -54,8 +54,12 @@ public class ChatMessageService {
 		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 		//강퇴당한사람인지 검사한다.
-		if (memberChatRoom != null && memberChatRoom.getKickMember()) {
-			throw new CustomException(ErrorCode.USER_KICKED);
+		if (memberChatRoom != null) {
+			if (memberChatRoom.getKickMember()) {
+				throw new CustomException(ErrorCode.USER_KICKED);
+			} else {
+				List<ChatDto> previousMessages = allChatList(chatDto);
+			}
 		}
 		//첫 연결시도이면
 		if(isFirstVisit(member.getId(),roomId)){
@@ -69,6 +73,7 @@ public class ChatMessageService {
 		}
 		memberChatRoom.setRecentConnect(LocalDateTime.now());  //최근 접속한 시간
 		memberChatRoomRepository.save(memberChatRoom);
+		// return previousMessages;
 	}
 	//메시지저장  TALK
 	@Transactional

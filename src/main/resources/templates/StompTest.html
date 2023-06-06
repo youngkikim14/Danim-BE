@@ -33,7 +33,7 @@
 <label for="message">Message:</label><br>
 <input type="text" id="message" name="message"><br>
 <button id="send">Send</button>
-
+<div id="messages"></div>
 <script type="text/javascript">
     var socket;
     var stompClient;
@@ -47,13 +47,18 @@
             console.log('Connected: ' + frame);
             stompClient.subscribe(subscription, function(message) { // use the value from the 'subscription' field
                 console.log(message.body);
+
+                var messagesDiv = document.getElementById('messages');
+                var messageDiv = document.createElement('div');
+
+                // Here, you might need to parse the message.body depending on the format of your messages
+                messageDiv.textContent = message.body;
+                messagesDiv.appendChild(messageDiv);
             });
             document.getElementById('connect').disabled = true;
             document.getElementById('disconnect').disabled = false;
         });
     });
-
-
 
     document.getElementById('disconnect').addEventListener('click', function() {
         if (stompClient !== null) {
@@ -77,11 +82,9 @@
             'message': message
         };
         stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
+    });
 
-    });
-    stompClient.subscribe(subscription, function(message) {
-        console.log('Received message: ', message.body);
-    });
 </script>
+
 </body>
 </html>
