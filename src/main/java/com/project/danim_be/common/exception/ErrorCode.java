@@ -1,7 +1,5 @@
 package com.project.danim_be.common.exception;
 
-import java.util.HashSet;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

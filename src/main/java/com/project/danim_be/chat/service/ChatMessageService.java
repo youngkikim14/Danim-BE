@@ -15,7 +15,6 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.notification.service.NotificationService;
-import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

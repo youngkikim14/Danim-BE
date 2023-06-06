@@ -1,12 +1,12 @@
 package com.project.danim_be.chat.entity;
 
-import java.time.LocalDateTime;
-
 import com.project.danim_be.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
