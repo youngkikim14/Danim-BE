@@ -58,10 +58,16 @@ public class SearchService {
         QPost qPost = QPost.post;
 
         if (searchRequestDto.getAgeRange() != null) {
-            predicate.and(qPost.ageRange.containsIgnoreCase(searchRequestDto.getAgeRange()));
+            String[] ageRangeList = searchRequestDto.getAgeRange().split(",");
+            for (String ageRange : ageRangeList) {
+                predicate.or(qPost.ageRange.containsIgnoreCase(ageRange));
+            }
         }
         if (searchRequestDto.getKeyword() != null) {
-            predicate.and(qPost.keyword.containsIgnoreCase(searchRequestDto.getKeyword()));
+            String[] keywordList = searchRequestDto.getKeyword().split(",");
+            for (String keyword : keywordList) {
+                predicate.or(qPost.ageRange.containsIgnoreCase(keyword));
+            }
         }
         if (searchRequestDto.getLocation() != null) {
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
