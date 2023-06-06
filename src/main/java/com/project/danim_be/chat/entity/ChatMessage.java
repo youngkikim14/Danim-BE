@@ -1,7 +1,5 @@
 package com.project.danim_be.chat.entity;
 
-import java.time.LocalDateTime;
-
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.common.entity.Timestamped;
 import jakarta.persistence.*;

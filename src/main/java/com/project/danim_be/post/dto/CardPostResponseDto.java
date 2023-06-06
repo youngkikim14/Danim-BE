@@ -1,6 +1,5 @@
 package com.project.danim_be.post.dto;
 
-import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 
@@ -24,7 +23,6 @@ public class CardPostResponseDto {
     public CardPostResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getPostTitle();
-
         this.recruitmentEndDate = post.getRecruitmentEndDate();
         // if(post.getImageList().size()!=0){
         //     this.imageUrl = post.getImageList().get(0).getImageUrl();

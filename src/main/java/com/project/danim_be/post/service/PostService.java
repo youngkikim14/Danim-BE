@@ -1,21 +1,8 @@
 package com.project.danim_be.post.service;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-
-
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
-
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
@@ -33,15 +20,17 @@ import com.project.danim_be.post.repository.ContentRepository;
 import com.project.danim_be.post.repository.ImageRepository;
 import com.project.danim_be.post.repository.MapApiRepository;
 import com.project.danim_be.post.repository.PostRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -103,6 +92,9 @@ public class PostService {
 				.build();
 			imageRepository.save(image);
 		}
+
+
+
 		String roomId = UUID.randomUUID().toString();
 		ChatRoom chatRoom =ChatRoom.builder()
 			.roomId(roomId)
@@ -127,6 +119,7 @@ public class PostService {
 
 		Image image = new Image(imageUrl);
 		imageRepository.save(image);
+
 
 		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공",imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);
@@ -196,7 +189,7 @@ public class PostService {
 	// 게시글 상세 조회
 	public ResponseEntity<Message> readPost(Long id) {
 
-		Post post = postRepository.findByIdAndIsDeletedFalse(id).orElseThrow(()
+		Post post = postRepository.findById(id).orElseThrow(()
 			->new CustomException(ErrorCode.POST_NOT_FOUND));
 
 		PostResponseDto postResponseDto = new PostResponseDto(post);

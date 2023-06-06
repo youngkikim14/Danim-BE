@@ -57,17 +57,13 @@ class MemberServiceTest {
     void signupTest() {
         // given
         signupRequestDto = new SignupRequestDto("limslki333@hanmail.net",
-                "1234", "우아한고양이", "30-39");
+                "1234", "우아한고양이", "30대", "여", true, true);
 
         // when
         ResponseEntity<Message> result = memberService.signup(signupRequestDto);
 
         // then
         assertEquals(result.getBody().getMessage(), "회원 가입 성공");
-//        assertEquals(member.getUserId(), signupRequestDto.getUserId());
-//        assertEquals(member.getPassword(), signupRequestDto.getPassword());
-//        assertEquals(member.getNickname(), signupRequestDto.getNickname());
-//        assertEquals(member.getAgeRange(), signupRequestDto.getAgeRange());
     }
 
     @Test

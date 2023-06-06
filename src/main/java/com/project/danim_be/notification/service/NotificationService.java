@@ -60,7 +60,9 @@ public class NotificationService {
         // 유저 ID로 SseEmitter를 찾아 이벤트를 발생 시킨다.
         for (Long userId : userIdList) {
 
+
             MemberChatRoom memberChatRoom = memberChatRoomRepository.findById(memberChatRoomId).orElseThrow(
+
                     () -> new NoSuchElementException("없는 멤버챗룸임")
             );
 

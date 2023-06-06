@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -49,6 +47,7 @@ public class WebSecurityConfig {
 			"/swagger-ui/**",
 			"/api/posts/**",
 			"/ws-stomp/**",
+			"/api/post/{postId}",
 			"/api/post/image"
 
 
@@ -102,7 +101,6 @@ public class WebSecurityConfig {
 		configuration.addAllowedOrigin("http://localhost:3000");
 		configuration.addAllowedOrigin("http://localhost:8080");
 		configuration.addAllowedOrigin("http://127.0.0.1:3000");
-		configuration.addAllowedOrigin("http://localhost:63342");
 		configuration.addAllowedOrigin("http://jxy.me/**");
 		configuration.addAllowedOrigin("http://jxy.me/");
 
