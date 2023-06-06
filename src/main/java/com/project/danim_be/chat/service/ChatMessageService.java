@@ -89,8 +89,8 @@ public class ChatMessageService {
 
 		//강퇴당한사람인지 검사한다.
 
-// 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
-// 			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
+			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 // 		if ( memberChatRoom.getKickMember()) {
 // 			throw new CustomException(ErrorCode.USER_KICKED);
 // 		}
