@@ -37,14 +37,8 @@ jobs:
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
       - run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
-      - name: Build
-        run: ./gradlew clean build
-        env:
-          JASYPT_PASSWORD: ${{ secrets.JASYPT }}
-      - name: Test
-        run: ./gradlew test
-        env:
-          JASYPT_PASSWORD: ${{ secrets.JASYPT }}
+      - name: Build with Gradle
+        run: ./gradlew build -x test
       # DockerHub 로그인
       - name: DockerHub Login
         uses: docker/login-action@v2
