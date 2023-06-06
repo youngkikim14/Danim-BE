@@ -1,6 +1,7 @@
 package com.project.danim_be.chat.service;
 
 import com.project.danim_be.chat.dto.ChatRoomDto;
+import com.project.danim_be.chat.dto.ChatRoomIdDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.entity.MemberChatRoom;
@@ -47,6 +48,21 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 채팅방", chatRoomResponseDtoList));
 	}
+
+	public ResponseEntity<Message> allChatRoom() {
+		List<Post> postList = postRepository.findAll();
+		List<ChatRoomIdDto> ChatRoomIdDtos = new ArrayList<>();
+		for (Post post : postList) {
+			ChatRoom chatRoom = post.getChatRoom();
+			ChatRoomIdDto ChatRoomIdDto = new ChatRoomIdDto(chatRoom);
+			ChatRoomIdDtos.add(ChatRoomIdDto);
+		}
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모든채팅방", ChatRoomIdDtos));
+	}
+
+
+
+
 
 	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
