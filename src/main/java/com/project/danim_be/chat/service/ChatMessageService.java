@@ -79,9 +79,9 @@ public class ChatMessageService {
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		if(!sendMember.getNickname().equals(chatDto.getSender())){
-			throw new CustomException(ErrorCode.SENDER_MISMATCH);
-		}
+		// if(sendMember.getNickname().equals(chatDto.getSender())){
+		// 	throw new CustomException(ErrorCode.SENDER_MISMATCH);
+		// }
 
 		//강퇴당한사람인지 검사한다.
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom).orElse(null);

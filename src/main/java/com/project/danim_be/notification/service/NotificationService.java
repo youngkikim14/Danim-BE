@@ -56,7 +56,7 @@ public class NotificationService {
             Member member = memberRepository.findById(userId).orElseThrow(
                     () -> new CustomException(ErrorCode.ID_NOT_FOUND)
             );
-            MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMember(member).orElseThrow(
+            MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberId(member.getId()).orElseThrow(
                     () -> new NoSuchElementException("없는 멤버챗룸임")
             );
             if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
