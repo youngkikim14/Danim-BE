@@ -41,13 +41,6 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private String keyword;                		//키워드
 	@Column(nullable = false)
-
-	private Integer groupSize;			//인원수
-
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-	@Builder.Default
-	private List<Content> contents =  new ArrayList<>();		//내용
-
 	private String location;            		//지역
 	@Column(nullable = false)
 	private Integer groupSize;            		//인원수

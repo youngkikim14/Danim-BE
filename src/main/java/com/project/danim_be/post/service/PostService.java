@@ -135,9 +135,6 @@ public class PostService {
 	//게시글 수정
 	@Transactional
 	public ResponseEntity<Message> updatePost(Long id,Member member, PostRequestDto requestDto) {
-
-
-
 		Post post = postRepository.findById(id).orElseThrow(()
 			->new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -146,7 +143,6 @@ public class PostService {
 		}
 
 		post.update(requestDto);
-
 
 		Content content = contentRepository.findByPostId(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -166,9 +162,6 @@ public class PostService {
 				.build();
 			imageRepository.save(image);
 		}
-
-
-
 
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 수정 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
