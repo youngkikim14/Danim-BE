@@ -57,24 +57,33 @@ public class SearchService {
         BooleanBuilder predicate = new BooleanBuilder();
         QPost qPost = QPost.post;
 
-        if (searchRequestDto.getAgeRange() != null) {
-            String[] ageRangeList = searchRequestDto.getAgeRange().split(",");
-            for (String ageRange : ageRangeList) {
-                predicate.or(qPost.ageRange.containsIgnoreCase(ageRange));
-            }
-        }
-        if (searchRequestDto.getKeyword() != null) {
-            String[] keywordList = searchRequestDto.getKeyword().split(",");
-            for (String keyword : keywordList) {
-                predicate.or(qPost.ageRange.containsIgnoreCase(keyword));
-            }
-        }
+
         if (searchRequestDto.getLocation() != null) {
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
         }
+
         if (searchRequestDto.getSearchKeyword() != null) {
             predicate.and(qPost.postTitle.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
         }
+
+        if (searchRequestDto.getAgeRange() != null) {
+            String[] ageRangeList = searchRequestDto.getAgeRange().split(",");
+            BooleanBuilder ageRangePredicate = new BooleanBuilder();
+            for (String ageRange : ageRangeList) {
+                ageRangePredicate.or(qPost.ageRange.containsIgnoreCase(ageRange));
+            }
+            predicate.and(ageRangePredicate);
+        }
+
+        if (searchRequestDto.getKeyword() != null) {
+            String[] keywordList = searchRequestDto.getKeyword().split(",");
+            BooleanBuilder keywordPredicate = new BooleanBuilder();
+            for (String keyword : keywordList) {
+                keywordPredicate.or(qPost.keyword.containsIgnoreCase(keyword));
+            }
+            predicate.and(keywordPredicate);
+        }
+
         predicate.and(qPost.isDeleted.eq(false));
 
         // 동적 쿼리 실행
