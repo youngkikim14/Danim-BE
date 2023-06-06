@@ -78,7 +78,7 @@ public class ChatController {
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
 			}
 			case KICK -> {
-
+				System.out.println("TYPE : KICK");
 				chatMessageService.kickMember(chatDto);
 
 				ChatDto kickMessage = ChatDto.builder()
