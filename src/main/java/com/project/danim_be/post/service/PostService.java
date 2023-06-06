@@ -103,6 +103,9 @@ public class PostService {
 				.build();
 			imageRepository.save(image);
 		}
+
+
+
 		String roomId = UUID.randomUUID().toString();
 		ChatRoom chatRoom =ChatRoom.builder()
 			.roomId(roomId)
@@ -127,6 +130,7 @@ public class PostService {
 
 		Image image = new Image(imageUrl);
 		imageRepository.save(image);
+
 
 		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공",imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);

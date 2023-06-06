@@ -55,6 +55,7 @@ public class Post extends Timestamped {
 	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
 	private List<Image> imageUrls;
 
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;

@@ -49,6 +49,7 @@ public class WebSecurityConfig {
 			"/swagger-ui/**",
 			"/api/posts/**",
 			"/ws-stomp/**",
+			"/api/post/{postId}",
 			"/api/post/image"
 
 
