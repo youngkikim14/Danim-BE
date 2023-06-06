@@ -43,7 +43,8 @@ public enum ErrorCode {
 	COMPLETE_MATCHING(HttpStatus.UNAUTHORIZED, "모집이 완료되었습니다.", "모집 완료"),
 	ALREADY_WRITTEN(HttpStatus.UNAUTHORIZED, "이미 작성하였습니다.", "권한이 없는 사용자입니다."),
 	USER_KICKED(HttpStatus.UNAUTHORIZED, "이미 강퇴당한 방입니다.", "권한이 없는 사용자입니다."),
-	NOT_MATCHING(HttpStatus.NOT_ACCEPTABLE, "매칭 조건과 맞지 않습니다.", "권한이 없는 사용자입니다");
+	NOT_MATCHING(HttpStatus.NOT_ACCEPTABLE, "매칭 조건과 맞지 않습니다.", "권한이 없는 사용자입니다"),
+	MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지않는 메시지입니다." ,"");
 
 	private final HttpStatus httpStatus;
 	private final String detail;
