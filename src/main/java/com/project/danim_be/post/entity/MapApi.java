@@ -12,7 +12,6 @@ import lombok.Builder;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class MapApi {
 
 	@Id
