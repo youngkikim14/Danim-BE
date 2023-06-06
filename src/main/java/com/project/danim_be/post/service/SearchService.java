@@ -62,9 +62,6 @@ public class SearchService {
         if (searchRequestDto.getKeyword() != null) {
             predicate.and(qPost.keyword.containsIgnoreCase(searchRequestDto.getKeyword()));
         }
-        if (searchRequestDto.getGroupSize() != null) {
-            predicate.and(qPost.groupSize.eq(searchRequestDto.getGroupSize()));
-        }
         if (searchRequestDto.getLocation() != null) {
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
         }
