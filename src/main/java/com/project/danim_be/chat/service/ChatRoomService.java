@@ -119,9 +119,40 @@ public class ChatRoomService {
 					chatRoomDtoList.add(new ChatRoomDto(memberChatRoom));
 				}
 			}
+
+			Post validPost = postRepository.findById(id).orElseThrow(
+				() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+			);
+			// 게시물에 등록된 성별과 나이대를 , 기준으로 배열로 만듬
+			String ageRange = validPost.getAgeRange().toString();
+			String[] ageRangeArray = ageRange.split(",");
+			String gender = validPost.getGender().toString();
+			String[] genderArray = gender.split(",");
+			// 들어오려는 사람의 정보와 비교해서 아니라면 매칭 불가
+			if (Arrays.asList(ageRangeArray).contains(member.getGender()) && Arrays.asList(genderArray)
+				.contains(member.getGender())) {
+				// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
+				if (!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(),
+					chatRoom.getRoomId())) {
+					post = postRepository.findByChatRoom_Id(id).orElseThrow(
+						() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+					);
+					;
+					post.incNumberOfParticipants();
+					postRepository.save(post);
+				} else {
+					throw new CustomException(ErrorCode.NOT_MATCHING);
+				}
+				return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방 입장", chatRoomDtoList));
+			}
+		}
+		return null;
 		} else {
 			throw new CustomException(ErrorCode.COMPLETE_MATCHING);
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방 입장", chatRoomDtoList));
 	}
 }
+
+
+
