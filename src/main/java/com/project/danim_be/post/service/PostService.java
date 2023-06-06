@@ -65,9 +65,9 @@ public class PostService {
 			.tripEndDate(requestDto.getTripEndDate())
 			.location(requestDto.getLocation())
 			.groupSize(requestDto.getGroupSize())
+			.keyword(requestDto.getKeyword())
 			.ageRange(String.join(",", requestDto.getAgeRange()))
 			.gender(String.join(",", requestDto.getGender()))
-			.keyword(requestDto.getKeyword())
 			.numberOfParticipants(0)
 			.member(member)
 			.isDeleted(false)
@@ -124,6 +124,8 @@ public class PostService {
 	@Transactional
 	public ResponseEntity<Message> updatePost(Long id,Member member, PostRequestDto requestDto) {
 
+
+
 		Post post = postRepository.findById(id).orElseThrow(()
 			->new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -133,17 +135,28 @@ public class PostService {
 
 		post.update(requestDto);
 
-		contentRepository.deleteByPostId(id);
 
-		// List<Content> contents =  post.getContents();
+		Content content = contentRepository.findByPostId(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+		content.update(requestDto.getContent());
+		contentRepository.save(content);
 
-		// for (Content content : contents){
-		// 	Image image =  content.getImage();
-		// 	if(image!=null){
-		// 		String imageUrl =  image.getImageUrl();
-		// 		s3Uploader.delete(imageUrl);
-		// 	}
-		// }
+		MapApi map = mapApiRepository.findByPostId(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+		map.update(requestDto.getMapAPI());
+		mapApiRepository.save(map);
+
+		//보류
+		for(String url : requestDto.getImageUrls()) {
+			Image image = Image.builder()
+				.post(post)
+				.imageUrl(url)
+				.build();
+			imageRepository.save(image);
+		}
+
+
+
 
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 수정 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);

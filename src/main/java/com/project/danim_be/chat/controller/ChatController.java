@@ -3,13 +3,20 @@ package com.project.danim_be.chat.controller;
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.service.ChatMessageService;
 import com.project.danim_be.chat.service.ChatRoomService;
+import com.project.danim_be.common.util.Message;
+import com.project.danim_be.security.auth.UserDetailsImpl;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
 
@@ -18,13 +25,13 @@ import java.security.Principal;
 public class ChatController {
 
 	@Autowired
-	private  SimpMessageSendingOperations messagingTemplate;
+	private SimpMessageSendingOperations messagingTemplate;
 	private final ChatMessageService chatMessageService;
 	private final ChatRoomService chatRoomService;
 
 	// 메시지가왔을때 실행
 	@MessageMapping("/chat/message")
-	public void message(@Payload ChatDto chatDto, Principal principal){
+	public void message(@Payload ChatDto chatDto, Principal principal) {
 
 		switch (chatDto.getType()) {
 
@@ -64,7 +71,7 @@ public class ChatController {
 
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
 			}
-			case KICK ->{
+			case KICK -> {
 
 				chatMessageService.kickMember(chatDto);
 
@@ -78,16 +85,15 @@ public class ChatController {
 			}
 		}
 
-		}
-
 	}
 
-//=================================================================================================================================
-	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
-	// @PostMapping("")
-	// public ResponseEntity<Message> joinChatRoom(@PathVariable("Post_id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-	// 	return chatRoomService.joinChatRoom(id, userDetails.getMember());
-	// }
+	//=================================================================================================================================
+	// 	채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
+	@PostMapping("api/chat/{roomId}")
+	public ResponseEntity<Message> joinChatRoom(@PathVariable("Post_id") Long id,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return chatRoomService.joinChatRoom(id, userDetails.getMember());
+	}
+}
 	//
 	// //내가 쓴글의 채팅방 목록조회
 	// @GetMapping("")

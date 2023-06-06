@@ -23,4 +23,12 @@ public class MapApi {
 	@Column(columnDefinition = "TEXT")
 	private String map;
 
+	private Boolean isDeleted;
+
+	public void update(String mapAPI) {
+		this.map = mapAPI;
+	}
+	public void delete() {
+		this.isDeleted = true;
+	}
 }

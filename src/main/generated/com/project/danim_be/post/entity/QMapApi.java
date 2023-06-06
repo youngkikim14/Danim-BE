@@ -24,6 +24,8 @@ public class QMapApi extends EntityPathBase<MapApi> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final StringPath map = createString("map");
 
     public final QPost post;
