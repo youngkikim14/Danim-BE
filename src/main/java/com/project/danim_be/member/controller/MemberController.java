@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -104,7 +105,7 @@ public class MemberController {
 	// 소셜 로그인 시 추가 회원 정보 작성
 	@Operation(summary = "추가 사용자 정보 작성 API", description = "추가 사용자 정보 작성")
 	@PostMapping("/userInfo")
-	public ResponseEntity<Message> addUserInfo(@RequestBody UserInfoRequestDto userInfoRequestDto) {
+	public ResponseEntity<Message> addUserInfo(@Valid @RequestBody UserInfoRequestDto userInfoRequestDto) {
 		return memberService.addUserInfo(userInfoRequestDto);
 	}
 
@@ -137,8 +138,8 @@ public class MemberController {
 
 	//마이페이지 - 회원정보 수정
 	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
-	@PutMapping("{ownerId}/myInfo")
-	public ResponseEntity<Message> editMember(@PathVariable Long ownerId,@RequestBody MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+	@PutMapping(value = "{ownerId}/myInfo",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Message> editMember(@PathVariable Long ownerId, @ModelAttribute MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 		return memberService.editMember(ownerId ,mypageRequestDto, userDetails.getMember());
 	}
 

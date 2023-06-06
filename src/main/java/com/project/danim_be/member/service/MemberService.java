@@ -9,6 +9,7 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.post.dto.MypagePostResponseDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
@@ -29,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class MemberService {
 	private final ReviewRepository reviewRepository;
 	private final JPAQueryFactory queryFactory;
 	private final RandomNickname randomNickname;
+	private final NotificationService notificationService;
 
 	//회원가입
 	@Transactional
@@ -63,6 +66,12 @@ public class MemberService {
 		String password = passwordEncoder.encode(signupRequestDto.getPassword());
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
+		if(memberRepository.findByUserId(userId).isPresent()){
+			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
+		}
+		if(memberRepository.findByNickname(nickname).isPresent()){
+			throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+		}
 
 		Member member = Member.builder()
 				.userId(userId)
@@ -117,7 +126,8 @@ public class MemberService {
 
 		member.update(userInfoRequestDto);
 
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
+		SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+		LoginResponseDto loginResponseDto =new LoginResponseDto(member, sseEmitter);
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
 	}
 
@@ -148,7 +158,9 @@ public class MemberService {
 		}
 		setHeader(response, tokenDto);
 
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
+		SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+
+		LoginResponseDto loginResponseDto =new LoginResponseDto(member, sseEmitter);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
@@ -234,6 +246,7 @@ public class MemberService {
 		Member owner = findMember(ownerId);
 		Member member = findMember(memberId);
 		List<MypageReviewResponseDto> reviewList;
+
 		if (ownerId.equals(memberId)){
 			reviewList = getReview(member.getId());
 		} else {
@@ -247,11 +260,15 @@ public class MemberService {
 	@Transactional
 	public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
 		Member owner = findMember(ownerId);
-		if (owner == member) {
+
+		if (owner.getId().equals(member.getId())) {
 			String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
-			member.editMemeber(mypageRequestDto, imageUrl);
+			member.editMember(mypageRequestDto, imageUrl);
+
+			memberRepository.save(member);
+
 		} else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료", member));
 	}
 
 

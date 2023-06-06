@@ -3,7 +3,6 @@ package com.project.danim_be.security.config;
 
 import com.project.danim_be.security.jwt.JwtAuthenticationFilter;
 import com.project.danim_be.security.jwt.JwtUtil;
-
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -11,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -47,7 +47,10 @@ public class WebSecurityConfig {
 			/* swagger v3 */
 			"/v3/api-docs/**",
 			"/swagger-ui/**",
-			"/api/posts/**"
+			"/api/posts/**",
+			"/ws-stomp/**",
+			"/api/post/image"
+
 
 	};
 
@@ -55,23 +58,13 @@ public class WebSecurityConfig {
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring()
-			.requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+				.requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
+
 	//비밀번호 암호화
 	@Bean
 	public PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
-	}
-
-	// h2콘솔 접근허용
-	@Bean
-	@Order(Ordered.HIGHEST_PRECEDENCE)	// 이 필터체인이 다른필터체인보다 우선순위가 높음을 표시.
-	SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
-		http.securityMatcher(PathRequest.toH2Console());	//h2콘솔에 대한 요청만 체인을 사용한다.
-		http.csrf((csrf) -> csrf.disable());				//csrf에대한 보호를 비활성한다.
-		http.headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin()));
-		// http.authorizeRequests().dispatcherTypeMatchers(HttpMethod.valueOf("/h2-console/**")).permitAll();
-		return http.build();
 	}
 
 	@Bean
@@ -81,23 +74,26 @@ public class WebSecurityConfig {
 		// 시큐리티 최신문서 찾아보기(아직안찾아봄)
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http.csrf().disable()	;	//csrf 비활성화
+		http.csrf().disable();    //csrf 비활성화
 
-			http.authorizeHttpRequests(request -> request
+		http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 				.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/post/{postId}").permitAll()
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/status", "/images/**").permitAll()
+				.requestMatchers("/ws/**").permitAll()
 				.anyRequest()
 				.authenticated()
 
-			);
+		);
 		http.cors();
 
 		http.addFilterBefore(jwtUtil, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
+
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
@@ -106,6 +102,9 @@ public class WebSecurityConfig {
 		configuration.addAllowedOrigin("http://localhost:3000");
 		configuration.addAllowedOrigin("http://localhost:8080");
 		configuration.addAllowedOrigin("http://127.0.0.1:3000");
+		configuration.addAllowedOrigin("http://jxy.me/**");
+		configuration.addAllowedOrigin("http://jxy.me/");
+
 
 		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
 		configuration.addExposedHeader(JwtUtil.REFRESH_KEY);

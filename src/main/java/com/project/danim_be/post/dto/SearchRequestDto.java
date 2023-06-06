@@ -1,10 +1,10 @@
 package com.project.danim_be.post.dto;
 
 import lombok.Getter;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class SearchRequestDto {
 
     private String ageRange;

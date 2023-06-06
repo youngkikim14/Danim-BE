@@ -8,6 +8,9 @@ import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +26,21 @@ import java.util.List;
 public class SearchService {
 
     private final PostRepository postRepository;
+    private final JPAQueryFactory queryFactory;
 
     //전체 조회
     public ResponseEntity<Message> allPosts(Pageable pageable){
-        List<Post> postList = postRepository.findAllByOrderByCreatedAt(pageable);
+        QPost qPost = QPost.post;
+        NumberExpression<Integer> condition = new CaseBuilder().when(qPost.groupSize.eq(qPost.numberOfParticipants))
+                .then(1)
+                .otherwise(0);
+        List<Post> postList = queryFactory
+                .selectFrom(qPost)
+                .where(qPost.isDeleted.eq(false))
+                .orderBy(condition.asc(), qPost.recruitmentEndDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
         List<CardPostResponseDto> cardPostResponseDtoList = new ArrayList<>();
         for (Post post : postList) {
             cardPostResponseDtoList.add(new CardPostResponseDto(post));
@@ -54,6 +68,7 @@ public class SearchService {
         if (searchRequestDto.getSearchKeyword() != null) {
             predicate.and(qPost.postTitle.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
         }
+        predicate.and(qPost.isDeleted.eq(false));
 
         // 동적 쿼리 실행
         Page<Post> result = postRepository.findAll(predicate, pageable);

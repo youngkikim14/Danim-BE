@@ -1,11 +1,10 @@
 package com.project.danim_be.security.auth;
 
-import java.util.Collection;
-
+import com.project.danim_be.member.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.project.danim_be.member.entity.Member;
+import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
 	private final Member member;

@@ -1,6 +1,7 @@
 package com.project.danim_be.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Data
@@ -10,7 +11,9 @@ import lombok.*;
 @AllArgsConstructor
 public class UserInfoRequestDto {
     private Long userId;
+    @NotBlank
     private String gender;
+    @NotBlank
     private String ageRange;
     @JsonProperty("AgreeForGender")
     private boolean AgreeForGender;

@@ -7,9 +7,11 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.RandomNickname;
 import com.project.danim_be.common.util.StatusEnum;
+import com.project.danim_be.member.dto.LoginResponseDto;
 import com.project.danim_be.member.dto.MemberRequestDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.security.auth.UserDetailsImpl;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
@@ -26,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -51,6 +54,7 @@ public class NaverService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RandomNickname randomNickname;
+    private final NotificationService notificationService;
 
     @Transactional
     public ResponseEntity<Message> naverLogin(String code, HttpServletResponse response) throws IOException {
@@ -67,11 +71,14 @@ public class NaverService {
 
         Member member = saveMember(memberRequestDto);
 
+        SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+        LoginResponseDto loginResponseDto = new LoginResponseDto(member, sseEmitter);
+
         forceLogin(member);
 
         createToken(member, response);
 
-        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", member.getId()));
+        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
     }
 
     private JsonElement getTokens(String code) throws IOException {

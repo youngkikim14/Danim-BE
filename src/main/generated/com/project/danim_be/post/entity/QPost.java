@@ -26,7 +26,9 @@ public class QPost extends EntityPathBase<Post> {
 
     public final StringPath ageRange = createString("ageRange");
 
-    public final ListPath<Content, QContent> contents = this.<Content, QContent>createList("contents", Content.class, QContent.class, PathInits.DIRECT2);
+    public final com.project.danim_be.chat.entity.QChatRoom chatRoom;
+
+    public final QContent content;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -37,16 +39,22 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<Image, QImage> imageUrls = this.<Image, QImage>createList("imageUrls", Image.class, QImage.class, PathInits.DIRECT2);
+
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     public final StringPath keyword = createString("keyword");
 
     public final StringPath location = createString("location");
 
+    public final QMapApi map;
+
     public final com.project.danim_be.member.entity.QMember member;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
+
+    public final NumberPath<Integer> numberOfParticipants = createNumber("numberOfParticipants", Integer.class);
 
     public final StringPath postTitle = createString("postTitle");
 
@@ -76,6 +84,9 @@ public class QPost extends EntityPathBase<Post> {
 
     public QPost(Class<? extends Post> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.chatRoom = inits.isInitialized("chatRoom") ? new com.project.danim_be.chat.entity.QChatRoom(forProperty("chatRoom"), inits.get("chatRoom")) : null;
+        this.content = inits.isInitialized("content") ? new QContent(forProperty("content"), inits.get("content")) : null;
+        this.map = inits.isInitialized("map") ? new QMapApi(forProperty("map"), inits.get("map")) : null;
         this.member = inits.isInitialized("member") ? new com.project.danim_be.member.entity.QMember(forProperty("member")) : null;
     }
 

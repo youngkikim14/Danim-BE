@@ -1,16 +1,14 @@
 package com.project.danim_be.post.dto;
 
-import java.util.Date;
-import java.util.List;
-
 import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Pattern;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,12 +26,16 @@ public class PostRequestDto {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date tripEndDate;					//여행 마감날짜
 	@Max(value = 10)
-	private Integer groupSize;						//모집인원수
+	private Integer groupSize;					//모집인원수
 	private String location;					//출발(모집)지역
+	private String keyword;						//키워드
+	private String content;						//글내용
+	private String mapAPI;						//지도정보
+	
 	private List<String> ageRange;				//연령대
 	private List<String> gender;				//성별
-	private String keyword;						//키워드
-	private List<ContentRequestDto> contents;	//글내용
+	private List<String> imageUrls;					//이미지Url
+
 
 
 	@Override
@@ -48,8 +50,9 @@ public class PostRequestDto {
 			", groupSize=" + groupSize +'\n'+
 			", location='" + location + '\n'+
 			", ageRange='" + ageRange + '\n'+
+			", mapAPI='" + mapAPI + '\n'+
 			", keyword='" + keyword + '\n'+
-			", contents=" + contents +
+			", contents=" + content +
 			'}';
 	}
 }
