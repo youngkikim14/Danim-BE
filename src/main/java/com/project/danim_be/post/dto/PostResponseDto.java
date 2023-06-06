@@ -16,6 +16,7 @@ public class PostResponseDto {
 
 	private Long 		postId;					//게시글번호
 	private String 		postTitle;				//게시글제목
+	private String 		nickName;				//닉네임
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date recruitmentStartDate;			//모집 시작날짜
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -42,6 +43,7 @@ public class PostResponseDto {
 	public PostResponseDto(Post post){
 		this.postId = post.getId();
 		this.postTitle = post.getPostTitle();
+		this.nickName = post.getMember().getNickName();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
 		this.recruitmentEndDate=post.getRecruitmentEndDate();
 		this.tripStartDate = post.getTripStartDate();
