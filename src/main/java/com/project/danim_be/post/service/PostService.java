@@ -200,7 +200,7 @@ public class PostService {
 	// 게시글 상세 조회
 	public ResponseEntity<Message> readPost(Long id) {
 
-		Post post = postRepository.findByIdAndIsDeletedFalse(id).orElseThrow(()
+		Post post = postRepository.findById(id).orElseThrow(()
 			->new CustomException(ErrorCode.POST_NOT_FOUND));
 
 		PostResponseDto postResponseDto = new PostResponseDto(post);
