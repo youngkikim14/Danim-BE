@@ -66,6 +66,9 @@ public class MemberService {
 		String password = passwordEncoder.encode(signupRequestDto.getPassword());
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
+		String gender = signupRequestDto.getGender();
+		boolean agreeForGender = signupRequestDto.isAgreeForGender();
+		boolean agreeForAge = signupRequestDto.isAgreeForAge();
 		if(memberRepository.findByUserId(userId).isPresent()){
 			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
 		}
@@ -76,9 +79,11 @@ public class MemberService {
 		Member member = Member.builder()
 				.userId(userId)
 				.ageRange(ageRange)
-				.gender(null)
+				.gender(gender)
 				.nickname(nickname)
 				.password(password)
+				.agreeForGender(agreeForGender)
+				.agreeForAge(agreeForAge)
 				.provider("GENERAL")
 				.isDeleted(false)
 				.build();

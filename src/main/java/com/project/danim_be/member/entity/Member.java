@@ -1,6 +1,5 @@
 package com.project.danim_be.member.entity;
 
-import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.dto.MypageRequestDto;
 import com.project.danim_be.member.dto.UserInfoRequestDto;
@@ -9,8 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -55,7 +52,7 @@ public class Member extends Timestamped {
   }
 
 	@Builder
-	public Member(String userId, String gender,  String password, String nickname, String ageRange, String provider, Boolean isDeleted) {
+	public Member(String userId, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted, Boolean agreeForAge, Boolean agreeForGender) {
 		this.userId = userId;
 		this.gender = gender;
 		this.password = password;
@@ -63,6 +60,8 @@ public class Member extends Timestamped {
 		this.ageRange = ageRange;
 		this.provider = provider;
 		this.isDeleted = isDeleted;
+		this.agreeForGender = agreeForGender;
+		this.agreeForAge = agreeForAge;
 	}
 
 	public void editMember (MypageRequestDto mypageRequestDto,String imageUrl) {
