@@ -29,6 +29,7 @@ public class SearchService {
     private final JPAQueryFactory queryFactory;
 
     //전체 조회
+    @Transactional(readOnly = true)
     public ResponseEntity<Message> allPosts(Pageable pageable){
         QPost qPost = QPost.post;
         NumberExpression<Integer> condition = new CaseBuilder().when(qPost.groupSize.eq(qPost.numberOfParticipants))
