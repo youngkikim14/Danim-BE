@@ -1,7 +1,6 @@
 package com.project.danim_be.post.dto;
 
 
-import com.project.danim_be.post.entity.Content;
 import lombok.Getter;
 import lombok.Setter;
 
