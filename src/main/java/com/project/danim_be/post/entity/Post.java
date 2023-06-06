@@ -49,30 +49,26 @@ public class Post extends Timestamped {
 	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL)
 	private ChatRoom chatRoom;
 	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-	private Content content;        //내용
+	private Content content;        			//내용
 	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-	private MapApi map;				//지도 api정보
+	private MapApi map;							//지도 api정보
+	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+	private List<Image> imageUrls;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
+
 	private Boolean isDeleted;
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-	private List<Image> imageList;
+
 
 	//연령대 복수선택가능
-	public void setAgeRange(List<String> ageRange) {
-		this.ageRange = String.join(",", ageRange);
-	}
-
+	public void setAgeRange(List<String> ageRange) {this.ageRange = String.join(",", ageRange);}
 	public List<String> getAgeRange() {
 		return new ArrayList<>(Arrays.asList(this.ageRange.split(",")));
 	}
 
 	// 성별 복수선택가능
-	public void setGender(List<String> gender) {
-		this.gender = String.join(",", gender);
-	}
-
+	public void setGender(List<String> gender) {this.gender = String.join(",", gender);}
 	public List<String> getGender() {
 		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
 	}

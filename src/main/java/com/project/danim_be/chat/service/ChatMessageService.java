@@ -59,10 +59,7 @@ public class ChatMessageService {
 		}
 		//첫 연결시도이면
 		if(isFirstVisit(member.getId(),roomId)){
-			Post post = postRepository.findById(chatRoom.getId())
-				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-			//사용자 +1
-			post.incNumberOfParticipants();
+
 			memberChatRoom = new MemberChatRoom(member, chatRoom);
 			memberChatRoom.setFirstJoinRoom(LocalDateTime.now());	//맨처음 연결한시간과
 		}else{
@@ -73,7 +70,7 @@ public class ChatMessageService {
 		memberChatRoom.setRecentConnect(LocalDateTime.now());  //최근 접속한 시간
 		memberChatRoomRepository.save(memberChatRoom);
 	}
-	//메시지저장  SEND
+	//메시지저장  TALK
 	@Transactional
 	public void sendMessage(ChatDto chatDto) {
 		String roomId = chatDto.getRoomId();
