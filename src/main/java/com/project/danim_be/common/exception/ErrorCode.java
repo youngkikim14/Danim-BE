@@ -18,13 +18,14 @@ public enum ErrorCode {
 	FAIL_SIGNOUT(HttpStatus.BAD_REQUEST, "탈퇴에 실패했습니다.", "사용자 등록 오류입니다."),
 	FILE_CONVERT_FAIL(HttpStatus.BAD_REQUEST, "파일 변환에 실패했습니다", "파일 등록 오류입니다"),
 	CANNOT_WRITE_REVIEW(HttpStatus.BAD_REQUEST, "여행이 종료되어야 작성할 수 있습니다.", "사용자 등록 오류입니다."),
-  
+
 	//404
 	ID_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 아이디 입니다.", "사용자 등록 오류입니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "찾을수 없는 회원입니다.", "사용자 등록 오류입니다."),
 	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.", "사용자 등록 오류입니다."),
 
 	NOT_CONTAIN_AGERANGE(HttpStatus.UNAUTHORIZED,"신청하신 나이대에 포함되지않습니다.","모임 신청 오류입니다."),
+	NOT_CONTAIN_GENDER(HttpStatus.UNAUTHORIZED,"신청하신 성별에 포함되지않습니다.","모임 신청 오류입니다."),
 
 	SENDER_MISMATCH(HttpStatus.NOT_FOUND,"메시지를 보낸사람의 닉네임이 일치하지않습니다." ,"잘못된 접근입니다." ),
 	ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방 입니다.","채팅방 접근오류 입니다."),
