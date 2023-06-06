@@ -1,7 +1,9 @@
 package com.project.danim_be.chat.service;
 
+import com.project.danim_be.chat.dto.ChatRoomDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
 import com.project.danim_be.chat.entity.ChatRoom;
+import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.entity.QMemberChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
@@ -17,8 +19,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -47,10 +51,10 @@ public class ChatRoomService {
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
 		List<ChatRoom> chatRoomList = queryFactory
-			.select(qMemberChatRoom.chatRoom)
-			.from(qMemberChatRoom)
-			.where(qMemberChatRoom.member.id.eq(id))
-			.fetch();
+				.select(qMemberChatRoom.chatRoom)
+				.from(qMemberChatRoom)
+				.where(qMemberChatRoom.member.id.eq(id))
+				.fetch();
 		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
 		for (ChatRoom chatroom : chatRoomList) {
 			if (!chatroom.getPost().getMember().getId().equals(id)){
@@ -61,10 +65,12 @@ public class ChatRoomService {
 	}
 
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
+	@Transactional
 	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
 		ChatRoom chatRoom = chatRoomRepository.findById(id).orElseThrow(
 				() -> new CustomException(ErrorCode.ROOM_NOT_FOUND)
 		);
+
 		//방을찾고
 		Post post = postRepository.findByChatRoom_Id(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -77,8 +83,33 @@ public class ChatRoomService {
 		// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
 		if(!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())){
 			post.incNumberOfParticipants();
-		}
 
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"채팅방 입장"));
+
+		// 채팅방 입장 시 모든 유저 nickname 보내주기
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
+		List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
+		for (MemberChatRoom memberChatRoom : memberChatRoomList) {
+			chatRoomDtoList.add(new ChatRoomDto(memberChatRoom));
+
+		}
+    
+		Post validPost = postRepository.findById(id).orElseThrow(
+				() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
+    
+		String ageRange = validPost.getAgeRange().toString();
+		String[] ageRangeArray = ageRange.split(",");
+		String gender = validPost.getGender().toString();
+		String[] genderArray = gender.split(",");
+		if (Arrays.asList(ageRangeArray).contains(member.getGender()) && Arrays.asList(genderArray).contains(member.getGender())){
+			// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
+			if(!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())){
+				Post post = postRepository.findByChatRoom_Id(id);
+				post.incNumberOfParticipants();
+        postRepository.save(post);
+			}
+		} else throw new CustomException(ErrorCode.NOT_MATCHING);
+
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"채팅방 입장", chatRoomDtoList));
 	}
 }
