@@ -53,13 +53,13 @@ public class ChatMessageService {
 		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 		//강퇴당한사람인지 검사한다.
-		if (memberChatRoom != null) {
-			if (memberChatRoom.getKickMember()) {
-				throw new CustomException(ErrorCode.USER_KICKED);
-			} else {
-				List<ChatDto> previousMessages = allChatList(chatDto);
-			}
-		}
+// 		if (memberChatRoom != null) {
+// 			if (memberChatRoom.getKickMember()) {
+// 				throw new CustomException(ErrorCode.USER_KICKED);
+// 			} else {
+// 				List<ChatDto> previousMessages = allChatList(chatDto);
+// 			}
+// 		}
 		//첫 연결시도이면
 		if(isFirstVisit(member.getId(),roomId)){
 
@@ -91,9 +91,9 @@ public class ChatMessageService {
 
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
 			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
-		if ( memberChatRoom.getKickMember()) {
-			throw new CustomException(ErrorCode.USER_KICKED);
-		}
+// 		if ( memberChatRoom.getKickMember()) {
+// 			throw new CustomException(ErrorCode.USER_KICKED);
+// 		}
 
 
 		// 메세지를 보낸사람. 이 사람에겐 알람을 안보내기 위해

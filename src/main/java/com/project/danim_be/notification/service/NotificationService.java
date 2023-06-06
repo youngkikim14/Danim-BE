@@ -67,7 +67,7 @@ public class NotificationService {
             );
 
 
-            if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
+            if (memberChatRoom.getRecentDisConnect()!=null && memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
                 emitterRepository.get(userId).ifPresentOrElse(sseEmitter -> {
                     try {
                         sseEmitter.send(SseEmitter.event().id(messageId.toString()).name(NOTIFICATION_NAME).data("New notification"));
