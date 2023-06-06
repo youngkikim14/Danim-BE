@@ -44,31 +44,31 @@ public class ChatRoomService {
 			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom);
 			chatRoomResponseDtoList.add(chatRoomResponseDto);
 		}
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 만든 채팅방",chatRoomResponseDtoList));
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 채팅방", chatRoomResponseDtoList));
 	}
 
-	//내가 신청한 채팅방 목록조회
+	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
 		List<ChatRoom> chatRoomList = queryFactory
-				.select(qMemberChatRoom.chatRoom)
-				.from(qMemberChatRoom)
-				.where(qMemberChatRoom.member.id.eq(id))
-				.fetch();
+			.select(qMemberChatRoom.chatRoom)
+			.from(qMemberChatRoom)
+			.where(qMemberChatRoom.member.id.eq(id))
+			.fetch();
 		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
 		for (ChatRoom chatroom : chatRoomList) {
-			if (!chatroom.getPost().getMember().getId().equals(id)){
+			if (!chatroom.getPost().getMember().getId().equals(id)) {
 				chatRoomResponseDtoList.add(new ChatRoomResponseDto(chatroom));
 			}
 		}
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
 	}
 
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	@Transactional
 	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
 		ChatRoom chatRoom = chatRoomRepository.findById(id).orElseThrow(
-				() -> new CustomException(ErrorCode.ROOM_NOT_FOUND)
+			() -> new CustomException(ErrorCode.ROOM_NOT_FOUND)
 		);
 
 		//방을찾고
@@ -77,39 +77,49 @@ public class ChatRoomService {
 		//신청한유저를찾고
 		Member subscriber = memberRepository.findById(id)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		if(!post.getAgeRange().contains(subscriber.getAgeRange())){
+		if (!post.getAgeRange().contains(subscriber.getAgeRange())) {
 			throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
 		}
 		// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
-		if(!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())){
+		if (!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())) {
 			post.incNumberOfParticipants();
 
+			// 채팅방 입장 시 모든 유저 nickname 보내주기
+			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
+			List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
+			for (MemberChatRoom memberChatRoom : memberChatRoomList) {
+				chatRoomDtoList.add(new ChatRoomDto(memberChatRoom));
 
-		// 채팅방 입장 시 모든 유저 nickname 보내주기
-		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
-		List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
-		for (MemberChatRoom memberChatRoom : memberChatRoomList) {
-			chatRoomDtoList.add(new ChatRoomDto(memberChatRoom));
-
-		}
-    
-		Post validPost = postRepository.findById(id).orElseThrow(
-				() -> new CustomException(ErrorCode.POST_NOT_FOUND)
-		);
-    
-		String ageRange = validPost.getAgeRange().toString();
-		String[] ageRangeArray = ageRange.split(",");
-		String gender = validPost.getGender().toString();
-		String[] genderArray = gender.split(",");
-		if (Arrays.asList(ageRangeArray).contains(member.getGender()) && Arrays.asList(genderArray).contains(member.getGender())){
-			// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
-			if(!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())){
-				Post post = postRepository.findByChatRoom_Id(id);
-				post.incNumberOfParticipants();
-        postRepository.save(post);
 			}
-		} else throw new CustomException(ErrorCode.NOT_MATCHING);
 
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"채팅방 입장", chatRoomDtoList));
+			Post validPost = postRepository.findById(id).orElseThrow(
+				() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+			);
+
+			String ageRange = validPost.getAgeRange().toString();
+			String[] ageRangeArray = ageRange.split(",");
+			String gender = validPost.getGender().toString();
+			String[] genderArray = gender.split(",");
+			if (Arrays.asList(ageRangeArray).contains(member.getGender()) && Arrays.asList(genderArray)
+				.contains(member.getGender())) {
+				// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
+				if (!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(),
+					chatRoom.getRoomId())) {
+					post = postRepository.findByChatRoom_Id(id).orElseThrow(
+						() -> new CustomException(ErrorCode.POST_NOT_FOUND)
+					);
+					;
+					post.incNumberOfParticipants();
+					postRepository.save(post);
+				} else {
+					throw new CustomException(ErrorCode.NOT_MATCHING);
+				}
+				return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방 입장", chatRoomDtoList));
+			}
+		}
+		return null;
 	}
 }
+
+
+
