@@ -49,6 +49,7 @@ public class ChatRoomService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 채팅방", chatRoomResponseDtoList));
 	}
 
+	//전체 채팅방 목록조회
 	public ResponseEntity<Message> allChatRoom() {
 		List<Post> postList = postRepository.findAll();
 		List<ChatRoomIdDto> ChatRoomIdDtos = new ArrayList<>();
@@ -59,10 +60,6 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모든채팅방", ChatRoomIdDtos));
 	}
-
-
-
-
 
 	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
@@ -138,5 +135,25 @@ public class ChatRoomService {
 			throw new CustomException(ErrorCode.COMPLETE_MATCHING);
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방 입장", chatRoomDtoList));
+	}
+
+	//신청취소(나가기)
+	public ResponseEntity<Message> exitChatRoom(Long roomId, Member member) {
+		ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		//방을 찾고
+		Post post = postRepository.findByChatRoom_Id(roomId)
+				.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+		//신청한 유저를 찾고
+		MemberChatRoom subscriber = memberChatRoomRepository.findByMember(member)
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		//참여인원 -1
+		post.decNumberOfParticipants();
+		postRepository.save(post);
+
+		//나간시간 바꿔주는 건 ChatMessageService에서 함
+
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방 나가기"));
 	}
 }
