@@ -105,7 +105,7 @@ public class MemberController {
 	// 소셜 로그인 시 추가 회원 정보 작성
 	@Operation(summary = "추가 사용자 정보 작성 API", description = "추가 사용자 정보 작성")
 	@PostMapping("/userInfo")
-	public ResponseEntity<Message> addUserInfo(@RequestBody UserInfoRequestDto userInfoRequestDto) {
+	public ResponseEntity<Message> addUserInfo(@Valid @RequestBody UserInfoRequestDto userInfoRequestDto) {
 		return memberService.addUserInfo(userInfoRequestDto);
 	}
 
