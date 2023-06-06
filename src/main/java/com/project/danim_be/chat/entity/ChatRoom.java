@@ -26,10 +26,10 @@ public class ChatRoom {
 	private String roomId;					//방번호
 	private Long adminMemberId;
 
-	@OneToMany(mappedBy = "chatRoom",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "chatRoom")
 	private List<MemberChatRoom> memberChatRoomList;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "post_id")
 	private Post post;
 

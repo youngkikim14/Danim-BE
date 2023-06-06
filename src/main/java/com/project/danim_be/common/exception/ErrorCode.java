@@ -38,6 +38,8 @@ public enum ErrorCode {
 	FAIL_FIND_MEMBER_CHAT_ROOM(HttpStatus.NOT_FOUND, "이전에 접속했던 채팅방 정보를 찾을 수 없습니다.", "문제가 지속될 경우 관리자에게 문의해주세요."),
 	NOT_ADMIN_ACCESS(HttpStatus.UNAUTHORIZED, "권한이 있는 사용자만 할수있습니다.", "권한이 없는 사용자입니다."),
 	NOT_WRITE_MEMBER(HttpStatus.UNAUTHORIZED, "여행에 참여한 사람만 작성할 수 있습니다.", "권한이 없는 사용자입니다."),
+	EXPIRED_RECRUIT(HttpStatus.UNAUTHORIZED, "모집이 종료되었습니다.", "기한 종료"),
+	COMPLETE_MATCHING(HttpStatus.UNAUTHORIZED, "모집이 완료되었습니다.", "모집 완료"),
 	ALREADY_WRITTEN(HttpStatus.UNAUTHORIZED, "이미 작성하였습니다.", "권한이 없는 사용자입니다."),
 	USER_KICKED(HttpStatus.UNAUTHORIZED, "이미 강퇴당한 방입니다.", "권한이 없는 사용자입니다."),
 	NOT_MATCHING(HttpStatus.NOT_ACCEPTABLE, "매칭 조건과 맞지 않습니다.", "권한이 없는 사용자입니다");
