@@ -33,6 +33,7 @@ public class ChatRoomService {
 	private final PostRepository postRepository;
 	private final JPAQueryFactory queryFactory;
 
+
 	//내가 쓴글의 채팅방 목록조회
 	public ResponseEntity<Message> myChatRoom(Long id) {
 		List<Post> postList = postRepository.findByMember_Id(id);
