@@ -24,9 +24,7 @@ public class CardPostResponseDto {
         this.id = post.getId();
         this.title = post.getPostTitle();
         this.tripEndDate = post.getTripEndDate();
-        if(post.getImageList().size()!=0){
-            this.imageUrl = post.getImageList().get(0).getImageUrl();
-        }
+
         this.nickname = post.getMember().getNickname();
         this.groupSize = post.getGroupSize();
         this.location = post.getLocation();

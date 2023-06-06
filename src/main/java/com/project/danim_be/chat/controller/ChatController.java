@@ -5,15 +5,22 @@ import com.project.danim_be.chat.service.ChatMessageService;
 import com.project.danim_be.chat.service.ChatRoomService;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.security.auth.UserDetailsImpl;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -71,11 +78,7 @@ public class ChatController {
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
 			}
 			case KICK -> {
-				//핑퐁
-				//Talk일때 닉네임검사(완료)
-				//Enter시 첫방문일시 post의 참여자수 +1 (완료)
-				//jwt-주석처리하기(완료)
-				//강퇴 (완료)
+
 				chatMessageService.kickMember(chatDto);
 
 				ChatDto kickMessage = ChatDto.builder()
@@ -88,6 +91,31 @@ public class ChatController {
 			}
 		}
 
+
+	}
+
+	//=================================================================================================================================
+	// 	채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
+	@PostMapping("api/chat/{roomId}")
+	public ResponseEntity<Message> joinChatRoom(@PathVariable("Post_id") Long id,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return chatRoomService.joinChatRoom(id, userDetails.getMember());
+	}
+}
+	//
+	// //내가 쓴글의 채팅방 목록조회
+	// @GetMapping("")
+	// public ResponseEntity<Message> myChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	// 	return chatRoomService.myChatRoom(userDetails.getMember().getId());
+	// }
+	//
+	//
+	// //내가 신청한 채팅방 목록조회
+	// @GetMapping("")
+	// public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	// 	return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
+	// }
+	//
+=======
 	}
 
 
@@ -113,6 +141,7 @@ public class ChatController {
 		return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
 	}
 }
+
 
 
 	//추방하기

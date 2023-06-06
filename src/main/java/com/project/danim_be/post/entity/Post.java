@@ -26,53 +26,64 @@ public class Post extends Timestamped {
 	private Long id;
 	@Column(nullable = false)
 	private String postTitle;            		//게시글 제목
+
 	@Column(nullable = false)
 	private Date recruitmentStartDate;    		//모집 등록날짜
+
 	@Column(nullable = false)
 	private Date recruitmentEndDate;    		//모집 마감날짜
+
 	@Column(nullable = false)
 	private Date tripStartDate;            		//여행 시작날짜
+
 	@Column(nullable = false)
 	private Date tripEndDate;            		//여행 종료날짜
-	@Column(nullable = false)
-	private String ageRange;            		//연령대
-	@Column(nullable = false)
-	private String gender;                		//성별
-	@Column(nullable = false)
-	private String keyword;                		//키워드
+
 	@Column(nullable = false)
 	private String location;            		//지역
+
 	@Column(nullable = false)
 	private Integer groupSize;            		//인원수
+
+	@Column(nullable = false)
+	private String keyword;                		//키워드
+
+	@Column(nullable = false)
+	private String ageRange;            		//연령대
+
+	@Column(nullable = false)
+	private String gender;                		//성별
+
 	@Column(nullable = false)
 	private Integer numberOfParticipants ;    	//현재참여자수
-	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL)
+
+	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private ChatRoom chatRoom;
-	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-	private Content content;        //내용
-	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-	private MapApi map;				//지도 api정보
+
+	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private Content content;        			//내용
+
+	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private MapApi map;							//지도 api정보
+
+	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private List<Image> imageUrls;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
+
 	private Boolean isDeleted;
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-	private List<Image> imageList;
+
 
 	//연령대 복수선택가능
-	public void setAgeRange(List<String> ageRange) {
-		this.ageRange = String.join(",", ageRange);
-	}
-
+	public void setAgeRange(List<String> ageRange) {this.ageRange = String.join(",", ageRange);}
 	public List<String> getAgeRange() {
 		return new ArrayList<>(Arrays.asList(this.ageRange.split(",")));
 	}
 
 	// 성별 복수선택가능
-	public void setGender(List<String> gender) {
-		this.gender = String.join(",", gender);
-	}
-
+	public void setGender(List<String> gender) {this.gender = String.join(",", gender);}
 	public List<String> getGender() {
 		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
 	}
@@ -86,14 +97,15 @@ public class Post extends Timestamped {
 		this.location = requestDto.getLocation();
 		this.groupSize = requestDto.getGroupSize();
 		this.keyword = requestDto.getKeyword();
-		this.setAgeRange(requestDto.getAgeRange());
-		this.setGender(requestDto.getGender());
+		// this.setAgeRange(requestDto.getAgeRange());
+		// this.setGender(requestDto.getGender());
 
 	}
 
 	public void delete() {
 		this.isDeleted = true;
 		content.delete();
+		map.delete();
 	}
 
 	public void setChatRoom(ChatRoom chatRoom) {

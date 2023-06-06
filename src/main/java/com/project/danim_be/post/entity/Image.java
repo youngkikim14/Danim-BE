@@ -19,7 +19,7 @@ public class Image {
 
 	private String imageUrl;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private Post post;
 
 	private boolean isDeleted;
