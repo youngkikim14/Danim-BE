@@ -54,6 +54,7 @@ public class Post extends Timestamped {
 	private MapApi map;							//지도 api정보
 	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
 	private List<Image> imageUrls;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
@@ -73,20 +74,20 @@ public class Post extends Timestamped {
 		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
 	}
 
-	public void update(PostRequestDto requestDto) {
-		this.postTitle = requestDto.getPostTitle();
-		this.recruitmentStartDate = requestDto.getRecruitmentStartDate();
-		this.recruitmentEndDate = requestDto.getRecruitmentEndDate();
-		this.tripStartDate = requestDto.getTripStartDate();
-		this.tripEndDate = requestDto.getTripEndDate();
-		this.location = requestDto.getLocation();
-		this.groupSize = requestDto.getGroupSize();
-		this.keyword = requestDto.getKeyword();
-		this.setAgeRange(requestDto.getAgeRange());
-		this.setGender(requestDto.getGender());
+
+	public void update(PostRequestDto requestDto){
+			this.postTitle =requestDto.getPostTitle();
+			this.recruitmentStartDate =requestDto.getRecruitmentStartDate();
+			this.recruitmentEndDate =requestDto.getRecruitmentEndDate();
+			this.tripStartDate =requestDto.getTripStartDate();
+			this.tripEndDate =requestDto.getTripEndDate();
+			this.location =requestDto.getLocation();
+			this.groupSize =requestDto.getGroupSize();
+			this.keyword =requestDto.getKeyword();
+			this.setAgeRange(requestDto.getAgeRange());
+			this.setGender(requestDto.getGender());
 
 	}
-
 	public void delete() {
 		this.isDeleted = true;
 		content.delete();
