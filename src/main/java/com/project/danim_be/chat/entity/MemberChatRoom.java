@@ -1,12 +1,12 @@
 package com.project.danim_be.chat.entity;
 
-import java.time.LocalDateTime;
-
 import com.project.danim_be.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,7 +27,7 @@ public class MemberChatRoom {
 	private LocalDateTime firstJoinRoom;	// 맨처음 채팅방에 들어온시간
 	private LocalDateTime recentConnect;	// 최근 접속한시간
 	private LocalDateTime recentDisConnect;	// 마지막으로 떠난시간 (채팅방 접속을끊은시간)(강퇴.신청취소아님)
-	private Boolean kickMember = false;				// 방에서 강퇴당한 이력이 있는지 true:강퇴당함 false:아직은..?
+	private Boolean kickMember;				// 방에서 강퇴당한 이력이 있는지 true:강퇴당함 false:아직은..?
 
 	//setter
 	public void setFirstJoinRoom(LocalDateTime now) {this.firstJoinRoom = now;}

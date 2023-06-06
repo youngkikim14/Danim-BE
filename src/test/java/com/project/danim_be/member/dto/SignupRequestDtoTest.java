@@ -8,22 +8,30 @@
 // @Nested
 // class SignupRequestDtoTest {
 
-//     @Test
-//     void createSignupRequestDtoTest() {
-//         // given
-//         String userId = "limslki333@hanmail.net";
-//         String password = "1234";
-//         String nickname = "우아한사자";
-//         String ageRange = "30-39";
 
-//         // when
-//         SignupRequestDto signupRequestDto = new SignupRequestDto(userId, password, nickname, ageRange);
+    @Test
+    void createSignupRequestDtoTest() {
+        // given
+        String userId = "limslki333@hanmail.net";
+        String password = "1234";
+        String nickname = "우아한사자";
+        String ageRange = "30대";
+        String gender = "여";
+        boolean agreeAgeRange = true;
+        boolean agreeGender = true;
 
-//         // then
-//         assertEquals(userId, signupRequestDto.getUserId());
-//         assertEquals(password, signupRequestDto.getPassword());
-//         assertEquals(nickname, signupRequestDto.getNickname());
-//         assertEquals(ageRange, signupRequestDto.getAgeRange());
-//     }
+        // when
+        SignupRequestDto signupRequestDto = new SignupRequestDto(userId, password, nickname, ageRange, gender, agreeGender, agreeAgeRange);
+
+        // then
+        assertEquals(userId, signupRequestDto.getUserId());
+        assertEquals(password, signupRequestDto.getPassword());
+        assertEquals(nickname, signupRequestDto.getNickname());
+        assertEquals(ageRange, signupRequestDto.getAgeRange());
+        assertEquals(gender, signupRequestDto.getGender());
+        assertTrue(agreeGender, signupRequestDto.getGender());
+        assertTrue(agreeAgeRange, signupRequestDto.getAgeRange());
+    }
+
 
 // }

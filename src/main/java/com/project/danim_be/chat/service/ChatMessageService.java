@@ -15,7 +15,6 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.notification.service.NotificationService;
-import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -84,15 +83,18 @@ public class ChatMessageService {
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		// if(sendMember.getNickname().equals(chatDto.getSender())){
-		// 	throw new CustomException(ErrorCode.SENDER_MISMATCH);
-		// }
+		if(!sendMember.getNickname().equals(chatDto.getSender())){
+			throw new CustomException(ErrorCode.SENDER_MISMATCH);
+		}
 
 		//강퇴당한사람인지 검사한다.
-// 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom).orElse(null);
-// 		if (memberChatRoom != null && memberChatRoom.getKickMember()) {
-// 			throw new CustomException(ErrorCode.USER_KICKED);
-// 		}
+
+		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
+			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		if ( memberChatRoom.getKickMember()) {
+			throw new CustomException(ErrorCode.USER_KICKED);
+		}
+
 
 		// 메세지를 보낸사람. 이 사람에겐 알람을 안보내기 위해
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findByChatRoom(chatRoom);
@@ -106,8 +108,8 @@ public class ChatMessageService {
 		}
 		memberIdlist.remove(sendMember.getId());
 		ChatMessage chatMessage= new ChatMessage(chatDto,chatRoom);
-		chatMessageRepository.saveAndFlush(chatMessage);
-		notificationService.send(memberIdlist, chatMessage.getId());
+		notificationService.send(memberIdlist, chatMessage.getId(), memberChatRoom.getId());
+		chatMessageRepository.save(chatMessage);
 	}
 	//방을 나갔는지확인해야함 	LEAVE
 	@Transactional
