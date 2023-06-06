@@ -26,15 +26,15 @@ public class PostRequestDto {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date tripEndDate;				//여행 마감날짜
 	@Max(value = 10)
-	private Integer groupSize;				//모집인원수
-	private String location;				//출발(모집)지역
-	private String keyword;					//키워드
-	private String content;					//글내용
-	private String mapAPI;					//지도정보
+	private Integer groupSize;					//모집인원수
+	private String location;					//출발(모집)지역
+	private String keyword;						//키워드
+	private String content;						//글내용
+	private String mapAPI;						//지도정보
 	
 	private List<String> ageRange;				//연령대
 	private List<String> gender;				//성별
-	private List<String> imageUrls;				//이미지Url
+	private List<String> imageUrls;					//이미지Url
 
 
 

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -52,16 +53,15 @@ public class WebSecurityConfig {
 			"/api/post/image"
 
 
-
-
 	};
 
 	//정적자원은 인증인가를 하지않겠다.
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring()
-			.requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+				.requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
+
 	//비밀번호 암호화
 	@Bean
 	public PasswordEncoder passwordEncoder(){
@@ -75,24 +75,26 @@ public class WebSecurityConfig {
 		// 시큐리티 최신문서 찾아보기(아직안찾아봄)
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http.csrf().disable()	;	//csrf 비활성화
+		http.csrf().disable();    //csrf 비활성화
 
-			http.authorizeHttpRequests(request -> request
+		http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 				.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/post/{postId}").permitAll()
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/status", "/images/**").permitAll()
 				.requestMatchers("/ws/**").permitAll()
 				.anyRequest()
 				.authenticated()
 
-			);
+		);
 		http.cors();
 
 		http.addFilterBefore(jwtUtil, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
+
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
@@ -101,6 +103,7 @@ public class WebSecurityConfig {
 		configuration.addAllowedOrigin("http://localhost:3000");
 		configuration.addAllowedOrigin("http://localhost:8080");
 		configuration.addAllowedOrigin("http://127.0.0.1:3000");
+		configuration.addAllowedOrigin("http://localhost:63342");
 		configuration.addAllowedOrigin("http://jxy.me/**");
 		configuration.addAllowedOrigin("http://jxy.me/");
 

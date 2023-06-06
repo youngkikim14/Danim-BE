@@ -9,6 +9,7 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.post.dto.MypagePostResponseDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
@@ -29,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class MemberService {
 	private final ReviewRepository reviewRepository;
 	private final JPAQueryFactory queryFactory;
 	private final RandomNickname randomNickname;
+	private final NotificationService notificationService;
 
 	//회원가입
 	@Transactional
@@ -63,6 +66,9 @@ public class MemberService {
 		String password = passwordEncoder.encode(signupRequestDto.getPassword());
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
+		String gender = signupRequestDto.getGender();
+		boolean agreeForGender = signupRequestDto.isAgreeForGender();
+		boolean agreeForAge = signupRequestDto.isAgreeForAge();
 		if(memberRepository.findByUserId(userId).isPresent()){
 			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
 		}
@@ -73,9 +79,11 @@ public class MemberService {
 		Member member = Member.builder()
 				.userId(userId)
 				.ageRange(ageRange)
-				.gender(null)
+				.gender(gender)
 				.nickname(nickname)
 				.password(password)
+				.agreeForGender(agreeForGender)
+				.agreeForAge(agreeForAge)
 				.provider("GENERAL")
 				.isDeleted(false)
 				.build();
@@ -123,7 +131,8 @@ public class MemberService {
 
 		member.update(userInfoRequestDto);
 
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
+		SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+		LoginResponseDto loginResponseDto =new LoginResponseDto(member, sseEmitter);
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
 	}
 
@@ -154,7 +163,9 @@ public class MemberService {
 		}
 		setHeader(response, tokenDto);
 
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
+		SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+
+		LoginResponseDto loginResponseDto =new LoginResponseDto(member, sseEmitter);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
@@ -259,10 +270,10 @@ public class MemberService {
 			String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
 			member.editMember(mypageRequestDto, imageUrl);
 
-			// memberRepository.save(member);
+			memberRepository.save(member);
 
 		} else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료",member));
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료", member));
 	}
 
 

@@ -39,6 +39,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<Image, QImage> imageUrls = this.<Image, QImage>createList("imageUrls", Image.class, QImage.class, PathInits.DIRECT2);
+
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     public final StringPath keyword = createString("keyword");

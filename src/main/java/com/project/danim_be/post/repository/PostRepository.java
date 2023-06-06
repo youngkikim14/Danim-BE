@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredicateExecutor<Post> {
 
@@ -16,5 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredi
 
     List<Post> findByMember_Id(Long id);
 
-    Post findByChatRoom_Id(Long roomId);
+    Optional<Post> findByChatRoom_Id(Long roomId);
+
+    Optional<Post> findByIdAndIsDeletedFalse(Long id);
 }
