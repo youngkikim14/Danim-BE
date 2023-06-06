@@ -1,99 +1,155 @@
-package com.project.danim_be.chat.service;
+package com.project.danim_be.chat.controller;
 
-import com.project.danim_be.chat.dto.ChatRoomDto;
-import com.project.danim_be.chat.dto.ChatRoomResponseDto;
-import com.project.danim_be.chat.entity.ChatRoom;
-import com.project.danim_be.chat.entity.MemberChatRoom;
-import com.project.danim_be.chat.entity.QMemberChatRoom;
-import com.project.danim_be.chat.repository.ChatRoomRepository;
-import com.project.danim_be.chat.repository.MemberChatRoomRepository;
-import com.project.danim_be.common.exception.CustomException;
-import com.project.danim_be.common.exception.ErrorCode;
+import com.project.danim_be.chat.dto.ChatDto;
+import com.project.danim_be.chat.service.ChatMessageService;
+import com.project.danim_be.chat.service.ChatRoomService;
 import com.project.danim_be.common.util.Message;
-import com.project.danim_be.common.util.StatusEnum;
-import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.post.entity.Post;
-import com.project.danim_be.post.repository.PostRepository;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.project.danim_be.security.auth.UserDetailsImpl;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 
-@Service
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.security.Principal;
+
+@Controller
 @RequiredArgsConstructor
-public class ChatRoomService {
+public class ChatController {
 
-	private final MemberChatRoomRepository memberChatRoomRepository;
-	private final ChatRoomRepository chatRoomRepository;
-	private final PostRepository postRepository;
-	private final JPAQueryFactory queryFactory;
+	@Autowired
+	private SimpMessageSendingOperations messagingTemplate;
+	private final ChatMessageService chatMessageService;
+	private final ChatRoomService chatRoomService;
 
+	// 메시지가왔을때 실행
+	@MessageMapping("/chat/message")
+	public void message(@Payload ChatDto chatDto, Principal principal) {
 
-	//내가 쓴글의 채팅방 목록조회
-	public ResponseEntity<Message> myChatRoom(Long id) {
-		List<Post> postList = postRepository.findByMember_Id(id);
-		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
-		for (Post post : postList) {
-			ChatRoom chatRoom = post.getChatRoom();
-			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom);
-			chatRoomResponseDtoList.add(chatRoomResponseDto);
-		}
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 만든 채팅방",chatRoomResponseDtoList));
-	}
+		switch (chatDto.getType()) {
 
-	//내가 신청한 채팅방 목록조회
-	public ResponseEntity<Message> myJoinChatroom(Long id) {
-		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
-		List<ChatRoom> chatRoomList = queryFactory
-				.select(qMemberChatRoom.chatRoom)
-				.from(qMemberChatRoom)
-				.where(qMemberChatRoom.member.id.eq(id))
-				.fetch();
-		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
-		for (ChatRoom chatroom : chatRoomList) {
-			if (!chatroom.getPost().getMember().getId().equals(id)){
-				chatRoomResponseDtoList.add(new ChatRoomResponseDto(chatroom));
+			case ENTER -> {
+				System.out.println("TYPE : ENTER");
+				chatMessageService.visitMember(chatDto);
+
+				ChatDto message = ChatDto.builder()
+					.type(ChatDto.MessageType.ENTER)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())
+					.message(chatDto.getSender() + "님이 입장하셨습니다.")
+					.build();
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
+			}
+
+			case TALK -> {
+				System.out.println("TYPE : TALK");
+				String message = chatDto.getSender();
+				message += " : ";
+				message += chatDto.getMessage();
+				chatMessageService.sendMessage(chatDto);
+
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
+			}
+
+			case LEAVE -> {
+				System.out.println("TYPE : LEAVE");
+				chatMessageService.leaveChatRoom(chatDto);
+				//SSE요청시작!
+				ChatDto leaveMessage = ChatDto.builder()
+					.type(ChatDto.MessageType.LEAVE)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())
+					.message(chatDto.getSender() + "님이 접속을 끊었습니다.")
+					.build();
+
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
+			}
+			case KICK -> {
+
+				chatMessageService.kickMember(chatDto);
+
+				ChatDto kickMessage = ChatDto.builder()
+					.type(ChatDto.MessageType.KICK)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())
+					.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
+					.build();
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), kickMessage);
 			}
 		}
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
 	}
-
-	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
-	@Transactional
-	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
-		ChatRoom chatRoom = chatRoomRepository.findById(id).orElseThrow(
-				() -> new CustomException(ErrorCode.ROOM_NOT_FOUND)
-		);
-
-		// 채팅방 입장 시 모든 유저 nickname 보내주기
-		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
-		List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
-		for (MemberChatRoom memberChatRoom : memberChatRoomList) {
-			chatRoomDtoList.add(new ChatRoomDto(memberChatRoom));
+		@PostMapping("api/chat/{roomId}")
+		public ResponseEntity<Message> joinChatRoom (@PathVariable("Post_id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+			return chatRoomService.joinChatRoom(id, userDetails.getMember());
 		}
-    
-		Post validPost = postRepository.findById(id).orElseThrow(
-				() -> new CustomException(ErrorCode.POST_NOT_FOUND)
-		);
-    
-		String ageRange = validPost.getAgeRange().toString();
-		String[] ageRangeArray = ageRange.split(",");
-		String gender = validPost.getGender().toString();
-		String[] genderArray = gender.split(",");
-		if (Arrays.asList(ageRangeArray).contains(member.getGender()) && Arrays.asList(genderArray).contains(member.getGender())){
-			// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
-			if(!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())){
-				Post post = postRepository.findByChatRoom_Id(id);
-				post.incNumberOfParticipants();
-        postRepository.save(post);
-			}
-		} else throw new CustomException(ErrorCode.NOT_MATCHING);
+		//=================================================================================================================================
+		// 	채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 
-		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK,"채팅방 입장", chatRoomDtoList));
 	}
-}
+
+
+
+
+	//
+	// //내가 쓴글의 채팅방 목록조회
+	// @GetMapping("")
+	// public ResponseEntity<Message> myChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	// 	return chatRoomService.myChatRoom(userDetails.getMember().getId());
+	// }
+	//
+	//
+	// //내가 신청한 채팅방 목록조회
+	// @GetMapping("")
+	// public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	// 	return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
+	// }
+	//
+
+
+
+
+	//=================================================================================================================================
+//	채팅방 참여(웹소켓연결/방입장)
+//	매칭 신청
+// //	버튼
+// 	@PostMapping("/api/chat/room/{roomId}")
+// 	public ResponseEntity<Message> joinChatRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+// 		return chatRoomService.joinChatRoom(roomId, userDetails.getMember());
+// 	}
+//
+// 	//내가 쓴글의 채팅방 목록조회
+// 	@GetMapping("/api/chat/myChatRoom")
+// 	public ResponseEntity<Message> myChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+// 		return chatRoomService.myChatRoom(userDetails.getMember().getId());
+// 	}
+//
+//
+// 	//내가 신청한 채팅방 목록조회
+// 	@GetMapping("/api/chat/joinChatRoom")
+// 	public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+// 		return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
+// 	}
+// }
+
+
+
+	//추방하기
+
+
+	//신청취소(나가기)
+	//=================================================================================================================================
+
+
