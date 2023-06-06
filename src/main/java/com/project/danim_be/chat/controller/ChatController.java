@@ -102,6 +102,12 @@ public class ChatController {
  		return chatRoomService.myChatRoom(userDetails.getMember().getId());
  	}
 
+	//내가 쓴글의 채팅방 목록조회
+	@GetMapping("/api/chat/allChatRoom")
+	public ResponseEntity<Message> allChatRoom() {
+		return chatRoomService.allChatRoom();
+	}
+
 
  	//내가 신청한 채팅방 목록조회
  	@GetMapping("/api/chat/joinChatRoom")

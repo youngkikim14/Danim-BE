@@ -48,7 +48,8 @@ public class WebSecurityConfig {
 			"/api/posts/**",
 			"/ws-stomp/**",
 			"/api/post/{postId}",
-			"/api/post/image"
+			"/api/post/image",
+			"api/chat/allChatRoom"
 
 
 	};
