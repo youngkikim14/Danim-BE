@@ -12,7 +12,6 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -32,7 +31,6 @@ public class ChatRoomService {
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final ChatRoomRepository chatRoomRepository;
 	private final PostRepository postRepository;
-	private final MemberRepository memberRepository;
 	private final JPAQueryFactory queryFactory;
 
 
@@ -72,26 +70,11 @@ public class ChatRoomService {
 				() -> new CustomException(ErrorCode.ROOM_NOT_FOUND)
 		);
 
-		//방을찾고
-		Post post = postRepository.findByChatRoom_Id(id)
-			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-		//신청한유저를찾고
-		Member subscriber = memberRepository.findById(id)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		if(!post.getAgeRange().contains(subscriber.getAgeRange())){
-			throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
-		}
-		// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
-		if(!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomId(member.getId(), chatRoom.getRoomId())){
-			post.incNumberOfParticipants();
-
-
 		// 채팅방 입장 시 모든 유저 nickname 보내주기
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
 		List<ChatRoomDto> chatRoomDtoList = new ArrayList<>();
 		for (MemberChatRoom memberChatRoom : memberChatRoomList) {
 			chatRoomDtoList.add(new ChatRoomDto(memberChatRoom));
-
 		}
     
 		Post validPost = postRepository.findById(id).orElseThrow(
