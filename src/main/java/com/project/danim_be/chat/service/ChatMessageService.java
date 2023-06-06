@@ -88,11 +88,13 @@ public class ChatMessageService {
 		}
 
 		//강퇴당한사람인지 검사한다.
+
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
 			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		if ( memberChatRoom.getKickMember()) {
 			throw new CustomException(ErrorCode.USER_KICKED);
 		}
+
 
 		// 메세지를 보낸사람. 이 사람에겐 알람을 안보내기 위해
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findByChatRoom(chatRoom);

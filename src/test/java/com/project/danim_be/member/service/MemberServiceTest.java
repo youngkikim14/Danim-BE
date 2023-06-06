@@ -1,3 +1,4 @@
+
 package com.project.danim_be.member.service;
 
 import com.project.danim_be.common.exception.CustomException;
@@ -161,3 +162,4 @@ class MemberServiceTest {
 //    void memberPosts() {
 //    }
 }
+
