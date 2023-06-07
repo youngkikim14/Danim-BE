@@ -101,7 +101,7 @@
     <div class="left">
         <div class="input-group">
             <label for="address">Address:</label>
-            <input type="text" id="address" name="address" value="http://localhost:8080/ws-stomp">
+            <input type="text" id="address" name="address" value="https://localhost:8080/ws-stomp">
         </div>
         <button id="connect">Connect</button>
         <button id="disconnect" disabled="true">Disconnect</button>
@@ -201,7 +201,7 @@
 
         $(document).ready(function() {
             $.ajax({
-                url: 'http://localhost:8080/api/chat/allChatRoom',
+                url: 'https://localhost:8080/api/chat/allChatRoom',
                 method: 'GET',
                 success: function(data) {
                     console.log(data);
@@ -219,7 +219,7 @@
                             $("#roomId").val(clickedRoomId);
 
                             $.ajax({
-                                url: 'http://localhost:8080/api/chat/test',
+                                url: 'https://localhost:8080/api/chat/test',
                                 method: 'POST',
                                 contentType: "application/json; charset=utf-8",
                                 data: JSON.stringify({ "roomId": clickedRoomId }),
