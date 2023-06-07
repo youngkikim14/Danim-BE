@@ -18,6 +18,7 @@ public class CardPostResponseDto {
     private String keyword;
     private String ageRange;
     private String imageUrl;
+    private String gender;
 
 
     public CardPostResponseDto(Post post) {
@@ -33,5 +34,6 @@ public class CardPostResponseDto {
         this.location = post.getLocation();
         this.keyword = post.getKeyword();
         this.ageRange = String.join(",", post.getAgeRange());
+        this.gender = String.join(",", post.getGender());
     }
 }
