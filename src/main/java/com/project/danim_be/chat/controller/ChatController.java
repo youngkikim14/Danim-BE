@@ -32,7 +32,7 @@ public class ChatController {
 
 	// 메시지가왔을때 실행
 	@MessageMapping("/chat/message")
-	public void message(@Payload ChatDto chatDto, Principal principal) {
+	public void message(@Payload ChatDto chatDto, Principal principal) throws Exception {
 
 		switch (chatDto.getType()) {
 
@@ -80,6 +80,7 @@ public class ChatController {
 					.type(ChatDto.MessageType.KICK)
 					.roomId(chatDto.getRoomId())
 					.sender(chatDto.getSender())
+					.imposter(chatDto.getImposter())
 					.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
 					.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), kickMessage);
