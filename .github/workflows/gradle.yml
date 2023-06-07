@@ -4,8 +4,6 @@ on:
   push:
     branches: [ "develop" ]
 
-
-
 permissions:
   contents: read
 
@@ -43,7 +41,7 @@ jobs:
         run: |
           echo "$PKCS12_SECRET" | base64 --decode > certificate.p12
          
-          # 필요한 작업 수행
+      # 필요한 작업 수행
       - name: jasypt key주입
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
       - run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
