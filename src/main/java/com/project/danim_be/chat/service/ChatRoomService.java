@@ -2,9 +2,9 @@ package com.project.danim_be.chat.service;
 
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.dto.ChatRoomDto;
+import com.project.danim_be.chat.dto.ChatRoomResponseDto;
 import com.project.danim_be.chat.dto.test.ChatRoomIdDto;
 import com.project.danim_be.chat.dto.test.ChatRoomMemberInfoDto;
-import com.project.danim_be.chat.dto.ChatRoomResponseDto;
 import com.project.danim_be.chat.dto.test.RoomIdRequestDto;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.entity.MemberChatRoom;
@@ -22,7 +22,6 @@ import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

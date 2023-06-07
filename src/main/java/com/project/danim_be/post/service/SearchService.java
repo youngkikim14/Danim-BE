@@ -6,13 +6,11 @@ import com.project.danim_be.post.dto.CardPostResponseDto;
 import com.project.danim_be.post.dto.SearchRequestDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
-import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchService {
 
-    private final PostRepository postRepository;
     private final JPAQueryFactory queryFactory;
 
     //전체 조회
@@ -51,12 +48,11 @@ public class SearchService {
 
     // 상세 검색
     @Transactional(readOnly = true)
-    public Page<CardPostResponseDto> searchPost(SearchRequestDto searchRequestDto, Pageable pageable) {
+    public List<CardPostResponseDto> searchPost(SearchRequestDto searchRequestDto, Pageable pageable) {
 
         // QueryDSL을 활용하여 동적 쿼리 작성
         BooleanBuilder predicate = new BooleanBuilder();
         QPost qPost = QPost.post;
-
 
         if (searchRequestDto.getLocation() != null) {
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
@@ -86,12 +82,23 @@ public class SearchService {
 
         predicate.and(qPost.isDeleted.eq(false));
 
+//        postRepository.findAll(predicate, pageable);
+
         // 동적 쿼리 실행
-        Page<Post> result = postRepository.findAll(predicate, pageable);
+        List<Post> result = queryFactory
+                .selectFrom(qPost)
+                .where(predicate)
+                .orderBy(qPost.recruitmentEndDate.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
         // 결과를 CardPostResponseDto로 변환
-        Page<CardPostResponseDto> dtoResult = result.map(CardPostResponseDto::new);
+        List<CardPostResponseDto> cardPostResponseDtoList = new ArrayList<>();
+        for (Post post : result) {
+            cardPostResponseDtoList.add(new CardPostResponseDto(post));
+        }
 
-        return dtoResult;
+        return cardPostResponseDtoList;
     }
 }
