@@ -1,12 +1,12 @@
-// package com.project.danim_be.member.dto;
+package com.project.danim_be.member.dto;
 
-// import org.junit.jupiter.api.Nested;
-// import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-// import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-// @Nested
-// class SignupRequestDtoTest {
+@Nested
+class SignupRequestDtoTest {
 
 
     @Test
@@ -34,4 +34,5 @@
     }
 
 
-// }
+
+}

@@ -137,90 +137,160 @@
     <!-- This is right -->
     <div class="right">
         <div id="chatroom-list">Chatroom List</div>
-        <hr >
-        <p>Member</p>
-        <p>Kick Member</p>
+        <hr>
+        <div id="member-list"></div>
+        <hr>
+        <div id="kicked-member-list"></div>
+
+        <label for="kick-member">Kick Member:</label>
+        <input type="text" id="kick-member" name="kick-member">
+
+        <button id="kick-button">Kick</button>
     </div>
+    <script type="text/javascript">
+        var socket;
+        var stompClient;
+        var selectedMember; // 선택된 멤버
 
+        document.getElementById('connect').addEventListener('click', function() {
+            var address = document.getElementById('address').value;
+            var subscription = document.getElementById('subscription').value;
+            socket = new SockJS(address);
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe(subscription, function(message) {
+                    console.log(message.body);
 
-</div>
+                    var messagesDiv = document.getElementById('messages');
+                    var messageDiv = document.createElement('div');
 
-<script type="text/javascript">
-    var socket;
-    var stompClient;
-
-
-    document.getElementById('connect').addEventListener('click', function() {
-        var address = document.getElementById('address').value;
-        var subscription = document.getElementById('subscription').value;
-        socket = new SockJS(address);
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function(frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe(subscription, function(message) {
-                console.log(message.body);
-
-                var messagesDiv = document.getElementById('messages');
-                var messageDiv = document.createElement('div');
-
-                messageDiv.textContent = message.body;
-                messagesDiv.appendChild(messageDiv);
+                    messageDiv.textContent = message.body;
+                    messagesDiv.appendChild(messageDiv);
+                });
+                document.getElementById('connect').disabled = true;
+                document.getElementById('disconnect').disabled = false;
             });
-            document.getElementById('connect').disabled = true;
-            document.getElementById('disconnect').disabled = false;
         });
-    });
 
-    document.getElementById('disconnect').addEventListener('click', function() {
-        if (stompClient !== null) {
-            stompClient.disconnect();
-        }
-        console.log("Disconnected");
-        document.getElementById('connect').disabled = false;
-        document.getElementById('disconnect').disabled = true;
-    });
+        document.getElementById('disconnect').addEventListener('click', function() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            console.log("Disconnected");
+            document.getElementById('connect').disabled = false;
+            document.getElementById('disconnect').disabled = true;
+        });
 
-    document.getElementById('send').addEventListener('click', function() {
-        var type = document.getElementById('type').value;
-        var roomId = document.getElementById('roomId').value;
-        var sender = document.getElementById('sender').value;
-        var message = document.getElementById('message').value;
-        document.getElementById('message').value = '';
+        document.getElementById('send').addEventListener('click', function() {
+            var type = document.getElementById('type').value;
+            var roomId = document.getElementById('roomId').value;
+            var sender = document.getElementById('sender').value;
+            var message = document.getElementById('message').value;
+            document.getElementById('message').value = '';
 
-        var chatMessage = {
-            'type': type,
-            'roomId': roomId,
-            'sender': sender,
-            'message': message
-        };
-        stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
-    });
+            var chatMessage = {
+                'type': type,
+                'roomId': roomId,
+                'sender': sender,
+                'message': message
+            };
+            stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
+        });
 
-    $(document).ready(function() {
-        $.ajax({
-            url: 'http://localhost:8080/api/chat/allChatRoom',
-            method: 'GET',
-            success: function(data) {
-                console.log(data);
-                var chatRooms = data.data;
-                var chatroomListDiv = $("#chatroom-list");
-                chatroomListDiv.empty();
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://localhost:8080/api/chat/allChatRoom',
+                method: 'GET',
+                success: function(data) {
+                    console.log(data);
+                    var chatRooms = data.data;
+                    var chatroomListDiv = $("#chatroom-list");
+                    chatroomListDiv.empty();
 
-                for (var i = 0; i < chatRooms.length; i++) {
-                    var chatRoom = chatRooms[i];
-                    var chatroomDiv = $("<div>").addClass("room-id").text(chatRoom.roomId);
-                    chatroomDiv.on('click', function() {
-                        $("#subscription").val("/sub/chat/room/" + $(this).text());
-                        $("#roomId").val($(this).text());
-                    });
-                    chatroomListDiv.append(chatroomDiv);
+                    for (var i = 0; i < chatRooms.length; i++) {
+                        var chatRoom = chatRooms[i];
+                        var chatroomDiv = $("<div>").addClass("room-id").text(chatRoom.roomId);
+
+                        chatroomDiv.on('click', function() {
+                            var clickedRoomId = $(this).text();
+                            $("#subscription").val("/sub/chat/room/" + clickedRoomId);
+                            $("#roomId").val(clickedRoomId);
+
+                            $.ajax({
+                                url: 'http://localhost:8080/api/chat/test',
+                                method: 'POST',
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify({ "roomId": clickedRoomId }),
+                                success: function(data) {
+                                    console.log(data);
+                                    var members = data.data;
+
+                                    var memberListDiv = $("#member-list");
+                                    var kickedMemberDiv = $("#kicked-member-list");
+                                    memberListDiv.empty();
+                                    kickedMemberDiv.empty();
+
+                                    for (var i = 0; i < members.length; i++) {
+                                        var member = members[i];
+                                        var memberInfoDiv = $("<div>").text("Member: " + member.member);
+
+                                        // 클릭 이벤트 처리: 멤버 아이디를 sender 필드에 설정
+                                        memberInfoDiv.on('click', function() {
+                                            var memberId = $(this).text().replace("Member: ", "");
+//멤버아이디누르면 자동으로 들어가게하기            // $("#sender").val(memberId);
+                                            selectedMember = memberId; // 선택된 멤버 설정
+                                        });
+
+                                        if (member.kickMember) {
+                                            var kickMemberInfoDiv = $("<div>").text("KickMember: " + member.kickMember);
+                                            kickedMemberDiv.append(kickMemberInfoDiv);
+                                        } else {
+                                            memberListDiv.append(memberInfoDiv);
+                                        }
+                                    }
+                                },
+                                error: function(error) {
+                                    console.log('Error', error);
+                                }
+                            });
+                        });
+                        chatroomListDiv.append(chatroomDiv);
+                    }
+                },
+                error: function(error) {
+                    console.log('Error', error);
                 }
-            },
-            error: function(error) {
-                console.log('Error', error);
+            });
+        });
+
+        // Kick 버튼 클릭 이벤트 처리
+        $("#kick-button").on('click', function() {
+            if (selectedMember) {
+                // 선택된 멤버가 있을 경우 kick 요청 보내기
+                var kickMember = $("#kick-member").val(); // kick-member 입력 필드의 값을 가져옴
+
+                if (kickMember) {
+                    // 입력한 강퇴당하는 멤버가 있을 경우 kick 요청 보내기
+
+                    var chatMessage = {
+                        'type': "KICK",
+                        'roomId': $("#roomId").val(),
+                        'sender': selectedMember,
+                        'imposter': kickMember
+                    };
+
+                    stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
+
+                } else {
+                    alert("강퇴할 멤버를 입력해주세요.");
+                }
+            } else {
+                alert("강퇴할 멤버를 선택해주세요.");
             }
         });
-    });
+
+    </script>
 </script>
 </body>
 </html>

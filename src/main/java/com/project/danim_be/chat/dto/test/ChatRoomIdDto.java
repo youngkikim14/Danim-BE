@@ -1,4 +1,4 @@
-package com.project.danim_be.chat.dto;
+package com.project.danim_be.chat.dto.test;
 
 import com.project.danim_be.chat.entity.ChatRoom;
 
@@ -11,8 +11,8 @@ public class ChatRoomIdDto {
 
 	private String RoomId;
 
-	public ChatRoomIdDto(ChatRoom chatRoom) {
-		this.RoomId=chatRoom.getRoomId();
+	public ChatRoomIdDto(String s) {
+		this.RoomId=s;
 	}
 
 

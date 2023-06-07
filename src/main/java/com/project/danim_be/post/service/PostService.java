@@ -175,7 +175,6 @@ public class PostService {
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 삭제 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
-
 	public String uploader(MultipartFile imageFile){
 		String file = null;
 		try {
@@ -185,7 +184,6 @@ public class PostService {
 		}
 		return file;
 	}
-
 	// 게시글 상세 조회
 	public ResponseEntity<Message> readPost(Long id) {
 
