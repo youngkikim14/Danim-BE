@@ -1,6 +1,7 @@
 package com.project.danim_be.chat.controller;
 
 import com.project.danim_be.chat.dto.ChatDto;
+import com.project.danim_be.chat.dto.test.RoomIdRequestDto;
 import com.project.danim_be.chat.service.ChatMessageService;
 import com.project.danim_be.chat.service.ChatRoomService;
 import com.project.danim_be.common.util.Message;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
 
@@ -102,7 +104,20 @@ public class ChatController {
  		return chatRoomService.myChatRoom(userDetails.getMember().getId());
  	}
 
+	//=========================================================테스트용 메서드(완료시 삭제)===================================
+	@GetMapping("/api/chat/allChatRoom")
+	public ResponseEntity<Message> allChatRoom() {
+		return chatRoomService.allChatRoom();
+	}
 
+	@PostMapping("/api/chat/test")
+	public ResponseEntity<Message> chatTestMember(@RequestBody RoomIdRequestDto roomIdRequestDto){
+
+
+		return chatRoomService.roomMember(roomIdRequestDto);
+	}
+
+	//=========================================================테스트용 메서드(완료시 삭제)===================================
  	//내가 신청한 채팅방 목록조회
  	@GetMapping("/api/chat/joinChatRoom")
  	public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -48,7 +48,10 @@ public class WebSecurityConfig {
 			"/api/posts/**",
 			"/ws-stomp/**",
 			"/api/post/{postId}",
-			"/api/post/image"
+			"/api/post/image",
+			"/api/chat/allChatRoom",
+			"/api/chat/test",
+			"/stomp"
 
 
 	};
@@ -82,6 +85,7 @@ public class WebSecurityConfig {
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/status", "/images/**").permitAll()
 				.requestMatchers("/ws/**").permitAll()
+				.requestMatchers("/stomp").permitAll()
 				.anyRequest()
 				.authenticated()
 

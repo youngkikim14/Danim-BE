@@ -2,6 +2,9 @@ package com.project.danim_be.chat.service;
 
 import com.project.danim_be.chat.dto.ChatRoomDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
+import com.project.danim_be.chat.dto.test.ChatRoomIdDto;
+import com.project.danim_be.chat.dto.test.ChatRoomMemberInfoDto;
+import com.project.danim_be.chat.dto.test.RoomIdRequestDto;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.entity.QMemberChatRoom;
@@ -17,6 +20,7 @@ import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +29,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
@@ -47,7 +51,42 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 채팅방", chatRoomResponseDtoList));
 	}
+	//======================================================테스트용 메서드=========================================//
+	public ResponseEntity<Message> allChatRoom() {
+		List <ChatRoom> chatRooms = chatRoomRepository.findAll();
+		List<ChatRoomIdDto> chatRoomIdDtos = new ArrayList<>();
+		for(ChatRoom c : chatRooms){
+			String roomId = c.getRoomId();
+			ChatRoomIdDto dto = new ChatRoomIdDto(roomId);
+			chatRoomIdDtos.add(dto);
+		}
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모든채팅방", chatRoomIdDtos));
+	}
 
+	public ResponseEntity<Message> roomMember(RoomIdRequestDto roomIdRequestDto) {
+		log.info(roomIdRequestDto.getRoomId());
+		ChatRoom chatRoom =chatRoomRepository.findByRoomId(roomIdRequestDto.getRoomId())
+			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		System.out.println("chatRoom : "+chatRoom.getId());
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(chatRoom.getId());
+		List<ChatRoomMemberInfoDto> chatRoomMemberInfoDto = new ArrayList<>();
+		for(MemberChatRoom chatRoomId :  memberChatRoomList) {
+			// Suppose ChatRoomMemberInfoDto has a constructor that takes a MemberChatRoom
+			ChatRoomMemberInfoDto infoDto = new ChatRoomMemberInfoDto(chatRoomId);
+			chatRoomMemberInfoDto.add(infoDto);
+		}
+		return  ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방유저 목록조회완료", chatRoomMemberInfoDto));
+
+
+
+		}
+
+
+
+
+
+
+	//======================================================테스트용 메서드=========================================//
 	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
@@ -64,7 +103,6 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
 	}
-
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	@Transactional
 	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
@@ -123,4 +161,6 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방 입장", chatRoomDtoList));
 	}
+
+
 }
