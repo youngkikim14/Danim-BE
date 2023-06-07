@@ -1,7 +1,5 @@
 package com.project.danim_be.chat.dto.test;
 
-import com.project.danim_be.chat.entity.ChatRoom;
-
 import lombok.Getter;
 import lombok.Setter;
 

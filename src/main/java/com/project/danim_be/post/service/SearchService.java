@@ -6,7 +6,6 @@ import com.project.danim_be.post.dto.CardPostResponseDto;
 import com.project.danim_be.post.dto.SearchRequestDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
-import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -24,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchService {
 
-    private final PostRepository postRepository;
     private final JPAQueryFactory queryFactory;
 
     //전체 조회
