@@ -38,14 +38,17 @@ public class PostController {
 	public ResponseEntity<Message> readPost(@PathVariable("postId") Long id){
 		return postService.readPost(id);
 	}
+
 	@Operation(summary = "게시글 수정 API", description = "게시글 수정")
 	@PutMapping(value = "api/post/{postId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Message> updatePost(@PathVariable("postId") Long id, @AuthenticationPrincipal final UserDetailsImpl userDetails, @ModelAttribute final PostRequestDto requestDto){
+		System.out.println(userDetails.getMember());
 		return postService.updatePost(id, userDetails.getMember(), requestDto);
 	}
 	@Operation(summary = "게시글 삭제 API", description = "게시글 삭제")
 	@DeleteMapping("api/post/{postId}")
 	public ResponseEntity<Message> deletePost(@PathVariable("postId") Long id, @AuthenticationPrincipal final UserDetailsImpl userDetails){
+
 		return postService.deletePost(id, userDetails.getMember());
 	}
 

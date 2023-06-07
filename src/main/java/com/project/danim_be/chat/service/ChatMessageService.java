@@ -15,8 +15,11 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.notification.service.NotificationService;
+import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ChatMessageService {
 
@@ -37,11 +41,12 @@ public class ChatMessageService {
 	private final MemberRepository memberRepository;
 	private final PostRepository postRepository;
 	private final NotificationService notificationService;
+	private final ChatRoomService chatRoomService;
 
 
 	//채팅방 입장멤버 저장메서드	ENTER
 	@Transactional
-	public void visitMember(ChatDto chatDto){
+	public void visitMember(ChatDto chatDto) {
 		String roomId = chatDto.getRoomId();
 		String sender = chatDto.getSender();
 		//sender(nickName)을 통해서 멤버를찾고
@@ -50,16 +55,11 @@ public class ChatMessageService {
 		//roomId를 통해서 생성된 채팅룸을 찾고
 		ChatRoom chatRoom= chatRoomRepository.findByRoomId(roomId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		chatRoomService.joinChatRoom(chatRoom.getId(),member);
 		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
-		//강퇴당한사람인지 검사한다.
-// 		if (memberChatRoom != null) {
-// 			if (memberChatRoom.getKickMember()) {
-// 				throw new CustomException(ErrorCode.USER_KICKED);
-// 			} else {
-// 				List<ChatDto> previousMessages = allChatList(chatDto);
-// 			}
-// 		}
+		// 강퇴당한사람인지 검사한다.
+
 		//첫 연결시도이면
 		if(isFirstVisit(member.getId(),roomId)){
 
@@ -131,25 +131,37 @@ public class ChatMessageService {
 	@Transactional
 	public void kickMember(ChatDto chatDto) {
 
+		System.out.println(chatDto.getSender());
 		ChatRoom chatRoom = chatRoomRepository.findByRoomId(chatDto.getRoomId())
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		System.out.println("chatRoom.getAdminMemberId() : " +  memberRepository.findById(chatRoom.getAdminMemberId()));
+		System.out.println("chatRoom.getAdminMemberId() : " +  chatRoom.getAdminMemberId());
 		//방장
-		Member superMember = memberRepository.findById(chatRoom.getAdminMemberId())
+		String sen=chatDto.getSender();
+
+		// chatRoom.getAdminMemberId() == chatDto.getSender()
+		Member superMember = memberRepository.findByNickname(sen)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		//강퇴를 요청하는 멤버
-		Member member = memberRepository.findByNickname(chatDto.getSender())
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		Member member1 = memberRepository.findById(chatRoom.getAdminMemberId())
+			.orElseThrow(() ->new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		Post post = postRepository.findById(chatRoom.getPost().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		Member member2 = memberRepository.findById(post.getMember().getId())
+			.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+		System.out.println(member2.getNickname());
 		//강퇴당하는 임포스터
 		Member imposter = memberRepository.findByNickname(chatDto.getImposter())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		if (member.equals(superMember)) {
+		if (superMember.getId().equals(chatRoom.getAdminMemberId())) {
 			MemberChatRoom  memberChatRoomImposter = memberChatRoomRepository.findByMemberAndChatRoom(imposter, chatRoom)
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
+			post.decNumberOfParticipants();
 			memberChatRoomImposter.setKickMember(true);
 			memberChatRoomRepository.save(memberChatRoomImposter);
-			//참여자를 한명 추가해야하는 로직이필요합니다.
+
 		} else {
 			throw new CustomException(ErrorCode.NOT_ADMIN_ACCESS);
 		}

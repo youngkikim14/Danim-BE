@@ -101,7 +101,7 @@
     <div class="left">
         <div class="input-group">
             <label for="address">Address:</label>
-            <input type="text" id="address" name="address" value="http://52.79.162.201:8080/ws-stomp">
+            <input type="text" id="address" name="address" value="http://localhost:8080/ws-stomp">
         </div>
         <button id="connect">Connect</button>
         <button id="disconnect" disabled="true">Disconnect</button>
@@ -147,6 +147,7 @@
 
         <button id="kick-button">Kick</button>
     </div>
+</div>
     <script type="text/javascript">
         var socket;
         var stompClient;
@@ -238,7 +239,8 @@
                                         // 클릭 이벤트 처리: 멤버 아이디를 sender 필드에 설정
                                         memberInfoDiv.on('click', function() {
                                             var memberId = $(this).text().replace("Member: ", "");
-//멤버아이디누르면 자동으로 들어가게하기            // $("#sender").val(memberId);
+                                            //멤버아이디누르면 자동으로 들어가게하기
+                                            // $("#sender").val(memberId);
                                             selectedMember = memberId; // 선택된 멤버 설정
                                         });
 
@@ -272,25 +274,27 @@
 
                 if (kickMember) {
                     // 입력한 강퇴당하는 멤버가 있을 경우 kick 요청 보내기
+                    if (selectedMember !== kickMember) { // 발신자와 강퇴 멤버가 다른지 확인
+                        var chatMessage = {
+                            'type': "KICK",
+                            'roomId': $("#roomId").val(),
+                            'sender': selectedMember,
+                            'imposter': kickMember
+                        };
 
-                    var chatMessage = {
-                        'type': "KICK",
-                        'roomId': $("#roomId").val(),
-                        'sender': selectedMember,
-                        'imposter': kickMember
-                    };
+                        stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
 
-                    stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
+                    } else {
 
+                    }
                 } else {
-                    alert("강퇴할 멤버를 입력해주세요.");
+
                 }
             } else {
-                alert("강퇴할 멤버를 선택해주세요.");
+
             }
         });
 
     </script>
-</script>
 </body>
 </html>
