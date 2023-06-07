@@ -87,6 +87,7 @@ public class WebSecurityConfig {
 				.requestMatchers("/ws/**").permitAll()
 				.requestMatchers("/stomp").permitAll()
 				.requestMatchers("/").permitAll()
+				.requestMatchers("/health-check").permitAll()	   
 				.anyRequest()
 				.authenticated()
 
