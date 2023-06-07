@@ -39,3 +39,4 @@ out/
 ### custom ###
 application.properties
 #gradle.yml
+/src/main/resources/certificate.p12
