@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "SearchController", description = "검색 API")
 @Slf4j
 @RestController
@@ -32,7 +34,7 @@ public class SearchController {
     @Operation(summary = "게시글 상세 검색 API", description = "게시글 상세 검색")
     @PostMapping("/search")
     public ResponseEntity<Message> searchPosts(@RequestBody SearchRequestDto searchRequestDto, Pageable pageable){
-        Page<CardPostResponseDto> searchResult = searchService.searchPost(searchRequestDto, pageable);
+        List<CardPostResponseDto> searchResult = searchService.searchPost(searchRequestDto, pageable);
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "검색 결과", searchResult));
     }
 }
