@@ -86,6 +86,7 @@ public class WebSecurityConfig {
 				.requestMatchers("/status", "/images/**").permitAll()
 				.requestMatchers("/ws/**").permitAll()
 				.requestMatchers("/stomp").permitAll()
+				.requestMatchers("/").permitAll()
 				.anyRequest()
 				.authenticated()
 
