@@ -4,6 +4,8 @@ on:
   push:
     branches: [ "develop" ]
 
+
+
 permissions:
   contents: read
 
@@ -33,20 +35,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+
       - run: mkdir -p ./src/main/resources/
       - run: touch ./src/main/resources/application.properties
-      
-      # https 적용    
-      - name: Create PKCS12 file
-        run: |
-          echo "${{ secrets.PKCS12_SECRET }}" | base64 --decode > certificate.p12
-
-      # 필요한 작업 수행
       - name: jasypt key주입
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
       - run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
         # gradle build
-
       - name: Build with Gradle
         run: ./gradlew build -x test
