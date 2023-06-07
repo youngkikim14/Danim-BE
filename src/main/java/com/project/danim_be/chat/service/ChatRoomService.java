@@ -1,5 +1,6 @@
 package com.project.danim_be.chat.service;
 
+import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.dto.ChatRoomDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
 import com.project.danim_be.chat.dto.test.ChatRoomIdDto;
@@ -76,17 +77,8 @@ public class ChatRoomService {
 			chatRoomMemberInfoDto.add(infoDto);
 		}
 		return  ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방유저 목록조회완료", chatRoomMemberInfoDto));
-
-
-
 		}
-
-
-
-
-
-
-	//======================================================테스트용 메서드=========================================//
+	//=========================================테스트용 메서드===================================================//
 	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
@@ -103,12 +95,13 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 참여한 채팅방", chatRoomResponseDtoList)); // 쿼리문 짜기
 	}
+
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	@Transactional
 	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
+
 		ChatRoom chatRoom = chatRoomRepository.findById(id)
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-
 		//방을찾고
 		Post post = postRepository.findByChatRoom_Id(id)
 				.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -121,13 +114,13 @@ public class ChatRoomService {
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//연령대 조건 비교하고
-		if (!post.getAgeRange().contains(subscriber.getAgeRange())) {
-			throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
+		if (!chatRoom.getAdminMemberId().equals(member.getId()) && !post.getAgeRange().contains(subscriber.getAgeRange())) {
+			throw new CustomException(ErrorCode.USER_KICKED);
 		}
 		System.out.println(post.getGender());
 		System.out.println(subscriber.getGender());
 		//성별 조건 비교하고
-		if (!post.getGender().contains(subscriber.getGender())) {
+		if (!chatRoom.getAdminMemberId().equals(member.getId()) &&!post.getGender().contains(subscriber.getGender())) {
 			throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
 		}
 
@@ -140,7 +133,13 @@ public class ChatRoomService {
 		boolean afterDate = today.isAfter(localDate);
 		// 모집이 종료되면
 		if (afterDate) throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
-
+		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
+		if (memberChatRooms != null) {
+			System.out.println("안됨");
+			if (memberChatRooms.getKickMember()) {
+				throw new CustomException(ErrorCode.USER_KICKED);
+			}
+		}
 		// 모집 인원이 다 차기 전까지 신청 가능
 		List<ChatRoomDto> chatRoomDtoList = null;
 		if (post.getNumberOfParticipants() < post.getGroupSize()) {
