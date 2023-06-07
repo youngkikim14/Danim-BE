@@ -1,12 +1,9 @@
 name: Java CI with Gradle
-
 on:
   push:
     branches: [ "develop" ]
-
 permissions:
   contents: read
-
 jobs:
   build:
     # 실행 환경 지정
@@ -21,7 +18,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
       # gradle caching - 빌드 시간 향상
       - name: Gradle Caching
         uses: actions/cache@v3
@@ -32,21 +28,12 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-
       - run: mkdir -p ./src/main/resources/
       - run: touch ./src/main/resources/application.properties
-      
-      # https 적용    
-      - name: Create PKCS12 file
-        run: |
-          echo "${{ secrets.PKCS12_SECRET }}" | base64 --decode > certificate.p12
-
-      # 필요한 작업 수행
       - name: jasypt key주입
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
       - run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
         # gradle build
-
       - name: Build with Gradle
         run: ./gradlew build -x test
