@@ -16,7 +16,7 @@ public class MypageReviewResponseDto {
     private LocalDateTime createdAt;
 
     public MypageReviewResponseDto(Review receiveReview) {
-        this.userId = receiveReview.getReview();
+        this.userId = receiveReview.getMember().getNickname();
         this.point = receiveReview.getPoint();
         this.review = receiveReview.getReview();
         this.createdAt = receiveReview.getCreatedAt();
