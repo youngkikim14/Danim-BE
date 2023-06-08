@@ -95,9 +95,9 @@ public class PostService {
 
 
 
-		String roomId = UUID.randomUUID().toString();
+		String roomName = UUID.randomUUID().toString();
 		ChatRoom chatRoom =ChatRoom.builder()
-			.roomId(roomId)
+			.roomName(roomName)
 			.post(post)
 			.adminMemberId(post.getMember().getId())
 			.build();
