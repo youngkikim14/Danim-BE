@@ -86,8 +86,6 @@ public class WebSecurityConfig {
 				.requestMatchers("/status", "/images/**").permitAll()
 				.requestMatchers("/ws/**").permitAll()
 				.requestMatchers("/stomp").permitAll()
-				.requestMatchers("/").permitAll()
-				.requestMatchers("/health-check").permitAll()	   
 				.anyRequest()
 				.authenticated()
 
@@ -104,12 +102,12 @@ public class WebSecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 
 		//접근할수있는 포트설정
-		configuration.addAllowedOrigin("https://localhost:3000");
-		configuration.addAllowedOrigin("https://localhost:8080");
-		configuration.addAllowedOrigin("https://127.0.0.1:3000");
-		configuration.addAllowedOrigin("https://localhost:63342");
-		configuration.addAllowedOrigin("https://jxy.me/**");
-		configuration.addAllowedOrigin("https://jxy.me/");
+		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.addAllowedOrigin("http://localhost:8080");
+		configuration.addAllowedOrigin("http://127.0.0.1:3000");
+		configuration.addAllowedOrigin("http://localhost:63342");
+		configuration.addAllowedOrigin("http://jxy.me/**");
+		configuration.addAllowedOrigin("http://jxy.me/");
 
 
 		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
@@ -127,10 +125,5 @@ public class WebSecurityConfig {
 		return source;
 	}
 }
-
-
-
-
-
 
 
