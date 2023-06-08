@@ -86,6 +86,7 @@ public class WebSecurityConfig {
 				.requestMatchers("/status", "/images/**").permitAll()
 				.requestMatchers("/ws/**").permitAll()
 				.requestMatchers("/stomp").permitAll()
+				.requestMatchers("/health-check").permitAll()
 				.anyRequest()
 				.authenticated()
 
@@ -108,6 +109,9 @@ public class WebSecurityConfig {
 		configuration.addAllowedOrigin("http://localhost:63342");
 		configuration.addAllowedOrigin("http://jxy.me/**");
 		configuration.addAllowedOrigin("http://jxy.me/");
+		configuration.addAllowedOrigin("https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/");
+		configuration.addAllowedOrigin("https://da-nim.com/");
+
 
 
 		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
@@ -125,10 +129,5 @@ public class WebSecurityConfig {
 		return source;
 	}
 }
-
-
-
-
-
 
 
