@@ -21,4 +21,5 @@ public class MypageResponseDto {
         this.owner = owner;
         this.score = member.getScore();
     }
+
 }
