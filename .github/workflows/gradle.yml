@@ -29,9 +29,9 @@ jobs:
       - name: properties 생성
         run: touch ./src/main/resources/application.properties
         
-      - name: PKCS12 file 생성
-        run: |
-          echo "${{ secrets.PKCS12_SECRET }}" | base64 --decode > ./src/main/resources/certificate.p12
+#       - name: PKCS12 file 생성
+#         run: |
+#           echo "${{ secrets.PKCS12_SECRET }}" | base64 --decode > ./src/main/resources/certificate.p12
           
       - name: jasypt key 주입
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
