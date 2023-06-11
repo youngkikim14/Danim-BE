@@ -19,7 +19,7 @@
 //
 // import com.nimbusds.jose.shaded.gson.JsonElement;
 // import com.nimbusds.jose.shaded.gson.JsonObject;
-// import com.project.danim_be.member.dto.MemberRequestDto;
+// import com.project.danim_be.member.dto.RequestDto.MemberRequestDto;
 // import com.project.danim_be.member.entity.Member;
 // import com.project.danim_be.member.repository.MemberRepository;
 // import com.project.danim_be.security.refreshToken.RefreshToken;

@@ -1,4 +1,4 @@
-package com.project.danim_be.post.dto;
+package com.project.danim_be.post.dto.RequestDto;
 
 import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;

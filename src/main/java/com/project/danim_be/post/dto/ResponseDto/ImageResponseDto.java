@@ -1,4 +1,4 @@
-package com.project.danim_be.post.dto;
+package com.project.danim_be.post.dto.ResponseDto;
 
 import com.project.danim_be.post.entity.Image;
 import lombok.Getter;

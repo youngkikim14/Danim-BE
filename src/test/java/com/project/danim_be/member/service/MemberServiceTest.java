@@ -3,24 +3,26 @@ package com.project.danim_be.member.service;
 
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.util.Message;
-import com.project.danim_be.member.dto.*;
+import com.project.danim_be.member.dto.RequestDto.CheckIdRequestDto;
+import com.project.danim_be.member.dto.RequestDto.CheckNicknameRequestDto;
+import com.project.danim_be.member.dto.RequestDto.LoginRequestDto;
+import com.project.danim_be.member.dto.RequestDto.SignupRequestDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
-import com.project.danim_be.post.dto.MypagePostResponseDto;
+import com.project.danim_be.mypage.service.MypageService;
+import com.project.danim_be.post.dto.ResponseDto.MypagePostResponseDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -39,6 +41,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
 
+    @InjectMocks
+    private MypageService mypageService;
     @InjectMocks
     private MemberService memberService;
     @Mock
@@ -174,7 +178,7 @@ class MemberServiceTest {
         when(memberRepository.findById(ownerpk)).thenReturn(Optional.of(owner));
 
         //when
-        ResponseEntity<Message> result = memberService.memberInfo(ownerpk, memberpk);
+        ResponseEntity<Message> result = mypageService.memberInfo(ownerpk, memberpk);
 
         //then
         assertEquals(result.getBody().getMessage(),"조회 성공");
@@ -202,7 +206,7 @@ class MemberServiceTest {
         when(memberRepository.findById(ownerpk)).thenReturn(Optional.of(owner));
 
         //when
-        ResponseEntity<Message> result = memberService.memberPosts(ownerpk, memberpk);
+        ResponseEntity<Message> result = mypageService.memberPosts(ownerpk, memberpk);
 
         //then
         assertEquals(result.getBody().getMessage(),"조회 성공");

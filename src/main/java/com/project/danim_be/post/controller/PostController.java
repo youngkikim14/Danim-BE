@@ -1,8 +1,8 @@
 package com.project.danim_be.post.controller;
 
 import com.project.danim_be.common.util.Message;
-import com.project.danim_be.post.dto.ImageRequestDto;
-import com.project.danim_be.post.dto.PostRequestDto;
+import com.project.danim_be.post.dto.RequestDto.ImageRequestDto;
+import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
 import com.project.danim_be.post.service.PostService;
 import com.project.danim_be.post.service.SearchService;
 import com.project.danim_be.security.auth.UserDetailsImpl;

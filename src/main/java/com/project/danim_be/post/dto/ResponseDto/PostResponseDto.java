@@ -1,4 +1,4 @@
-package com.project.danim_be.post.dto;
+package com.project.danim_be.post.dto.ResponseDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.danim_be.post.entity.Gender;
@@ -56,8 +56,8 @@ public class PostResponseDto {
 		this.keyword = post.getKeyword();
 		this.ageRange = post.getAgeRange();
 		this.gender = post.getGender();
-		this.content = post.getContent().getContent();
-		this.map = post.getMap().getMap();
+		this.content = post.getContent();
+		this.map = post.getMap();
 		this.chatRoomId = post.getChatRoom().getId();
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();

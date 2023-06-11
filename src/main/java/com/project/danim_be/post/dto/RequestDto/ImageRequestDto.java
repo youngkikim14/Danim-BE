@@ -1,4 +1,4 @@
-package com.project.danim_be.post.dto;
+package com.project.danim_be.post.dto.RequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

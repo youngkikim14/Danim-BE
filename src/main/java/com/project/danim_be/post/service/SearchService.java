@@ -4,10 +4,9 @@ import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
-import com.project.danim_be.post.dto.CardPostResponseDto;
-import com.project.danim_be.post.dto.PostResponseDto;
-import com.project.danim_be.post.dto.SearchRequestDto;
-import com.project.danim_be.post.entity.Location;
+import com.project.danim_be.post.dto.RequestDto.SearchRequestDto;
+import com.project.danim_be.post.dto.ResponseDto.CardPostResponseDto;
+import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
@@ -64,8 +63,7 @@ public class SearchService {
         QPost qPost = QPost.post;
 
         if (searchRequestDto.getLocation() != null) {
-            Location location = Location.fromString(searchRequestDto.getLocation());
-            predicate.and(qPost.location.eq(location));
+            predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
         }
 
         if (searchRequestDto.getSearchKeyword() != null) {
@@ -85,11 +83,10 @@ public class SearchService {
             String[] keywordList = searchRequestDto.getKeyword().split(",");
             BooleanBuilder keywordPredicate = new BooleanBuilder();
             for (String keyword : keywordList) {
-                keywordPredicate.or(qPost.keyword.eq(keyword));
+                keywordPredicate.or(qPost.keyword.containsIgnoreCase(keyword));
             }
             predicate.and(keywordPredicate);
         }
-
 
         predicate.and(qPost.isDeleted.eq(false));
 
