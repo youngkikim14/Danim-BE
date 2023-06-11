@@ -48,6 +48,7 @@ public class PostService {
 	//게시글작성
 	@Transactional
 	public ResponseEntity<Message> createPost(Member member, PostRequestDto requestDto) {
+		//에러메시지반환
 
 		Post post = Post.builder()
 			.postTitle(requestDto.getPostTitle())
@@ -55,11 +56,11 @@ public class PostService {
 			.recruitmentEndDate(requestDto.getRecruitmentEndDate())
 			.tripStartDate(requestDto.getTripStartDate())
 			.tripEndDate(requestDto.getTripEndDate())
-			.location(requestDto.getLocation())
 			.groupSize(requestDto.getGroupSize())
+			.location(requestDto.getLocation())
 			.keyword(requestDto.getKeyword())
+			.gender(requestDto.getGender())
 			.ageRange(String.join(",", requestDto.getAgeRange()))
-			.gender(String.join(",", requestDto.getGender()))
 			.numberOfParticipants(0)
 			.member(member)
 			.isDeleted(false)
@@ -178,4 +179,9 @@ public class PostService {
 		}
 		return file;
 	}
+
+
+
 }
+
+

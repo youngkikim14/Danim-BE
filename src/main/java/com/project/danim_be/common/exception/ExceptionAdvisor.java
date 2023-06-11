@@ -17,8 +17,12 @@ public class ExceptionAdvisor {
 	// CustomException 클래스에서 발생하는 예외 핸들러
 	@ExceptionHandler(value = {CustomException.class})
 	public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
-		return ErrorResponse.toResponseEntity(e.getErrorCode());
+		ErrorCode errorCode = e.getErrorCode();
+		return ErrorResponse.toResponseEntity(errorCode);
 	}
+	
+
+
 
 	// Valid 예외 핸들러
 	@ExceptionHandler(value = {BindException.class})
@@ -41,4 +45,5 @@ public class ExceptionAdvisor {
 		e.printStackTrace();
 		return ErrorResponse.toResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
 	}
+
 }

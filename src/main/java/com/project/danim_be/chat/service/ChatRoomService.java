@@ -123,9 +123,9 @@ public class ChatRoomService {
 		System.out.println(post.getGender());
 		System.out.println(subscriber.getGender());
 		//성별 조건 비교하고
-		if (!chatRoom.getAdminMemberId().equals(member.getId()) &&!post.getGender().contains(subscriber.getGender())) {
-			throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
-		}
+		// if (!chatRoom.getAdminMemberId().equals(member.getId()) &&!post.getGender().contains(subscriber.getGender())) {
+		// 	throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
+		// }
 
 		Date recruitmentEndDate = post.getRecruitmentEndDate();
 		// LocalDate 타입으로 변환

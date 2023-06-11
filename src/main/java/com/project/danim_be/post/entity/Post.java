@@ -21,6 +21,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Post extends Timestamped {
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -37,11 +39,13 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private String ageRange;            		//연령대
 	@Column(nullable = false)
-	private String gender;                		//성별
+	@Enumerated(EnumType.STRING)
+	private Gender gender;                		//성별
 	@Column(nullable = false)
 	private String keyword;                		//키워드
 	@Column(nullable = false)
-	private String location;            		//지역
+	@Enumerated(EnumType.STRING)
+	private Location location;            		//지역
 	@Column(nullable = false)
 	private Integer groupSize;            		//인원수
 	@Column(nullable = false)
@@ -69,24 +73,17 @@ public class Post extends Timestamped {
 		return new ArrayList<>(Arrays.asList(this.ageRange.split(",")));
 	}
 
-	// 성별 복수선택가능
-	public void setGender(List<String> gender) {this.gender = String.join(",", gender);}
-	public List<String> getGender() {
-		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
-	}
-
-
 	public void update(PostRequestDto requestDto){
 			this.postTitle =requestDto.getPostTitle();
 			this.recruitmentStartDate =requestDto.getRecruitmentStartDate();
 			this.recruitmentEndDate =requestDto.getRecruitmentEndDate();
 			this.tripStartDate =requestDto.getTripStartDate();
 			this.tripEndDate =requestDto.getTripEndDate();
-			this.location =requestDto.getLocation();
 			this.groupSize =requestDto.getGroupSize();
+			this.location =requestDto.getLocation();
 			this.keyword =requestDto.getKeyword();
+			this.gender = requestDto.getGender();
 			this.setAgeRange(requestDto.getAgeRange());
-			this.setGender(requestDto.getGender());
 
 	}
 	public void delete() {
