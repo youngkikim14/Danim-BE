@@ -1,7 +1,5 @@
 package com.project.danim_be.chat.service;
 
-import com.project.danim_be.chat.dto.ChatDto;
-import com.project.danim_be.chat.dto.ChatRoomDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
 import com.project.danim_be.chat.dto.test.ChatRoomIdDto;
 import com.project.danim_be.chat.dto.test.ChatRoomMemberInfoDto;
@@ -27,11 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service

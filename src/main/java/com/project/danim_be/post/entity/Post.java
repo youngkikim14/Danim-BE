@@ -3,7 +3,7 @@ package com.project.danim_be.post.entity;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.post.dto.PostRequestDto;
+import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,12 +46,16 @@ public class Post extends Timestamped {
 	private Integer groupSize;            		//인원수
 	@Column(nullable = false)
 	private Integer numberOfParticipants ;    	//현재참여자수
+	@Column(columnDefinition = "TEXT")
+	private String content;						// 내용
+	@Column(columnDefinition = "TEXT")
+	private String map;							// 지도 좌표
 	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL)
 	private ChatRoom chatRoom;
-	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-	private Content content;        			//내용
-	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-	private MapApi map;							//지도 api정보
+//	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+//	private Content content;        			//내용
+//	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+//	private MapApi map;							//지도 api정보
 	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
 	private List<Image> imageUrls;
 
@@ -91,7 +95,6 @@ public class Post extends Timestamped {
 	}
 	public void delete() {
 		this.isDeleted = true;
-		content.delete();
 	}
 
 	public void setChatRoom(ChatRoom chatRoom) {
