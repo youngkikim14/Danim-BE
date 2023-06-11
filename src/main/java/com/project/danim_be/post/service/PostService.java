@@ -11,13 +11,9 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.dto.RequestDto.ImageRequestDto;
 import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
-import com.project.danim_be.post.entity.Content;
 import com.project.danim_be.post.entity.Image;
-import com.project.danim_be.post.entity.MapApi;
 import com.project.danim_be.post.entity.Post;
-import com.project.danim_be.post.repository.ContentRepository;
 import com.project.danim_be.post.repository.ImageRepository;
-import com.project.danim_be.post.repository.MapApiRepository;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +34,10 @@ import java.util.UUID;
 public class PostService {
 
 	private final PostRepository postRepository;
-	private final ContentRepository contentRepository;
+//	private final ContentRepository contentRepository;
 	private final ImageRepository imageRepository;
 	private final ChatRoomRepository chatRoomRepository;
-	private final MapApiRepository mapApiRepository;
-
+//	private final MapApiRepository mapApiRepository;
 	private final S3Uploader s3Uploader;
 
 	//게시글작성
@@ -63,19 +58,21 @@ public class PostService {
 			.numberOfParticipants(0)
 			.member(member)
 			.isDeleted(false)
-			.build();
-
-		Content content = Content.builder()
-			.post(post)
 			.content(requestDto.getContent())
-			.build();
-		contentRepository.save(content);
-    
-		MapApi map = MapApi.builder()
-			.post(post)
 			.map(requestDto.getMapAPI())
 			.build();
-		mapApiRepository.save(map);
+
+//		Content content = Content.builder()
+//			.post(post)
+//			.content(requestDto.getContent())
+//			.build();
+//		contentRepository.save(content);
+    
+//		MapApi map = MapApi.builder()
+//			.post(post)
+//			.map(requestDto.getMapAPI())
+//			.build();
+//		mapApiRepository.save(map);
 
 		for(String url : requestDto.getImageUrls()) {
 			Image image = Image.builder()
@@ -130,15 +127,15 @@ public class PostService {
 
 		post.update(requestDto);
 
-		Content content = contentRepository.findByPostId(id)
-			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-		content.update(requestDto.getContent());
-		contentRepository.save(content);
+//		Content content = contentRepository.findByPostId(id)
+//			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+//		content.update(requestDto.getContent());
+//		contentRepository.save(content);
 
-		MapApi map = mapApiRepository.findByPostId(id)
-			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-		map.update(requestDto.getMapAPI());
-		mapApiRepository.save(map);
+//		MapApi map = mapApiRepository.findByPostId(id)
+//			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+//		map.update(requestDto.getMapAPI());
+//		mapApiRepository.save(map);
 
 		//보류
 		for(String url : requestDto.getImageUrls()) {
@@ -170,7 +167,7 @@ public class PostService {
 	}
 
 	public String uploader(MultipartFile imageFile){
-		String file = null;
+		String file;
 		try {
 			file = s3Uploader.upload(imageFile);
 		} catch (IOException e) {

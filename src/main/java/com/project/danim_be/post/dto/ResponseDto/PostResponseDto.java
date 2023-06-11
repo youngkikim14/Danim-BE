@@ -53,8 +53,8 @@ public class PostResponseDto {
 		this.keyword = post.getKeyword();
 		this.ageRange = post.getAgeRange();
 		this.gender = post.getGender();
-		this.content = post.getContent().getContent();
-		this.map = post.getMap().getMap();
+		this.content = post.getContent();
+		this.map = post.getMap();
 		this.chatRoomId = post.getChatRoom().getId();
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();
