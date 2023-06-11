@@ -19,14 +19,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -58,6 +57,7 @@ public class PostService {
 			.numberOfParticipants(0)
 			.member(member)
 			.isDeleted(false)
+			.isRecruitmentEnd(false)
 			.content(requestDto.getContent())
 			.map(requestDto.getMapAPI())
 			.build();
@@ -67,7 +67,7 @@ public class PostService {
 //			.content(requestDto.getContent())
 //			.build();
 //		contentRepository.save(content);
-    
+
 //		MapApi map = MapApi.builder()
 //			.post(post)
 //			.map(requestDto.getMapAPI())
@@ -100,6 +100,7 @@ public class PostService {
 		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공",postId);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
 	//이미지 업로드
 	@Transactional
 	public ResponseEntity<Message> imageUpload(ImageRequestDto requestDto) {
@@ -149,6 +150,7 @@ public class PostService {
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 수정 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
 	//게시글 삭제
 	@Transactional
 	public ResponseEntity<Message> deletePost(Long id,Member member) {
@@ -174,5 +176,24 @@ public class PostService {
 			throw new CustomException(ErrorCode.FILE_CONVERT_FAIL);
 		}
 		return file;
+	}
+
+	// 크론표현식 사용
+	// second	//minute	//hour	//day of month	//month	//day of week
+	// !!리턴타입, 매개변수 줄 수 없음!!
+	@Transactional
+	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")    // 매일 00:00:00 실행
+	public void endRecruitmentDate() {
+
+		List<Post> postList = postRepository.findAll();
+		Date today = new Date();
+		for(int i = 0; i < postList.size(); i++) {
+			if(postList.get(i).getIsRecruitmentEnd().equals(false)){
+				if(today.after(postList.get(i).getRecruitmentEndDate())){
+					postList.get(i).endRecruitmentDate();
+					postRepository.save(postList.get(i));
+				}
+			}
+		}
 	}
 }
