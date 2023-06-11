@@ -3,12 +3,12 @@ package com.project.danim_be.member.service;
 
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.util.Message;
-import com.project.danim_be.member.dto.CheckIdRequestDto;
-import com.project.danim_be.member.dto.CheckNicknameRequestDto;
-import com.project.danim_be.member.dto.LoginRequestDto;
-import com.project.danim_be.member.dto.SignupRequestDto;
+import com.project.danim_be.member.dto.*;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
+import com.project.danim_be.post.dto.MypagePostResponseDto;
+import com.project.danim_be.post.entity.Post;
+import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
@@ -27,9 +27,12 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 
 @Nested
@@ -52,6 +55,8 @@ class MemberServiceTest {
     private RefreshTokenRepository refreshTokenRepository;
     @Mock
     private JwtUtil jwtUtil;
+    @Mock
+    private PostRepository postRepository;
 
     @Test
     @DisplayName("회원가입 성공 테스트")
@@ -148,18 +153,70 @@ class MemberServiceTest {
 
     }
 
-//
-//    @Test
-//    @DisplayName("마이페이지 유저정보")
-//    void memberInfo() {
-//
-//        //given
-////        Member owner =
-//    }
-//
-//    @Test
-//    @DisplayName("마이페이지 게시물 정보")
-//    void memberPosts() {
-//    }
+
+    @Test
+    @DisplayName("마이페이지 유저정보")
+    void memberInfo() {
+
+        //given
+        Long memberpk = 2L;
+        String memberId = "user5555@gmail.com";
+        String memberNickName = "우아한악어";
+        String memberPassword = "test1410";
+        Long ownerpk = 3L;
+        String ownerId = "user4444@gmail.com";
+        String ownerNickName = "우아한코끼리";
+        String ownerPassword = "test1410";
+        Member member = new Member(memberId, memberPassword, memberNickName);
+        Member owner = new Member(ownerId, ownerPassword, ownerNickName);
+
+        when(memberRepository.findById(memberpk)).thenReturn(Optional.of(member));
+        when(memberRepository.findById(ownerpk)).thenReturn(Optional.of(owner));
+
+        //when
+        ResponseEntity<Message> result = memberService.memberInfo(ownerpk, memberpk);
+
+        //then
+        assertEquals(result.getBody().getMessage(),"조회 성공");
+        assertNotEquals(result.getBody().getData(),"우아한 코끼리");
+
+    }
+
+    @Test
+    @DisplayName("마이페이지 게시물 정보")
+    void memberPosts() {
+
+        //given
+        Long memberpk = 2L;
+        String memberId = "user5555@gmail.com";
+        String memberNickName = "우아한악어";
+        String memberPassword = "test1410";
+        Long ownerpk = 3L;
+        String ownerId = "user4444@gmail.com";
+        String ownerNickName = "우아한코끼리";
+        String ownerPassword = "test1410";
+        Member member = new Member(memberId, memberPassword, memberNickName);
+        Member owner = new Member(ownerId, ownerPassword, ownerNickName);
+
+        when(memberRepository.findById(memberpk)).thenReturn(Optional.of(member));
+        when(memberRepository.findById(ownerpk)).thenReturn(Optional.of(owner));
+
+        //when
+        ResponseEntity<Message> result = memberService.memberPosts(ownerpk, memberpk);
+
+        //then
+        assertEquals(result.getBody().getMessage(),"조회 성공");
+        assertEquals(result.getBody().getData(), validMember(owner, false));
+
+    }
+
+    private java.util.List<MypagePostResponseDto> validMember(Member member, Boolean owner) {
+        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
+        List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
+        for (Post post : postList) {
+            mypagePostResponseDtoList.add(new MypagePostResponseDto(post, owner));
+        }
+        return mypagePostResponseDtoList;
+    }
 }
 
