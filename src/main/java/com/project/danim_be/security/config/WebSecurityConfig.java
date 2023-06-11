@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,7 +44,7 @@ public class WebSecurityConfig {
 			"/api/user/{ownerId}/review",
 			"/api/user/randomNickname",
 			"/api/user/userInfo",
-			/* swagger v3 */
+		    // "/swagger v3/",
 			"/v3/api-docs/**",
 			"/swagger-ui/**",
 			"/api/posts/**",
@@ -52,9 +54,18 @@ public class WebSecurityConfig {
 			"/api/chat/allChatRoom",
 			"/api/chat/test",
 			"/stomp"
-
-
 	};
+
+	// h2콘솔 접근허용
+	@Bean
+	@Order(Ordered.HIGHEST_PRECEDENCE)	// 이 필터체인이 다른필터체인보다 우선순위가 높음을 표시.
+	SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
+		http.securityMatcher(PathRequest.toH2Console());	//h2콘솔에 대한 요청만 체인을 사용한다.
+		http.csrf((csrf) -> csrf.disable());				//csrf에대한 보호를 비활성한다.
+		http.headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin()));
+		// http.authorizeRequests().dispatcherTypeMatchers(HttpMethod.valueOf("/h2-console/**")).permitAll();
+		return http.build();
+	}
 
 	//정적자원은 인증인가를 하지않겠다.
 	@Bean
@@ -91,6 +102,7 @@ public class WebSecurityConfig {
 				.authenticated()
 
 		);
+
 		http.cors();
 
 		http.addFilterBefore(jwtUtil, UsernamePasswordAuthenticationFilter.class);
@@ -100,6 +112,7 @@ public class WebSecurityConfig {
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
+
 		CorsConfiguration configuration = new CorsConfiguration();
 
 		//접근할수있는 포트설정

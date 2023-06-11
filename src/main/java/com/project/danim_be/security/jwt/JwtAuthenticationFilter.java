@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException,	IOException,ServletException {
 
 		// JWT 토큰을 해석하여 추출
-		String access_token = jwtUtil.resolveToken(request, JwtUtil.ACCESS_KEY);
+		String access_token  = jwtUtil.resolveToken(request, JwtUtil.ACCESS_KEY);
 		String refresh_token = jwtUtil.resolveToken(request, JwtUtil.REFRESH_KEY);
 
 		// 토큰이 존재하면 유효성 검사를 수행하고, 유효하지 않은 경우 예외 처리

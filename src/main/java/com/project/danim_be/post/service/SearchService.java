@@ -45,7 +45,9 @@ public class SearchService {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         List<CardPostResponseDto> cardPostResponseDtoList = new ArrayList<>();
+
         for (Post post : postList) {
             cardPostResponseDtoList.add(new CardPostResponseDto(post));
         }
@@ -59,7 +61,6 @@ public class SearchService {
         // QueryDSL을 활용하여 동적 쿼리 작성
         BooleanBuilder predicate = new BooleanBuilder();
         QPost qPost = QPost.post;
-
 
         if (searchRequestDto.getLocation() != null) {
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
@@ -90,7 +91,6 @@ public class SearchService {
         predicate.and(qPost.isDeleted.eq(false));
 
 //        postRepository.findAll(predicate, pageable);
-
 
         // 동적 쿼리 실행
         List<Post> result = queryFactory

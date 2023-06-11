@@ -77,6 +77,12 @@ dependencies {
     //
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
 
+    //Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //logging
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 }
 
 // Querydsl 설정부
