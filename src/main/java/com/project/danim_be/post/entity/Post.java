@@ -3,7 +3,7 @@ package com.project.danim_be.post.entity;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.post.dto.PostRequestDto;
+import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

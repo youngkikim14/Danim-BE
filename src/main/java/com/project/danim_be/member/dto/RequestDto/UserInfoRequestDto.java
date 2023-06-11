@@ -1,4 +1,4 @@
-package com.project.danim_be.member.dto;
+package com.project.danim_be.member.dto.RequestDto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

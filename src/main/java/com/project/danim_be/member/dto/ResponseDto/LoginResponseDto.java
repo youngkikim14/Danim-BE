@@ -1,4 +1,4 @@
-package com.project.danim_be.member.dto;
+package com.project.danim_be.member.dto.ResponseDto;
 
 import com.project.danim_be.member.entity.Member;
 import lombok.Getter;

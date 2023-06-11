@@ -1,4 +1,4 @@
-package com.project.danim_be.member.dto;
+package com.project.danim_be.mypage.dto.ResponseDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.danim_be.review.entity.Review;

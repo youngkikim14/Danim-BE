@@ -1,5 +1,6 @@
 package com.project.danim_be.member.dto;
 
+import com.project.danim_be.member.dto.RequestDto.CheckNicknameRequestDto;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

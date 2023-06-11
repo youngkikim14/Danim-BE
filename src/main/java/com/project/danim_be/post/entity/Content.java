@@ -1,6 +1,6 @@
 package com.project.danim_be.post.entity;
 
-import com.project.danim_be.post.dto.PostRequestDto;
+import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

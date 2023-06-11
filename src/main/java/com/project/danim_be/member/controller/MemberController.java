@@ -2,7 +2,7 @@ package com.project.danim_be.member.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.danim_be.common.util.Message;
-import com.project.danim_be.member.dto.*;
+import com.project.danim_be.member.dto.RequestDto.*;
 import com.project.danim_be.member.service.GoogleService;
 import com.project.danim_be.member.service.KakaoService;
 import com.project.danim_be.member.service.MemberService;
@@ -116,32 +116,6 @@ public class MemberController {
 		return memberService.signOut(userDetails.getMember());
 	}
 
-	// 마이페이지 - 사용자 정보
-	@Operation(summary = "마이페이지 사용자 정보 API", description = "마이페이지 사용자 정보")
-	@GetMapping("/{ownerId}/info")
-	public ResponseEntity<Message> memberInfo(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return memberService.memberInfo(ownerId, userDetails.getMember().getId());
-	}
-
-	// 마이페이지 - 게시물 목록
-	@Operation(summary = "마이페이지 게시물 목록 API", description = "마이페이지 게시물 목록")
-	@GetMapping("/{ownerId}/posts")
-	public ResponseEntity<Message> memberPosts(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-		return memberService.memberPosts(ownerId, userDetails.getMember().getId());
-	}
-
-	@Operation(summary = "마이페이지 내가 받은 후기목록 API", description = "마이페이지 내가 받은 후기목록")
-	@GetMapping("{ownerId}/review")
-	public ResponseEntity<Message> memberReview(@PathVariable Long ownerId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return memberService.memberReview(ownerId, userDetails.getMember().getId());
-	}
-
-	//마이페이지 - 회원정보 수정
-	@Operation(summary = "마이페이지 회원정보 수정 API", description = "마이페이지 회원정보 수정")
-	@PutMapping(value = "{ownerId}/myInfo",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Message> editMember(@PathVariable Long ownerId, @ModelAttribute MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-		return memberService.editMember(ownerId ,mypageRequestDto, userDetails.getMember());
-	}
 
 }
 
