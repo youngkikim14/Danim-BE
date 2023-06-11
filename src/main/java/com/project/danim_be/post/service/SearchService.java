@@ -7,6 +7,7 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.post.dto.RequestDto.SearchRequestDto;
 import com.project.danim_be.post.dto.ResponseDto.CardPostResponseDto;
 import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
+import com.project.danim_be.post.entity.Location;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
@@ -63,7 +64,8 @@ public class SearchService {
         QPost qPost = QPost.post;
 
         if (searchRequestDto.getLocation() != null) {
-            predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
+            Location location = Location.fromString(searchRequestDto.getLocation());
+            predicate.and(qPost.location.eq(location));
         }
 
         if (searchRequestDto.getSearchKeyword() != null) {

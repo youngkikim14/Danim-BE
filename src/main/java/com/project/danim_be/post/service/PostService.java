@@ -33,10 +33,8 @@ import java.util.*;
 public class PostService {
 
 	private final PostRepository postRepository;
-//	private final ContentRepository contentRepository;
 	private final ImageRepository imageRepository;
 	private final ChatRoomRepository chatRoomRepository;
-//	private final MapApiRepository mapApiRepository;
 	private final S3Uploader s3Uploader;
 
 	//게시글작성
@@ -52,8 +50,8 @@ public class PostService {
 			.location(requestDto.getLocation())
 			.groupSize(requestDto.getGroupSize())
 			.keyword(requestDto.getKeyword())
+			.gender(requestDto.getGender())
 			.ageRange(String.join(",", requestDto.getAgeRange()))
-			.gender(String.join(",", requestDto.getGender()))
 			.numberOfParticipants(0)
 			.member(member)
 			.isDeleted(false)
@@ -61,18 +59,6 @@ public class PostService {
 			.content(requestDto.getContent())
 			.map(requestDto.getMapAPI())
 			.build();
-
-//		Content content = Content.builder()
-//			.post(post)
-//			.content(requestDto.getContent())
-//			.build();
-//		contentRepository.save(content);
-
-//		MapApi map = MapApi.builder()
-//			.post(post)
-//			.map(requestDto.getMapAPI())
-//			.build();
-//		mapApiRepository.save(map);
 
 		for(String url : requestDto.getImageUrls()) {
 			Image image = Image.builder()
@@ -127,16 +113,6 @@ public class PostService {
 		}
 
 		post.update(requestDto);
-
-//		Content content = contentRepository.findByPostId(id)
-//			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-//		content.update(requestDto.getContent());
-//		contentRepository.save(content);
-
-//		MapApi map = mapApiRepository.findByPostId(id)
-//			.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-//		map.update(requestDto.getMapAPI());
-//		mapApiRepository.save(map);
 
 		//보류
 		for(String url : requestDto.getImageUrls()) {
