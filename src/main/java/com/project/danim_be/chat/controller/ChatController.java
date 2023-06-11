@@ -38,6 +38,7 @@ public class ChatController {
 
 			case ENTER -> {
 				System.out.println("TYPE : ENTER");
+
 				chatMessageService.visitMember(chatDto);
 
 				ChatDto message = ChatDto.builder()

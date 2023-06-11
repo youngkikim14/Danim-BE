@@ -80,6 +80,9 @@ dependencies {
     //Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    //logging
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 }
 
 // Querydsl 설정부

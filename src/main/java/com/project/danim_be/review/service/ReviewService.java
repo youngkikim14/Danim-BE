@@ -32,14 +32,13 @@ public class ReviewService {
     // 리뷰 작성
     @Transactional
     public ResponseEntity<Message> createReview(Long postId, ReviewRequestDto reviewRequestDto, Member member) {
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
-        );
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         //Mile계산식
         Member planner =memberRepository.findById(post.getMember().getId())
             .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
-        Double score= reviewRequestDto.getScore();
+        Double score = reviewRequestDto.getScore();
         score-=3;
         score = score/(post.getNumberOfParticipants());
         score *= (10+post.getNumberOfParticipants())/10.0;
@@ -73,8 +72,6 @@ public class ReviewService {
         } else {
             throw new CustomException(ErrorCode.ALREADY_WRITTEN);
         }
-
-
 
     }
 }

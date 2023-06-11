@@ -67,8 +67,10 @@ public class MemberService {
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
 		String gender = signupRequestDto.getGender();
+
 		boolean agreeForGender = signupRequestDto.isAgreeForGender();
 		boolean agreeForAge = signupRequestDto.isAgreeForAge();
+
 		if(memberRepository.findByUserId(userId).isPresent()){
 			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
 		}
@@ -123,7 +125,7 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "랜덤 닉네임 생성완료", nickname));
 	}
 
-	// 소셜 로그인 시 추가 회원 정보 작성
+	//소셜 로그인 시 추가 회원 정보 작성
 	@Transactional
 	public ResponseEntity<Message> addUserInfo(UserInfoRequestDto userInfoRequestDto) {
 		Member member = memberRepository.findById(userInfoRequestDto.getUserId()).orElseThrow(
@@ -186,7 +188,7 @@ public class MemberService {
 		throw new CustomException(USER_NOT_FOUND);
 	}
 
-	// 회원 탈퇴
+	//회원 탈퇴
 	@Transactional
 	public ResponseEntity<Message> signOut(Member member) {
 		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -218,7 +220,7 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "탈퇴 성공"));
 	}
 
-	// 마이페이지 - 사용자 정보
+	//마이페이지 - 사용자 정보
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
 		Member owner = findMember(ownerId);
@@ -232,7 +234,7 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageResponseDto));
 	}
 
-	// 마이페이지 게시물 정보
+	//마이페이지 게시물 정보
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberPosts(Long ownerId, Long memberId) {
 		Member owner = findMember(ownerId);
@@ -246,7 +248,7 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
 	}
 
-	// 마이페이지 내가 받은 후기
+	//마이페이지 내가 받은 후기
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> memberReview(Long ownerId, Long memberId) {
 		Member owner = findMember(ownerId);
@@ -260,7 +262,6 @@ public class MemberService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
 	}
-
 
 	//마이페이지 회원정보 수정
 	@Transactional
@@ -277,14 +278,13 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료", member));
 	}
 
-
-	// 헤더 셋팅
+	//헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 	}
 
-	// 마이페이지 게시물 공통 메서드
+	//마이페이지 게시물 공통 메서드
 	private List<MypagePostResponseDto> validMember(Member member, Boolean owner) {
 		List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
 		List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
@@ -294,14 +294,14 @@ public class MemberService {
 		return mypagePostResponseDtoList;
 	}
 
-	// 멤버 검증 공통 메서드
+	//멤버 검증 공통 메서드
 	private Member findMember(Long id) {
 		return memberRepository.findById(id).orElseThrow(
 				() -> new CustomException(USER_NOT_FOUND)
 		);
 	}
 
-	// 마이페이지 리뷰 공통 메서드
+	//마이페이지 리뷰 공통 메서드
 	private List<MypageReviewResponseDto> getReview(Long memberId) {
 		QReview qReview = QReview.review1;
 		QPost qPost = QPost.post;
@@ -317,4 +317,5 @@ public class MemberService {
 		}
 		return mypageReviewResponseDtoList;
 	}
+
 }
