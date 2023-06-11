@@ -1,6 +1,8 @@
 package com.project.danim_be.security.config;
 
 
+import static org.springframework.security.config.Customizer.*;
+
 import com.project.danim_be.security.jwt.JwtAuthenticationFilter;
 import com.project.danim_be.security.jwt.JwtUtil;
 import jakarta.servlet.DispatcherType;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -87,7 +90,8 @@ public class WebSecurityConfig {
 		// 시큐리티 최신문서 찾아보기(아직안찾아봄)
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http.csrf().disable();    //csrf 비활성화
+		// http.csrf().disable();    //csrf 비활성화
+		http.csrf(csrf -> csrf.disable());
 
 		http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
@@ -103,7 +107,11 @@ public class WebSecurityConfig {
 
 		);
 
-		http.cors();
+
+		// http.cors();
+		http
+			.cors(withDefaults());
+
 
 		http.addFilterBefore(jwtUtil, UsernamePasswordAuthenticationFilter.class);
 

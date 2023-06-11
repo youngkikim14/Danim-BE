@@ -1,15 +1,11 @@
 package com.project.danim_be.post.entity;
 
-import com.project.danim_be.common.exception.CustomException;
-import com.project.danim_be.common.exception.ErrorCode;
 
 public enum Gender {
 
 	MALE("남성",1),
 	FEMALE("여성",2),
 	ALL("모두",3);
-
-
 
 	public final String value;
 	public final int code;

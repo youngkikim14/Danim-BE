@@ -1,7 +1,5 @@
 package com.project.danim_be.post.entity;
 
-import com.project.danim_be.common.exception.CustomException;
-import com.project.danim_be.common.exception.ErrorCode;
 
 public enum Location {
 	SEOUL("서울",1),
