@@ -1,6 +1,5 @@
 package com.project.danim_be.common.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

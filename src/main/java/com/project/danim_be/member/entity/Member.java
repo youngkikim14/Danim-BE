@@ -1,8 +1,8 @@
 package com.project.danim_be.member.entity;
 
 import com.project.danim_be.common.entity.Timestamped;
-import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
 import com.project.danim_be.member.dto.RequestDto.UserInfoRequestDto;
+import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
