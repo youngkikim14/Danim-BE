@@ -83,6 +83,8 @@ dependencies {
     //logging
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    //Schedule
+    testImplementation 'org.awaitility:awaitility:3.1.2'
 }
 
 // Querydsl 설정부

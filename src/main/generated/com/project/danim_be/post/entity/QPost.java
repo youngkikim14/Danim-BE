@@ -43,6 +43,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
+    public final BooleanPath isRecruitmentEnd = createBoolean("isRecruitmentEnd");
+
     public final StringPath keyword = createString("keyword");
 
     public final StringPath location = createString("location");
