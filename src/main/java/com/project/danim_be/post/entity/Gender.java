@@ -10,6 +10,7 @@ public enum Gender {
 	ALL("모두",3);
 
 
+
 	public final String value;
 	public final int code;
 
