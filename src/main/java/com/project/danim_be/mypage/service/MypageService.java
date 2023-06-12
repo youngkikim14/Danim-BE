@@ -84,16 +84,17 @@ public class MypageService {
     //마이페이지 회원정보 수정
     @Transactional
     public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
-        Member owner = findMember(ownerId);
 
-        if (owner.getId().equals(member.getId())) {
+
+        if (ownerId.equals(member.getId())) {
             String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
             member.editMember(mypageRequestDto, imageUrl);
 
             memberRepository.save(member);
 
         } else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
-        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료", member));
+        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
+
     }
 
     //마이페이지 게시물 공통 메서드

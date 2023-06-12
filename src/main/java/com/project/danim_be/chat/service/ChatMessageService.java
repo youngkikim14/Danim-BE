@@ -123,12 +123,6 @@ public class ChatMessageService {
 	}
 
 
-
-
-
-
-
-
 	//방을 나갔는지확인해야함	LEAVE
 	@Transactional
 	public void leaveChatRoom(ChatDto chatDto) {
