@@ -85,6 +85,9 @@ dependencies {
 
     //Schedule
     testImplementation 'org.awaitility:awaitility:3.1.2'
+
+    //AssertJ
+    testImplementation "org.assertj:assertj-core:3.11.1"
 }
 
 // Querydsl 설정부
