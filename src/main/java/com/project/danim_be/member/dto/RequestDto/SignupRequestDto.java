@@ -1,6 +1,8 @@
 package com.project.danim_be.member.dto.RequestDto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.danim_be.post.entity.Gender;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,7 @@ public class SignupRequestDto {
 
 	private String ageRange;
 
-	private String gender;
+	private Gender gender;
 
 	@JsonProperty("AgreeForGender")
 	private boolean agreeForGender;
