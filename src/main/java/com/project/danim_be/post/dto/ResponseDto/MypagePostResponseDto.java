@@ -21,7 +21,6 @@ public class MypagePostResponseDto {
         this.title = post.getPostTitle();
         this.tripEndDate = post.getTripEndDate();
         this.imageUrl = null;
-
         this.owner = owner;
 
     }
