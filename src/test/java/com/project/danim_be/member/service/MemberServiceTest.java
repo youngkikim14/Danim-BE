@@ -11,6 +11,7 @@ import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.mypage.service.MypageService;
 import com.project.danim_be.post.dto.ResponseDto.MypagePostResponseDto;
+import com.project.danim_be.post.entity.Gender;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
@@ -67,7 +68,7 @@ class MemberServiceTest {
     void signupTest() {
         // given
         signupRequestDto = new SignupRequestDto("limslki333@hanmail.net",
-                "1234", "우아한고양이", "30대", "여", true, true);
+                "1234", "우아한고양이", "30대", Gender.FEMALE, true, true);
 
         // when
         ResponseEntity<Message> result = memberService.signup(signupRequestDto);

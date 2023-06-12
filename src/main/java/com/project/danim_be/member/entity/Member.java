@@ -36,7 +36,7 @@ public class Member extends Timestamped {
 	private String provider;	//소셜
 
 	private String imageUrl;	//프로필이미지
-
+	@Enumerated(EnumType.STRING)
 	private Gender gender;		//성별
 
 	private Boolean agreeForGender;
