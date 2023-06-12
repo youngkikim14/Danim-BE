@@ -2,16 +2,13 @@ package com.project.danim_be.member.dto;
 
 import com.project.danim_be.member.dto.RequestDto.SignupRequestDto;
 import com.project.danim_be.post.entity.Gender;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.project.danim_be.post.entity.Gender.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Nested
 class SignupRequestDtoTest {
-
 
     @Test
     void createSignupRequestDtoTest() {
@@ -20,7 +17,7 @@ class SignupRequestDtoTest {
         String password = "1234";
         String nickname = "우아한사자";
         String ageRange = "30대";
-        Gender gender = FEMALE;
+        Gender gender = Gender.FEMALE;
         boolean agreeAgeRange = true;
         boolean agreeGender = true;
 
@@ -33,10 +30,8 @@ class SignupRequestDtoTest {
         assertEquals(nickname, signupRequestDto.getNickname());
         assertEquals(ageRange, signupRequestDto.getAgeRange());
         assertEquals(gender, signupRequestDto.getGender());
-        assertTrue(agreeGender, String.valueOf(signupRequestDto.getGender()));
-        assertTrue(agreeAgeRange, signupRequestDto.getAgeRange());
+        assertEquals(agreeGender, signupRequestDto.isAgreeForGender());
+        assertEquals(agreeAgeRange, signupRequestDto.isAgreeForAge());
     }
-
-
 
 }
