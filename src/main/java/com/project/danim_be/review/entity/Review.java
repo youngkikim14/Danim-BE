@@ -5,12 +5,14 @@ import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.review.dto.ReviewRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Review extends Timestamped {
 
 	@Id
