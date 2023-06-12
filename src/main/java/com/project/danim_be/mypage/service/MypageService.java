@@ -85,7 +85,6 @@ public class MypageService {
     @Transactional
     public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
 
-
         if (ownerId.equals(member.getId())) {
             String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
             member.editMember(mypageRequestDto, imageUrl);

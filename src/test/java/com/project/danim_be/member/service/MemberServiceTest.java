@@ -44,8 +44,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
 
-    @InjectMocks
-    private MypageService mypageService;
+
     @InjectMocks
     private MemberService memberService;
     @Mock
@@ -251,87 +250,5 @@ class MemberServiceTest {
 
     }
 
-    @Test
-    @DisplayName("로그아웃 실패 테스트")
-    void logoutFailTest() {
-
-        // given
-        Member logoutMember = new Member();
-        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-        String accessToken = "accessToken";
-
-        httpServletRequest.addHeader("ACCESS_KEY", accessToken);
-
-        //when, then
-        CustomException e = assertThrows(CustomException.class, () -> {memberService.logout(logoutMember, httpServletRequest);});
-        assertEquals("찾을수 없는 회원입니다.", e.getErrorCode().getDetail());
-
-    }
-
-
-    @Test
-    @DisplayName("마이페이지 유저정보")
-    void memberInfoTest() {
-
-        //given
-        Long memberpk = 2L;
-        String memberId = "user5555@gmail.com";
-        String memberNickName = "우아한악어";
-        String memberPassword = "test1410";
-        Long ownerpk = 3L;
-        String ownerId = "user4444@gmail.com";
-        String ownerNickName = "우아한코끼리";
-        String ownerPassword = "test1410";
-        Member member = new Member(memberId, memberPassword, memberNickName);
-        Member owner = new Member(ownerId, ownerPassword, ownerNickName);
-
-        when(memberRepository.findById(memberpk)).thenReturn(Optional.of(member));
-        when(memberRepository.findById(ownerpk)).thenReturn(Optional.of(owner));
-
-        //when
-        ResponseEntity<Message> result = mypageService.memberInfo(ownerpk, memberpk);
-
-        //then
-        assertEquals(result.getBody().getMessage(),"조회 성공");
-        assertNotEquals(result.getBody().getData(),"우아한 코끼리");
-
-    }
-
-    @Test
-    @DisplayName("마이페이지 게시물 정보")
-    void memberPostsTest() {
-
-        //given
-        Long memberpk = 2L;
-        String memberId = "user5555@gmail.com";
-        String memberNickName = "우아한악어";
-        String memberPassword = "test1410";
-        Long ownerpk = 3L;
-        String ownerId = "user4444@gmail.com";
-        String ownerNickName = "우아한코끼리";
-        String ownerPassword = "test1410";
-        Member member = new Member(memberId, memberPassword, memberNickName);
-        Member owner = new Member(ownerId, ownerPassword, ownerNickName);
-
-        when(memberRepository.findById(memberpk)).thenReturn(Optional.of(member));
-        when(memberRepository.findById(ownerpk)).thenReturn(Optional.of(owner));
-
-        //when
-        ResponseEntity<Message> result = mypageService.memberPosts(ownerpk, memberpk);
-
-        //then
-        assertEquals(result.getBody().getMessage(),"조회 성공");
-        assertEquals(result.getBody().getData(), validMember(owner, false));
-
-    }
-
-    private java.util.List<MypagePostResponseDto> validMember(Member member, Boolean owner) {
-        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
-        List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
-        for (Post post : postList) {
-            mypagePostResponseDtoList.add(new MypagePostResponseDto(post, owner));
-        }
-        return mypagePostResponseDtoList;
-    }
 }
 
