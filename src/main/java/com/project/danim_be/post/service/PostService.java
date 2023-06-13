@@ -43,7 +43,6 @@ public class PostService {
 
 		Post post = Post.builder()
 			.postTitle(requestDto.getPostTitle())
-
 			.recruitmentStartDate(requestDto.getRecruitmentStartDate())
 			.recruitmentEndDate(requestDto.getRecruitmentEndDate())
 			.tripStartDate(requestDto.getTripStartDate())
