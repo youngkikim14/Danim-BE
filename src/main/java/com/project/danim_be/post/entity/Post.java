@@ -13,9 +13,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Getter
@@ -55,13 +53,13 @@ public class Post extends Timestamped {
 	private String content;						// 내용
 	@Column(columnDefinition = "TEXT")
 	private String map;							// 지도 좌표
-	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL)
 	private ChatRoom chatRoom;
 	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
 	private List<Image> imageUrls;
 
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
 
