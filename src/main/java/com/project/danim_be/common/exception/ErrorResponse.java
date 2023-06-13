@@ -23,6 +23,7 @@ public class ErrorResponse {
 				.build()
 				);
 	}
+
 	// 에러 반환 형식
 	public static ResponseEntity<ErrorResponse> toResponseEntityValid(String errorCode, HttpStatus httpStatus) {
 		return ResponseEntity
