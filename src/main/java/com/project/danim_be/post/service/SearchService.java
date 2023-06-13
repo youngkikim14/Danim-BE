@@ -113,6 +113,8 @@ public class SearchService {
         // 동적 쿼리 실행
         List<Post> result = queryFactory
                 .selectFrom(qPost)
+                .leftJoin(qPost.member, QMember.member).fetchJoin()
+                .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
                 .where(predicate)
                 .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
