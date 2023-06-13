@@ -10,6 +10,7 @@ import com.project.danim_be.post.dto.RequestDto.SearchRequestDto;
 import com.project.danim_be.post.dto.ResponseDto.CardPostResponseDto;
 import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
 import com.project.danim_be.post.entity.Post;
+import com.project.danim_be.post.entity.QImage;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
@@ -43,6 +44,7 @@ public class SearchService {
                 .selectFrom(qPost)
                 .leftJoin(qPost.member, QMember.member).fetchJoin()
                 .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
+                .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -115,6 +117,7 @@ public class SearchService {
                 .selectFrom(qPost)
                 .leftJoin(qPost.member, QMember.member).fetchJoin()
                 .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
+                .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
                 .where(predicate)
                 .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
