@@ -81,6 +81,15 @@ public class SearchService {
             predicate.and(qPost.groupSize.eq(searchRequestDto.getGroupSize()));
         }
 
+        if (searchRequestDto.getGender() != null){
+            String[] genderList = searchRequestDto.getGender().split(",");
+            BooleanBuilder genderPredicate = new BooleanBuilder();
+            for (String gender : genderList) {
+                genderPredicate.or(qPost.gender.containsIgnoreCase(gender));
+            }
+            predicate.and(genderPredicate);
+        }
+
         if (searchRequestDto.getAgeRange() != null) {
             String[] ageRangeList = searchRequestDto.getAgeRange().split(",");
             BooleanBuilder ageRangePredicate = new BooleanBuilder();

@@ -12,4 +12,5 @@ public class SearchRequestDto {
     private String location;
     private String keyword;
     private String searchKeyword;
+    private String gender;
 }
