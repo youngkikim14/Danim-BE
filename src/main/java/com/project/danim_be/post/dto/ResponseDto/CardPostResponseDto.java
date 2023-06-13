@@ -1,5 +1,6 @@
 package com.project.danim_be.post.dto.ResponseDto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 
@@ -10,6 +11,7 @@ public class CardPostResponseDto {
 
     private Long id;
     private String title;
+    @JsonFormat(pattern="yyyy-MM-dd", timezone = "Asia/Seoul")
     private Date recruitmentEndDate;
     private String nickname;
     private int numberOfParticipants;
@@ -26,9 +28,7 @@ public class CardPostResponseDto {
         this.id = post.getId();
         this.title = post.getPostTitle();
         this.recruitmentEndDate = post.getRecruitmentEndDate();
-        // if(post.getImageList().size()!=0){
-        //     this.imageUrl = post.getImageList().get(0).getImageUrl();
-        // }
+        this.imageUrl = post.getImageUrls().get(0).getImageUrl();
         this.nickname = post.getMember().getNickname();
         this.numberOfParticipants = post.getNumberOfParticipants();
         this.groupSize = post.getGroupSize();
