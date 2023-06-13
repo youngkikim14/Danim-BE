@@ -50,6 +50,7 @@ public class SearchService {
         for (Post post : postList) {
             cardPostResponseDtoList.add(new CardPostResponseDto(post));
         }
+
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회성공", cardPostResponseDtoList));
     }
 
