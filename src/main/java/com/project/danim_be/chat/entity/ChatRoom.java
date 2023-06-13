@@ -1,5 +1,6 @@
 package com.project.danim_be.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.danim_be.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +26,7 @@ public class ChatRoom {
 	private List<MemberChatRoom> memberChatRoomList;
 
 	@OneToOne
+	@JsonIgnore
 	@JoinColumn(name = "post_id")
 	private Post post;
 
