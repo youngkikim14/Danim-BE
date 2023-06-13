@@ -26,8 +26,6 @@ public class QImage extends EntityPathBase<Image> {
 
     public final StringPath imageUrl = createString("imageUrl");
 
-    public final BooleanPath isDeleted = createBoolean("isDeleted");
-
     public final QPost post;
 
     public QImage(String variable) {

@@ -3,7 +3,6 @@ package com.project.danim_be.member.entity;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.dto.RequestDto.UserInfoRequestDto;
 import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
-import com.project.danim_be.post.entity.Gender;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -36,8 +35,8 @@ public class Member extends Timestamped {
 	private String provider;	//소셜
 
 	private String imageUrl;	//프로필이미지
-	@Enumerated(EnumType.STRING)
-	private Gender gender;		//성별
+
+	private String gender;		//성별
 
 	private Boolean agreeForGender;
 
@@ -56,7 +55,7 @@ public class Member extends Timestamped {
   }
 
 	@Builder
-	public Member(String userId, Gender gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted, Boolean agreeForAge, Boolean agreeForGender, Double score) {
+	public Member(String userId, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted, Boolean agreeForAge, Boolean agreeForGender, Double score) {
 		this.userId = userId;
 		this.gender = gender;
 		this.password = password;

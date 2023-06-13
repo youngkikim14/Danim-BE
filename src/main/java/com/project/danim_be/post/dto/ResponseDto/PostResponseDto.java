@@ -1,8 +1,6 @@
 package com.project.danim_be.post.dto.ResponseDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.danim_be.post.entity.Gender;
-import com.project.danim_be.post.entity.Location;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,12 +32,11 @@ public class PostResponseDto {
 	private Long chatRoomId;					//채팅방아이디
 	private String map;							//지도 api 정보
 	private LocalDateTime modifiedAt;			//게시글 수정시간
-	private List<String> ageRange;				//연령대
 	private int groupSize;						//인원수
-
-	private String keyword;					//키워드
-	private Gender gender;						//연령대
-	private Location location;					//지역
+	private String keyword;						//키워드
+	private String location;					//지역
+	private List<String> ageRange;				//연령대
+	private List<String> gender;				//성별
 
 
 

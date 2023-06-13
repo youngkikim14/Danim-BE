@@ -1,6 +1,5 @@
 package com.project.danim_be.post.service;
 
-import static com.project.danim_be.post.entity.Gender.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -28,8 +27,6 @@ import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.member.service.MemberService;
 import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
-import com.project.danim_be.post.entity.Gender;
-import com.project.danim_be.post.entity.Location;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.ImageRepository;
 import com.project.danim_be.post.repository.PostRepository;
@@ -74,9 +71,9 @@ class PostServiceTest {
 			postRequestDto.setRecruitmentStartDate(dateFormat.parse("2023-07-30"));        //모집마감날짜
 			postRequestDto.setTripStartDate(dateFormat.parse("2023-08-01"));                //여행시작날짜
 			postRequestDto.setTripEndDate(dateFormat.parse("2023-08-15"));                //여행마감날짜
-			postRequestDto.setGender(FEMALE);                                                    //성별
+			postRequestDto.setGender("남");                                                    //성별
 			postRequestDto.setGroupSize(5);                                                        //모집인원
-			postRequestDto.setLocation(Location.SEOUL);                                            //지역
+			postRequestDto.setLocation("서울");                                            //지역
 			postRequestDto.setContent("여기는 그냥 스트링값으로 들어갑니다.");                            //내용
 			postRequestDto.setKeyword("여기도 그냥 스트링값이 들어갑니다.");                            //키워드
 			postRequestDto.setMapAPI("여기도 스트링");                                                //지도좌표
@@ -84,7 +81,7 @@ class PostServiceTest {
 			List<String> ageRange = Arrays.asList("20대", "30대");
 			postRequestDto.setAgeRange(ageRange);                                                //연령대
 			List<String> imageUrl = Arrays.asList("이미지 url1", "이미지 url2");
-			postRequestDto.setImageUrls(imageUrl);                                                //이미지 URL
+			postRequestDto.setContentsImages(imageUrl);                                                //이미지 URL
 
 			ResponseEntity<Message> response = postService.createPost(member, postRequestDto);
 
@@ -115,9 +112,9 @@ class PostServiceTest {
 				postRequestDto.setRecruitmentStartDate(dateFormat.parse("2023-07-30"));      //모집마감날짜
 				postRequestDto.setTripStartDate(dateFormat.parse("2023-08-01"));             //여행시작날짜
 				postRequestDto.setTripEndDate(dateFormat.parse("2023-08-15"));               //여행마감날짜
-				postRequestDto.setGender(FEMALE);                                                   //성별
-				postRequestDto.setGroupSize(5);                                                     //모집인원
-				postRequestDto.setLocation(Location.SEOUL);                                         //지역
+				postRequestDto.setGender("남");                                                    //성별
+				postRequestDto.setGroupSize(5);                                                        //모집인원
+				postRequestDto.setLocation("서울");                                  //지역
 				postRequestDto.setContent("여기는 그냥 스트링값으로 들어갑니다.");                         //내용
 				postRequestDto.setKeyword("여기도 그냥 스트링값이 들어갑니다.");                           //키워드
 				postRequestDto.setMapAPI("여기도 스트링");                                             //지도좌표
@@ -125,7 +122,7 @@ class PostServiceTest {
 				List<String> ageRange = Arrays.asList("20대", "30대");
 				postRequestDto.setAgeRange(ageRange);                                                //연령대
 				List<String> imageUrl = Arrays.asList("이미지 url1", "이미지 url2");
-				postRequestDto.setImageUrls(imageUrl);                                               //이미지 URL
+				postRequestDto.setContentsImages(imageUrl);                                               //이미지 URL
 			});
 		}
 
@@ -144,9 +141,9 @@ class PostServiceTest {
 			postRequestDto.setRecruitmentStartDate(dateFormat.parse("2023-07-30"));      //모집마감날짜
 			postRequestDto.setTripStartDate(dateFormat.parse("2023-08-01"));             //여행시작날짜
 			postRequestDto.setTripEndDate(dateFormat.parse("2023-08-15"));               //여행마감날짜
-			postRequestDto.setGender(FEMALE);                                                   //성별
-			postRequestDto.setGroupSize(11);                                                     //모집인원
-			postRequestDto.setLocation(Location.SEOUL);                                         //지역
+			postRequestDto.setGender("남");                                                    //성별
+			postRequestDto.setGroupSize(11);                                                        //모집인원
+			postRequestDto.setLocation("서울");                                       //지역
 			postRequestDto.setContent("여기는 그냥 스트링값으로 들어갑니다.");                         //내용
 			postRequestDto.setKeyword("여기도 그냥 스트링값이 들어갑니다.");                           //키워드
 			postRequestDto.setMapAPI("여기도 스트링");                                             //지도좌표
@@ -154,7 +151,7 @@ class PostServiceTest {
 			List<String> ageRange = Arrays.asList("20대", "30대");
 			postRequestDto.setAgeRange(ageRange);                                                //연령대
 			List<String> imageUrl = Arrays.asList("이미지 url1", "이미지 url2");
-			postRequestDto.setImageUrls(imageUrl);
+			postRequestDto.setContentsImages(imageUrl);
 
 
 			//validation검사
@@ -185,7 +182,7 @@ class PostServiceTest {
 		void updateTest01() throws Exception{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-			Member member = new Member("userId", FEMALE, "password", "nickname", "ageRange",  "provider",  true, true, true,
+			Member member = new Member("userId", "남", "password", "nickname", "ageRange",  "provider",  true, true, true,
 					20D);
 			member.setId(1L);
 
@@ -205,9 +202,9 @@ class PostServiceTest {
 			postRequestDto.setRecruitmentStartDate(dateFormat.parse("2023-07-30"));
 			postRequestDto.setTripStartDate(dateFormat.parse("2023-08-01"));
 			postRequestDto.setTripEndDate(dateFormat.parse("2023-08-15"));
-			postRequestDto.setGender(FEMALE);
+			postRequestDto.setGender("남");
 			postRequestDto.setGroupSize(5);
-			postRequestDto.setLocation(Location.SEOUL);
+			postRequestDto.setLocation("서울");
 			postRequestDto.setContent("여기는 그냥 스트링값으로 들어갑니다.");
 			postRequestDto.setKeyword("여기도 그냥 스트링값이 들어갑니다.");
 			postRequestDto.setMapAPI("여기도 스트링");
@@ -215,7 +212,7 @@ class PostServiceTest {
 			List<String> ageRange = Arrays.asList("20대", "30대");
 			postRequestDto.setAgeRange(ageRange);
 			List<String> imageUrl = Arrays.asList("이미지 url1", "이미지 url2");
-			postRequestDto.setImageUrls(imageUrl);
+			postRequestDto.setContentsImages(imageUrl);
 
 			ResponseEntity<Message> response = postService.updatePost(1L, member, postRequestDto );
 
@@ -239,7 +236,7 @@ class PostServiceTest {
 		void updateTest01() throws Exception{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-			Member member = new Member("userId", FEMALE, "password", "nickname", "ageRange",  "provider",  true, true, true,
+			Member member = new Member("userId", "남", "password", "nickname", "ageRange",  "provider",  true, true, true,
 				20D);
 			member.setId(1L);
 
@@ -259,9 +256,9 @@ class PostServiceTest {
 			postRequestDto.setRecruitmentStartDate(dateFormat.parse("2023-07-30"));
 			postRequestDto.setTripStartDate(dateFormat.parse("2023-08-01"));
 			postRequestDto.setTripEndDate(dateFormat.parse("2023-08-15"));
-			postRequestDto.setGender(FEMALE);
+			postRequestDto.setGender("남");
 			postRequestDto.setGroupSize(5);
-			postRequestDto.setLocation(Location.SEOUL);
+			postRequestDto.setLocation("서울");
 			postRequestDto.setContent("여기는 그냥 스트링값으로 들어갑니다.");
 			postRequestDto.setKeyword("여기도 그냥 스트링값이 들어갑니다.");
 			postRequestDto.setMapAPI("여기도 스트링");
@@ -269,7 +266,7 @@ class PostServiceTest {
 			List<String> ageRange = Arrays.asList("20대", "30대");
 			postRequestDto.setAgeRange(ageRange);
 			List<String> imageUrl = Arrays.asList("이미지 url1", "이미지 url2");
-			postRequestDto.setImageUrls(imageUrl);
+			postRequestDto.setContentsImages(imageUrl);
 
 			ResponseEntity<Message> response = postService.updatePost(1L, member, postRequestDto );
 

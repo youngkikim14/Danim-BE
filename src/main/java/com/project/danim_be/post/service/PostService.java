@@ -56,7 +56,7 @@ public class PostService {
 			.location(requestDto.getLocation())
 			.groupSize(requestDto.getGroupSize())
 			.keyword(requestDto.getKeyword())
-			.gender(requestDto.getGender())
+			.gender(String.join(",", requestDto.getGender()))
 			.ageRange(String.join(",", requestDto.getAgeRange()))
 			.numberOfParticipants(0)
 			.member(member)
@@ -97,6 +97,11 @@ public class PostService {
 	@Transactional
 	public ResponseEntity<Message> imageUpload(ImageRequestDto requestDto) {
 		MultipartFile imageFile = requestDto.getImage();
+		String contentType = imageFile.getContentType();
+
+		if (!Arrays.asList("image/jpeg", "image/png", "image/gif", "image/jpg").contains(contentType)) {
+			throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
+		}
 
 		String imageUrl = uploader(imageFile);
 
@@ -111,6 +116,8 @@ public class PostService {
 	@Transactional
 	public ResponseEntity<Message> updatePost(Long id, Member member, PostRequestDto requestDto) {
 
+		List<Image> images = imageRepository.findAllByPostId(id);
+		imageRepository.deleteAll(images);
 		Post post = postRepository.findById(id)
 			.orElseThrow(()	-> new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -136,14 +143,18 @@ public class PostService {
 	//게시글 삭제
 	@Transactional
 	public ResponseEntity<Message> deletePost(Long id,Member member) {
-		
-		Post post = postRepository.findById(id).orElseThrow(()
-			->new CustomException(ErrorCode.POST_NOT_FOUND));
+
+		List<Image> images = imageRepository.findAllByPostId(id);
+
+
+		Post post = postRepository.findById(id)
+			.orElseThrow(()	->new CustomException(ErrorCode.POST_NOT_FOUND));
 
 		if (!post.getMember().getId().equals(member.getId())) {
 			throw new CustomException(ErrorCode.NOT_DEL_AUTHORIZED_MEMBER);
 		}
-		
+
+		imageRepository.deleteAll(images);
 		post.delete();
 
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 삭제 성공");

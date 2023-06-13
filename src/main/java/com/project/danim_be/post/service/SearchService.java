@@ -7,13 +7,10 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.post.dto.RequestDto.SearchRequestDto;
 import com.project.danim_be.post.dto.ResponseDto.CardPostResponseDto;
 import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
-import com.project.danim_be.post.entity.Location;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -64,8 +61,8 @@ public class SearchService {
         QPost qPost = QPost.post;
 
         if (searchRequestDto.getLocation() != null) {
-            Location location = Location.fromString(searchRequestDto.getLocation());
-            predicate.and(qPost.location.eq(location));
+
+            predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
         }
 
         if (searchRequestDto.getSearchKeyword() != null) {

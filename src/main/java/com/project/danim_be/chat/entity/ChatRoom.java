@@ -31,6 +31,7 @@ public class ChatRoom {
 	private Post post;
 
 	@OneToMany
+
 	private List<ChatMessage> chatMessages;
 
 

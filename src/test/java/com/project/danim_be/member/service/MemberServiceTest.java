@@ -10,11 +10,7 @@ import com.project.danim_be.member.dto.RequestDto.LoginRequestDto;
 import com.project.danim_be.member.dto.RequestDto.SignupRequestDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
-import com.project.danim_be.mypage.service.MypageService;
 import com.project.danim_be.notification.service.NotificationService;
-import com.project.danim_be.post.dto.ResponseDto.MypagePostResponseDto;
-import com.project.danim_be.post.entity.Gender;
-import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
@@ -77,7 +73,7 @@ class MemberServiceTest {
 
         // given
         signupRequestDto = new SignupRequestDto("limslki333@hanmail.net",
-                "1234!!as", "우아한고양이", "30대", Gender.FEMALE, true, true);
+                "1234!!as", "우아한고양이", "30대", "남", true, true);
 
         // when
         ResponseEntity<Message> result = memberService.signup(signupRequestDto);
@@ -104,7 +100,7 @@ class MemberServiceTest {
 
         // given
         signupRequestDto = new SignupRequestDto("limslki333",
-                "12", "슬기", "30대", Gender.FEMALE, true, true);
+                "12", "슬기", "30대", "남", true, true);
 
         // when
         Set<ConstraintViolation<SignupRequestDto>> validate = validator.validate(signupRequestDto);

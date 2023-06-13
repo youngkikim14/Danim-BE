@@ -1,7 +1,6 @@
 package com.project.danim_be.member.dto;
 
 import com.project.danim_be.member.dto.RequestDto.SignupRequestDto;
-import com.project.danim_be.post.entity.Gender;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,7 @@ class SignupRequestDtoTest {
         String password = "1234";
         String nickname = "우아한사자";
         String ageRange = "30대";
-        Gender gender = Gender.FEMALE;
+        String gender = "남";
         boolean agreeAgeRange = true;
         boolean agreeGender = true;
 

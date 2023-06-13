@@ -1,14 +1,9 @@
 package com.project.danim_be.member.entity;
 
-import com.project.danim_be.member.repository.MemberRepository;
-import com.project.danim_be.post.entity.Gender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @Nested
 class MemberTest {
@@ -17,12 +12,12 @@ class MemberTest {
     @DisplayName("멤버가 생성되는지 확인하는 테스트")
     void createMemberTest() {
         // given
-        Member member = Member.builder().userId("limslki333@hanmail.net").nickname("우아한사자").provider("DANIM").gender(Gender.FEMALE).isDeleted(false).ageRange("30-39").build();
+        Member member = Member.builder().userId("limslki333@hanmail.net").nickname("우아한사자").provider("DANIM").gender("남").isDeleted(false).ageRange("30-39").build();
         // when, then
         Assertions.assertEquals("limslki333@hanmail.net", member.getUserId());
         Assertions.assertEquals("우아한사자", member.getNickname());
         Assertions.assertEquals("DANIM", member.getProvider());
-        Assertions.assertEquals(Gender.FEMALE, member.getGender());
+        Assertions.assertEquals("남", member.getGender());
         Assertions.assertEquals(false, member.getIsDeleted());
         Assertions.assertEquals("30-39", member.getAgeRange());
     }
