@@ -13,7 +13,9 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -71,6 +73,13 @@ public class Post extends Timestamped {
 
 	private Boolean isDeleted;
 
+	//테스트용생성자
+	public Post(long l, String s, Member member) {
+		this.id = l;
+		this.postTitle = s;
+		this.member = member;
+
+	}
 
 	//연령대 복수선택가능
 	public void setAgeRange(List<String> ageRange) {this.ageRange = String.join(",", ageRange);}

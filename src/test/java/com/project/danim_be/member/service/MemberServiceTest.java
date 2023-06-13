@@ -69,6 +69,8 @@ class MemberServiceTest {
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
 
+
+
     @Test
     @DisplayName("회원가입 성공 테스트")
     void signupTest() {
