@@ -36,13 +36,13 @@ public class SearchService {
     @Transactional(readOnly = true)
     public ResponseEntity<Message> allPosts(Pageable pageable){
         QPost qPost = QPost.post;
-        NumberExpression<Integer> condition = new CaseBuilder().when(qPost.groupSize.eq(qPost.numberOfParticipants))
-                .then(1)
-                .otherwise(0);
+//        NumberExpression<Integer> condition = new CaseBuilder().when(qPost.groupSize.eq(qPost.numberOfParticipants))
+//                .then(1)
+//                .otherwise(0);
         List<Post> postList = queryFactory
                 .selectFrom(qPost)
                 .where(qPost.isDeleted.eq(false))
-                .orderBy(condition.asc(), qPost.recruitmentEndDate.desc())
+                .orderBy(qPost.recruitmentEndDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
