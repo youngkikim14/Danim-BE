@@ -17,6 +17,9 @@ import com.project.danim_be.post.repository.ImageRepository;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,6 +34,9 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
 
 	private final PostRepository postRepository;
 	private final ImageRepository imageRepository;
@@ -60,7 +66,7 @@ public class PostService {
 			.map(requestDto.getMapAPI())
 			.build();
 
-		for(String url : requestDto.getImageUrls()) {
+		for(String url : requestDto.getContentsImages()) {
 			Image image = Image.builder()
 				.post(post)
 				.imageUrl(url)
@@ -115,7 +121,7 @@ public class PostService {
 		post.update(requestDto);
 
 		//보류
-		for(String url : requestDto.getImageUrls()) {
+		for(String url : requestDto.getContentsImages()) {
 			Image image = Image.builder()
 				.post(post)
 				.imageUrl(url)

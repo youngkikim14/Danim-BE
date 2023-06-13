@@ -38,7 +38,7 @@ public class PostRequestDto {
 	private Gender gender;						//성별
 
 	private List<String> ageRange;				//연령대
-	private List<String> imageUrls;				//이미지Url
+	private List<String> contentsImages;				//이미지Url
 
 
 

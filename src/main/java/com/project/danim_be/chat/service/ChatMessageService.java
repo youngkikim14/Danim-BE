@@ -19,8 +19,12 @@ import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +37,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class ChatMessageService {
+
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
 
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
@@ -120,7 +127,17 @@ public class ChatMessageService {
 		notificationService.send(memberIdlist, chatMessage.getId(), memberChatRoom.getId());
 
 		chatMessageRepository.save(chatMessage);
+		// redisTemplate.opsForList().rightPush("chatMessages", chatMessage);
 	}
+	// 10분마다 저장
+	// @Scheduled(fixedDelay = 600000)
+	// public void saveMessages() {
+	// 	List<Object> chatMessages = redisTemplate.opsForList().range("chatMessages", 0, -1);
+	// 	redisTemplate.opsForList().trim("chatMessages", 1, 0);
+	// 	for (Object chatMessage : chatMessages) {
+	// 		chatMessageRepository.save((ChatMessage) chatMessage);
+	// 	}
+	// }
 
 
 	//방을 나갔는지확인해야함	LEAVE
