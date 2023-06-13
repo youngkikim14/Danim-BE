@@ -88,17 +88,16 @@ public class ChatMessageService {
 	@Transactional
 	public void sendMessage(ChatDto chatDto) {
 
-
 		String roomName = chatDto.getRoomId();
-
+		//
 		ChatRoom chatRoom = chatRoomRepository.findByRoomName(roomName)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-
+		//
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		if(!sendMember.getNickname().equals(chatDto.getSender())){
-			throw new CustomException(ErrorCode.SENDER_MISMATCH);
-		}
+		// if(!sendMember.getNickname().equals(chatDto.getSender())){
+		// 	throw new CustomException(ErrorCode.SENDER_MISMATCH);
+		// }
 
 		//강퇴당한사람인지 검사한다.
 
@@ -130,9 +129,10 @@ public class ChatMessageService {
 		// redisTemplate.opsForList().rightPush("chatMessages", chatMessage);
 	}
 	// 10분마다 저장
-	// @Scheduled(fixedDelay = 600000)
+	// @Scheduled(fixedDelay = 60_000)
 	// public void saveMessages() {
 	// 	List<Object> chatMessages = redisTemplate.opsForList().range("chatMessages", 0, -1);
+	// 	System.out.println("저장");
 	// 	redisTemplate.opsForList().trim("chatMessages", 1, 0);
 	// 	for (Object chatMessage : chatMessages) {
 	// 		chatMessageRepository.save((ChatMessage) chatMessage);

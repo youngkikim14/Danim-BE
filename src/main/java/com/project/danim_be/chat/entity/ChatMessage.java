@@ -1,5 +1,6 @@
 package com.project.danim_be.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.common.entity.Timestamped;
 import jakarta.persistence.*;
@@ -25,6 +26,7 @@ public class ChatMessage extends Timestamped {
 	private String sender;
 
 	@ManyToOne
+	@JsonIgnore
 	private ChatRoom chatRoom;
 
 	public ChatMessage(ChatDto chatDto, ChatRoom chatRoom) {

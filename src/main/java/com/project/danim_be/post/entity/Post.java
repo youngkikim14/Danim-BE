@@ -42,13 +42,11 @@ public class Post extends Timestamped {
 	@Column(nullable = false)
 	private String ageRange;            		//연령대
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Gender gender;                		//성별
+	private String gender;						//성별
 	@Column(nullable = false)
 	private String keyword;                		//키워드
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Location location;            		//지역
+	private String location;            		//지역
 	@Column(nullable = false)
 	private Integer groupSize;            		//인원수
 	@Column(nullable = false)
@@ -57,17 +55,13 @@ public class Post extends Timestamped {
 	private String content;						// 내용
 	@Column(columnDefinition = "TEXT")
 	private String map;							// 지도 좌표
-	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private ChatRoom chatRoom;
-//	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-//	private Content content;        			//내용
-//	@OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
-//	private MapApi map;							//지도 api정보
 	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
 	private List<Image> imageUrls;
 
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "memberId")
 	private Member member;
 
@@ -85,6 +79,11 @@ public class Post extends Timestamped {
 	public void setAgeRange(List<String> ageRange) {this.ageRange = String.join(",", ageRange);}
 	public List<String> getAgeRange() {
 		return new ArrayList<>(Arrays.asList(this.ageRange.split(",")));
+	}
+	//성별 복수선택 가능
+	public void setGender(List<String> gender) {this.gender = String.join(",", gender);}
+	public List<String> getGender() {
+		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
 	}
 
 	public void update(PostRequestDto requestDto){

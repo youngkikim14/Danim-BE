@@ -10,9 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.project.danim_be.post.entity.Gender;
-import com.project.danim_be.post.entity.Location;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,13 +29,12 @@ public class PostRequestDto {
 	private Integer groupSize;					//모집인원수
 	private String content;						//글내용
 	private String mapAPI;						//지도정보
-
 	private String keyword;
-	private Location location;					//출발(모집)지역
-	private Gender gender;						//성별
+	private String location;					//출발(모집)지역
+	private String gender;						//성별
 
 	private List<String> ageRange;				//연령대
-	private List<String> contentsImages;				//이미지Url
+	private List<String> contentsImages;		//이미지Url
 
 
 

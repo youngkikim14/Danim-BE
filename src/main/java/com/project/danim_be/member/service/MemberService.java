@@ -10,7 +10,6 @@ import com.project.danim_be.member.dto.ResponseDto.LoginResponseDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.notification.service.NotificationService;
-import com.project.danim_be.post.entity.Gender;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
@@ -41,7 +40,6 @@ public class MemberService {
 	private final JwtUtil jwtUtil;
 	private final NaverService naverService;
 	private final KakaoService kakaoService;
-	private final GoogleService googleService;
 	private final RandomNickname randomNickname;
 	private final NotificationService notificationService;
 
@@ -53,7 +51,7 @@ public class MemberService {
 		String password = passwordEncoder.encode(signupRequestDto.getPassword());
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
-		Gender gender = signupRequestDto.getGender();
+		String gender = signupRequestDto.getGender();
 
 		boolean agreeForGender = signupRequestDto.isAgreeForGender();
 		boolean agreeForAge = signupRequestDto.isAgreeForAge();

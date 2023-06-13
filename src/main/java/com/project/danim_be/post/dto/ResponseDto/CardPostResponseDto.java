@@ -1,7 +1,5 @@
 package com.project.danim_be.post.dto.ResponseDto;
 
-import com.project.danim_be.post.entity.Gender;
-import com.project.danim_be.post.entity.Location;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 
@@ -16,11 +14,11 @@ public class CardPostResponseDto {
     private String nickname;
     private int numberOfParticipants;
     private int groupSize;
-    private Location location;
+    private String location;
     private String keyword;
     private String ageRange;
     private String imageUrl;
-    private Gender gender;
+    private String gender;
     private Boolean isRecruitmentEnd;
 
 
@@ -37,7 +35,7 @@ public class CardPostResponseDto {
         this.location = post.getLocation();
         this.keyword = post.getKeyword();
         this.ageRange = String.join(",", post.getAgeRange());
-        this.gender = post.getGender();
+        this.gender = String.join(",", post.getGender());
         this.isRecruitmentEnd = post.getIsRecruitmentEnd();
     }
 }

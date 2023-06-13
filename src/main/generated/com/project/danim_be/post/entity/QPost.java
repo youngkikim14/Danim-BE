@@ -33,7 +33,7 @@ public class QPost extends EntityPathBase<Post> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final EnumPath<Gender> gender = createEnum("gender", Gender.class);
+    public final StringPath gender = createString("gender");
 
     public final NumberPath<Integer> groupSize = createNumber("groupSize", Integer.class);
 
@@ -47,7 +47,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public final StringPath keyword = createString("keyword");
 
-    public final EnumPath<Location> location = createEnum("location", Location.class);
+    public final StringPath location = createString("location");
 
     public final StringPath map = createString("map");
 
