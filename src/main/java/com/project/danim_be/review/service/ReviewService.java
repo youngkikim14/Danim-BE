@@ -35,43 +35,46 @@ public class ReviewService {
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        //Mile계산식
-        Member planner =memberRepository.findById(post.getMember().getId())
-            .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
-        Double score = reviewRequestDto.getScore();
-        score-=3;
-        score = score/(post.getNumberOfParticipants());
-        score *= (10+post.getNumberOfParticipants())/10.0;
-        score +=planner.getScore();
-        // 0.6
-        planner.setScore(score);
-
         // 작성 여부 체크
-        if(!reviewRepository.existsByMember_IdAndPost_Id(member.getId(), postId)){
-            Date tripEndDate = post.getTripEndDate();
-            // LocalDate 타입으로 변환
-            LocalDate localDate = new java.sql.Date(tripEndDate.getTime()).toLocalDate();
-            LocalDate today = LocalDate.now();
+//        if(!reviewRepository.existsByMember_IdAndPost_Id(member.getId(), postId)){
 
-            // 현재 날짜가 여행 종료일보다 늦다면 true
-            boolean afterDate = today.isAfter(localDate);
-
-            // 여행에 참여한 사람만 작성 가능
-            if(memberChatRoomRepository.existsByMember_IdAndChatRoom_Id(member.getId(),post.getChatRoom().getId())) {
-                // 여행이 종료된 후에 작성 가능
-                if(afterDate){
+//            Date tripEndDate = post.getTripEndDate();
+//
+//            // LocalDate 타입으로 변환
+//            LocalDate localDate = new java.sql.Date(tripEndDate.getTime()).toLocalDate();
+//            LocalDate today = LocalDate.now();
+//
+//            // 현재 날짜가 여행 종료일보다 늦다면 true
+//            boolean afterDate = today.isAfter(localDate);
+//
+//            // 여행에 참여한 사람만 작성 가능
+//            if(memberChatRoomRepository.existsByMember_IdAndChatRoom_Id(member.getId(),post.getChatRoom().getId())) {
+//
+//                //Mile계산식
+//                Member planner = memberRepository.findById(post.getMember().getId())
+//                        .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+//
+//                Double score = reviewRequestDto.getScore();
+//                score -= 3;
+//                score = score/(post.getNumberOfParticipants());
+//                score *= (10+post.getNumberOfParticipants())/10.0;
+//                score += planner.getScore();
+//                planner.setScore(score);
+//
+//                // 여행이 종료된 후에 작성 가능
+//                if(afterDate){
                     Review review = new Review(reviewRequestDto, post, member);
                     reviewRepository.save(review);
                     return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "리뷰 작성 완료"));
-                } else {
-                    throw new CustomException(ErrorCode.CANNOT_WRITE_REVIEW);
-                }
-            } else {
-                throw new CustomException(ErrorCode.NOT_WRITE_MEMBER);
-            }
-        } else {
-            throw new CustomException(ErrorCode.ALREADY_WRITTEN);
-        }
+//                } else {
+//                    throw new CustomException(ErrorCode.CANNOT_WRITE_REVIEW);
+//                }
+//            } else {
+//                throw new CustomException(ErrorCode.NOT_WRITE_MEMBER);
+//            }
+//        } else {
+//            throw new CustomException(ErrorCode.ALREADY_WRITTEN);
+//        }
 
     }
 }
