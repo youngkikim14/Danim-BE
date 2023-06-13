@@ -1,9 +1,11 @@
 package com.project.danim_be.post.service;
 
+import com.project.danim_be.chat.entity.QChatRoom;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
+import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.post.dto.RequestDto.SearchRequestDto;
 import com.project.danim_be.post.dto.ResponseDto.CardPostResponseDto;
 import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
@@ -39,6 +41,8 @@ public class SearchService {
 
         List<Post> postList = queryFactory
                 .selectFrom(qPost)
+                .leftJoin(qPost.member, QMember.member).fetchJoin()
+                .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
