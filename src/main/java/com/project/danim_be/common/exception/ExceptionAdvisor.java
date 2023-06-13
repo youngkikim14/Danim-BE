@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @Slf4j
 @RestControllerAdvice
@@ -20,7 +21,16 @@ public class ExceptionAdvisor {
 		ErrorCode errorCode = e.getErrorCode();
 		return ErrorResponse.toResponseEntity(errorCode);
 	}
-	
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<ErrorResponse> handleMaxSizeException(MaxUploadSizeExceededException exc) {
+		exc.getMaxUploadSize();
+		exc.getMessage();
+		String errorMessage = "업로드하려는 파일의 크기가 10MB를 초과했습니다.";
+		return ResponseEntity
+			.status(HttpStatus.EXPECTATION_FAILED)
+			.body(new ErrorResponse("FILE_CAPACITY_ERROR",HttpStatus.BAD_REQUEST.value(), errorMessage));
+	}
 
 
 
