@@ -97,7 +97,6 @@ public class SearchService {
 
         predicate.and(qPost.isDeleted.eq(false));
 
-
         // 동적 쿼리 실행
         List<Post> result = queryFactory
                 .selectFrom(qPost)
