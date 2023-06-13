@@ -36,10 +36,11 @@ public class SearchService {
 //        NumberExpression<Integer> condition = new CaseBuilder().when(qPost.groupSize.eq(qPost.numberOfParticipants))
 //                .then(1)
 //                .otherwise(0);
+
         List<Post> postList = queryFactory
                 .selectFrom(qPost)
                 .where(qPost.isDeleted.eq(false))
-                .orderBy(qPost.recruitmentEndDate.desc())
+                .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -61,12 +62,18 @@ public class SearchService {
         QPost qPost = QPost.post;
 
         if (searchRequestDto.getLocation() != null) {
-
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
         }
 
         if (searchRequestDto.getSearchKeyword() != null) {
-            predicate.and(qPost.postTitle.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
+            BooleanBuilder searchKeywordPredicate = new BooleanBuilder();
+            searchKeywordPredicate.or(qPost.postTitle.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
+            searchKeywordPredicate.or(qPost.content.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
+            predicate.and(searchKeywordPredicate);
+        }
+
+        if (searchRequestDto.getGroupSize() != null){
+            predicate.and(qPost.groupSize.eq(searchRequestDto.getGroupSize()));
         }
 
         if (searchRequestDto.getAgeRange() != null) {
@@ -95,7 +102,7 @@ public class SearchService {
         List<Post> result = queryFactory
                 .selectFrom(qPost)
                 .where(predicate)
-                .orderBy(qPost.recruitmentEndDate.asc())
+                .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
