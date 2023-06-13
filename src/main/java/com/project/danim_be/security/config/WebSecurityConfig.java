@@ -139,7 +139,7 @@ public class WebSecurityConfig {
 		//어떤데이터
 		configuration.addAllowedHeader("*");
 		//모든 방식(GET, POST, PUT, DELETE 등)으로 데이터를 요청할 수 있게함
-//		configuration.addAllowedMethod("*");
+		configuration.addAllowedMethod("*");
 
 		configuration.setAllowCredentials(true);
 
