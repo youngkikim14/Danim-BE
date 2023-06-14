@@ -67,22 +67,22 @@ public class SearchService {
         // QueryDSL을 활용하여 동적 쿼리 작성
         BooleanBuilder predicate = new BooleanBuilder();
         QPost qPost = QPost.post;
-
+        // 지역에 관한 필터
         if (searchRequestDto.getLocation() != null) {
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
         }
-
+        // 제목+내용의 검색필터
         if (searchRequestDto.getSearchKeyword() != null) {
             BooleanBuilder searchKeywordPredicate = new BooleanBuilder();
             searchKeywordPredicate.or(qPost.postTitle.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
             searchKeywordPredicate.or(qPost.content.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
             predicate.and(searchKeywordPredicate);
         }
-
+        // 모집인원의 검색필터
         if (searchRequestDto.getGroupSize() != null){
             predicate.and(qPost.groupSize.eq(searchRequestDto.getGroupSize()));
         }
-
+        // 성별에 대한 검색 필터
         if (searchRequestDto.getGender() != null){
             String[] genderList = searchRequestDto.getGender().split(",");
             BooleanBuilder genderPredicate = new BooleanBuilder();
@@ -91,7 +91,7 @@ public class SearchService {
             }
             predicate.and(genderPredicate);
         }
-
+        // 나이대에 대한 검색필터
         if (searchRequestDto.getAgeRange() != null) {
             String[] ageRangeList = searchRequestDto.getAgeRange().split(",");
             BooleanBuilder ageRangePredicate = new BooleanBuilder();
@@ -100,7 +100,7 @@ public class SearchService {
             }
             predicate.and(ageRangePredicate);
         }
-
+        //키워드에 대한 검색필터
         if (searchRequestDto.getKeyword() != null) {
             String[] keywordList = searchRequestDto.getKeyword().split(",");
             BooleanBuilder keywordPredicate = new BooleanBuilder();
@@ -108,6 +108,11 @@ public class SearchService {
                 keywordPredicate.or(qPost.keyword.containsIgnoreCase(keyword));
             }
             predicate.and(keywordPredicate);
+        }
+        // 모집 마감글에 대한 필터
+        if (!searchRequestDto.getExceptCompletedPost()){
+            predicate.and(qPost.numberOfParticipants.ne(qPost.groupSize));
+            predicate.and(qPost.isRecruitmentEnd.eq(false));
         }
 
         predicate.and(qPost.isDeleted.eq(false));

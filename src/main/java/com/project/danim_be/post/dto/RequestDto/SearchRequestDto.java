@@ -13,4 +13,5 @@ public class SearchRequestDto {
     private String keyword;
     private String searchKeyword;
     private String gender;
+    private Boolean exceptCompletedPost;
 }
