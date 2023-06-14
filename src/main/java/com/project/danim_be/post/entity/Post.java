@@ -84,18 +84,19 @@ public class Post extends Timestamped {
 		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
 	}
 
-	public void update(PostRequestDto requestDto){
-			this.postTitle =requestDto.getPostTitle();
-			this.recruitmentStartDate =requestDto.getRecruitmentStartDate();
-			this.recruitmentEndDate =requestDto.getRecruitmentEndDate();
-			this.tripStartDate =requestDto.getTripStartDate();
-			this.tripEndDate =requestDto.getTripEndDate();
-			this.groupSize =requestDto.getGroupSize();
-			this.location =requestDto.getLocation();
-			this.keyword =requestDto.getKeyword();
-			this.gender = requestDto.getGender();
-			this.setAgeRange(requestDto.getAgeRange());
-
+	public void update(PostRequestDto requestDto) {
+		this.postTitle = requestDto.getPostTitle();
+		this.recruitmentStartDate = requestDto.getRecruitmentStartDate();
+		this.recruitmentEndDate = requestDto.getRecruitmentEndDate();
+		this.tripStartDate = requestDto.getTripStartDate();
+		this.tripEndDate = requestDto.getTripEndDate();
+		this.groupSize = requestDto.getGroupSize();
+		this.location = requestDto.getLocation();
+		this.keyword = requestDto.getKeyword();
+		this.gender = requestDto.getGender();
+		this.setAgeRange(requestDto.getAgeRange());
+		this.content = requestDto.getContent();
+		this.map = requestDto.getMapAPI();
 	}
 	public void delete() {
 		this.isDeleted = true;
