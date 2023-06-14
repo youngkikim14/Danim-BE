@@ -1,12 +1,9 @@
 package com.project.danim_be.member.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.member.dto.RequestDto.*;
-import com.project.danim_be.member.service.GoogleService;
-import com.project.danim_be.member.service.KakaoService;
 import com.project.danim_be.member.service.MemberService;
-import com.project.danim_be.member.service.NaverService;
+import com.project.danim_be.member.service.SocialService;
 import com.project.danim_be.security.auth.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,15 +26,12 @@ import java.io.IOException;
 public class MemberController {
 
 	private final MemberService memberService;
-	private final NaverService naverService;
-	private final KakaoService kakaoService;
-	private final GoogleService googleService;
+	private final SocialService socialService;
 
 	//일반 회원가입
 	@Operation(summary = "일반 회원가입 API", description = "일반 회원가입")
 	@PostMapping("/signup")
 	public ResponseEntity<Message> signup(@Valid @RequestBody SignupRequestDto signupRequestDto){
-
 		return memberService.signup(signupRequestDto);
 	}
 
@@ -80,25 +74,21 @@ public class MemberController {
 	@Operation(summary = "네이버 소셜 로그인 API", description = "네이버 소셜 로그인")
 	@GetMapping("/naver/callback")
 	public ResponseEntity<Message> naverLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
-		return naverService.naverLogin(code, response);
+		return socialService.socialLogin("NAVER", code, response);
 	}
 
 	//카카오 소셜 로그인
 	@Operation(summary = "카카오 소셜 로그인 API", description = "카카오 소셜 로그인")
 	@GetMapping("/kakao/callback")
-	public ResponseEntity<Message> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-		System.out.println(code);
-		return kakaoService.kakaoLogin(code,response);
+	public ResponseEntity<Message> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
+		return socialService.socialLogin("KAKAO", code, response);
 	}
 
 	//구글 소셜 로그인
 	@Operation(summary = "구글 소셜 로그인 API", description = "구글 소셜 로그인")
 	@GetMapping("/google/callback")
-	public ResponseEntity<Message> googleLogin(@RequestParam String code, HttpServletResponse response) {
-		// registrationId 이 부분은 소셜 로그인을 공통으로 구현할때 쓰임 .registrationId 값에 @RequestParam으로 kakao나 naver, google이 들어가면
-		// 그에 맞는 프로퍼티스에서 값을 가져와 같은 메서드로 서로 다른 소셜 로그인 구현 가능
-		System.out.println(code);
-		return googleService.socialLogin(code, response);
+	public ResponseEntity<Message> googleLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
+		return socialService.socialLogin("GOOGLE", code, response);
 	}
 
 	// 소셜 로그인 시 추가 회원 정보 작성
@@ -114,7 +104,5 @@ public class MemberController {
 	public ResponseEntity<Message> signOut(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return memberService.signOut(userDetails.getMember());
 	}
-
-
 }
 

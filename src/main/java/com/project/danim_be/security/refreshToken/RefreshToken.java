@@ -33,12 +33,6 @@ public class RefreshToken {
 		this.provider = provider;
 	}
 
-	public RefreshToken(String refreshToken, String userId) {
-		this.refreshToken = refreshToken;
-		this.userId = userId;
-		this.provider = "google";
-	}
-
 	public RefreshToken updateToken(String tokenDto) {
 		this.refreshToken = tokenDto;
 		return this;
