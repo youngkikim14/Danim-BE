@@ -28,7 +28,10 @@ public class CardPostResponseDto {
         this.id = post.getId();
         this.title = post.getPostTitle();
         this.recruitmentEndDate = post.getRecruitmentEndDate();
-        this.imageUrl = post.getImageUrls().get(0).getImageUrl();
+        if (!post.getImageUrls().isEmpty()) {
+            this.imageUrl = post.getImageUrls().get(0).getImageUrl();
+        } else {
+            this.imageUrl = "noimage";}
         this.nickname = post.getMember().getNickname();
         this.numberOfParticipants = post.getNumberOfParticipants();
         this.groupSize = post.getGroupSize();
