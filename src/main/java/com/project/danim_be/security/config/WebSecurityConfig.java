@@ -89,8 +89,10 @@ public class WebSecurityConfig {
 		// 시큐리티 최신문서 찾아보기(아직안찾아봄)
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+
 		 http.csrf().disable();    //csrf 비활성화
 //		http.csrf(csrf -> csrf.disable());
+
 
 		http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
