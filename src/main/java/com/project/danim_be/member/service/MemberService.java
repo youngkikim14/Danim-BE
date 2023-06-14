@@ -70,7 +70,7 @@ public class MemberService {
 				.password(password)
 				.agreeForGender(agreeForGender)
 				.agreeForAge(agreeForAge)
-				.provider("GENERAL")
+				.provider("DANIM")
 				.isDeleted(false)
 				.score(20.0)
 				.build();
@@ -143,9 +143,7 @@ public class MemberService {
 		if (refreshToken.isPresent()) {
 			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
 		} else {
-
 			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
-
 			refreshTokenRepository.save(newToken);
 		}
 		setHeader(response, tokenDto);
@@ -187,12 +185,9 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "탈퇴 성공"));
 	}
 
-
-
 	//헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
 		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 	}
-
 }
