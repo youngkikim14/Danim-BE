@@ -115,6 +115,11 @@ public class SearchService {
             predicate.and(qPost.isRecruitmentEnd.eq(false));
         }
 
+        if (!searchRequestDto.getExceptCompletedPost()){
+            predicate.and(qPost.numberOfParticipants.ne(qPost.groupSize));
+            predicate.and(qPost.isRecruitmentEnd.eq(false));
+        }
+
         predicate.and(qPost.isDeleted.eq(false));
 
         // 동적 쿼리 실행
