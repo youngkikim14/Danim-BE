@@ -58,16 +58,16 @@ public class WebSecurityConfig {
 			"/stomp"
 	};
 
-	// h2콘솔 접근허용
-	@Bean
-	@Order(Ordered.HIGHEST_PRECEDENCE)	// 이 필터체인이 다른필터체인보다 우선순위가 높음을 표시.
-	SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
-		http.securityMatcher(PathRequest.toH2Console());	//h2콘솔에 대한 요청만 체인을 사용한다.
-		http.csrf((csrf) -> csrf.disable());				//csrf에대한 보호를 비활성한다.
-		http.headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin()));
-		// http.authorizeRequests().dispatcherTypeMatchers(HttpMethod.valueOf("/h2-console/**")).permitAll();
-		return http.build();
-	}
+//	// h2콘솔 접근허용
+//	@Bean
+//	@Order(Ordered.HIGHEST_PRECEDENCE)	// 이 필터체인이 다른필터체인보다 우선순위가 높음을 표시.
+//	SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
+//		http.securityMatcher(PathRequest.toH2Console());	//h2콘솔에 대한 요청만 체인을 사용한다.
+//		http.csrf((csrf) -> csrf.disable());				//csrf에대한 보호를 비활성한다.
+//		http.headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin()));
+//		// http.authorizeRequests().dispatcherTypeMatchers(HttpMethod.valueOf("/h2-console/**")).permitAll();
+//		return http.build();
+//	}
 
 	//정적자원은 인증인가를 하지않겠다.
 	@Bean
@@ -89,8 +89,8 @@ public class WebSecurityConfig {
 		// 시큐리티 최신문서 찾아보기(아직안찾아봄)
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		// http.csrf().disable();    //csrf 비활성화
-		http.csrf(csrf -> csrf.disable());
+		 http.csrf().disable();    //csrf 비활성화
+//		http.csrf(csrf -> csrf.disable());
 
 		http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
@@ -107,9 +107,9 @@ public class WebSecurityConfig {
 		);
 
 
-		// http.cors();
-		http
-			.cors(withDefaults());
+		 http.cors();
+//		http
+//			.cors(withDefaults());
 
 
 		http.addFilterBefore(jwtUtil, UsernamePasswordAuthenticationFilter.class);
