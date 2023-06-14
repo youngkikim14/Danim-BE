@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "ReviewController", description = "여행 리뷰 - 댓글 API")
 @RestController
@@ -25,5 +22,11 @@ public class ReviewController {
     @PostMapping("api/post/{postId}/review")
     public ResponseEntity<Message> createReview(@PathVariable Long postId, @RequestBody ReviewRequestDto reviewRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return reviewService.createReview(postId, reviewRequestDto, userDetails.getMember());
+    }
+
+    @Operation(summary = "리뷰 조회 API", description = "리뷰 조회")
+    @GetMapping("api/post/{postId}/review")
+    public ResponseEntity<Message> readReview(@PathVariable Long postId) {
+        return reviewService.readReview(postId);
     }
 }

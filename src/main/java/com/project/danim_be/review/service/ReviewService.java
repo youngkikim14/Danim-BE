@@ -10,12 +10,16 @@ import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.review.dto.ReviewRequestDto;
+import com.project.danim_be.review.dto.ReviewResponseDto;
 import com.project.danim_be.review.entity.Review;
 import com.project.danim_be.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +77,18 @@ public class ReviewService {
 //            throw new CustomException(ErrorCode.ALREADY_WRITTEN);
 //        }
 
+    }
+
+    // 댓글 조회
+    @Transactional(readOnly = true)
+    public ResponseEntity<Message> readReview(Long postId) {
+
+        List<Review> reviewList = reviewRepository.findAllByPostId(postId);
+        List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
+
+        for (Review review : reviewList) {
+            reviewResponseDtoList.add(new ReviewResponseDto(review));
+        }
+        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewResponseDtoList));
     }
 }
