@@ -28,15 +28,15 @@ public class PostResponseDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createdAt;			//게시글 작성시간
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private String content;						//게시글
+	private LocalDateTime modifiedAt;			//게시글 수정시간
 	private Long chatRoomId;					//채팅방아이디
 	private String map;							//지도 api 정보
-	private LocalDateTime modifiedAt;			//게시글 수정시간
 	private int groupSize;						//인원수
 	private String keyword;						//키워드
 	private String location;					//지역
 	private List<String> ageRange;				//연령대
 	private List<String> gender;				//성별
+	private String content;						//게시글
 
 
 
