@@ -45,14 +45,6 @@ public class Member extends Timestamped {
 
 	private Double score;		//점수
 
-	public Member(String userId, String password, String nickname) {
-		this.userId = userId;
-		this.password = password;
-		this.nickname = nickname;
-		this.ageRange = "don't receive";
-		this.provider = "GOOGLE";
-  }
-
 	@Builder
 	public Member(String userId, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted, Boolean agreeForAge, Boolean agreeForGender, Double score) {
 		this.userId = userId;

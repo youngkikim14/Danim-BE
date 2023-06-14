@@ -38,8 +38,7 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtUtil jwtUtil;
-	private final NaverService naverService;
-	private final KakaoService kakaoService;
+	private final SocialService socialService;
 	private final RandomNickname randomNickname;
 	private final NotificationService notificationService;
 
@@ -178,29 +177,12 @@ public class MemberService {
 	public ResponseEntity<Message> signOut(Member member) {
 		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-		switch (member.getProvider()) {
-			case "NAVER" -> {
-				try {
-					naverService.naverSignout(member);
-				} catch (IOException e) {
-					throw new CustomException(FAIL_SIGNOUT);
-				}
-			}
-			case "KAKAO" -> {
-				try {
-					kakaoService.kakaoSignout(member);
-				} catch (IOException e) {
-					throw new CustomException(FAIL_SIGNOUT);
-				}
-			}
-//			case "GOOGLE" -> {
-//				try {
-//					kakaoService.googleSignout(member);
-//				} catch (IOException e) {
-//					throw new CustomException(FAIL_SIGNOUT);
-//				}
-//			}
+		try {
+			socialService.naverSignout(member);
+		} catch (IOException e) {
+			throw new CustomException(FAIL_SIGNOUT);
 		}
+
 		member.signOut();
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "탈퇴 성공"));
 	}
