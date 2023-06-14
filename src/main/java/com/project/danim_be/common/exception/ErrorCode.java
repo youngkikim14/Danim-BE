@@ -21,6 +21,7 @@ public enum ErrorCode {
 	ID_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 아이디 입니다.", "사용자 등록 오류입니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "찾을수 없는 회원입니다.", "사용자 등록 오류입니다."),
 	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.", "게시글 검색 오류입니다."),
+	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다.", "댓글 조회 오류입니다."),
 
 	NOT_CONTAIN_AGERANGE(HttpStatus.UNAUTHORIZED,"신청하신 나이대에 포함되지않습니다.","모임 신청 오류입니다."),
 	NOT_CONTAIN_GENDER(HttpStatus.UNAUTHORIZED,"신청하신 성별에 포함되지않습니다.","모임 신청 오류입니다."),
@@ -42,7 +43,7 @@ public enum ErrorCode {
 	ALREADY_WRITTEN(HttpStatus.UNAUTHORIZED, "이미 작성하였습니다.", "권한이 없는 사용자입니다."),
 	USER_KICKED(HttpStatus.UNAUTHORIZED, "이미 강퇴당한 방입니다.", "권한이 없는 사용자입니다."),
 	NOT_MATCHING(HttpStatus.NOT_ACCEPTABLE, "매칭 조건과 맞지 않습니다.", "권한이 없는 사용자입니다"),
-	IMAGE_UPLOAD_FAIL(HttpStatus.BAD_REQUEST,"정의된 이미지 확장자를 사용해주세요(jpg, jpeg, png, gif)" ,"이미지 업로드 오류입니다."	);
+	IMAGE_UPLOAD_FAIL(HttpStatus.BAD_REQUEST,"정의된 이미지 확장자를 사용해주세요(jpg, jpeg, png, gif)" ,"이미지 업로드 오류입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String detail;
