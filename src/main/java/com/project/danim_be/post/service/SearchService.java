@@ -109,6 +109,7 @@ public class SearchService {
             }
             predicate.and(keywordPredicate);
         }
+
         // 모집 마감글에 대한 필터
         if (!searchRequestDto.getExceptCompletedPost()){
             predicate.and(qPost.numberOfParticipants.ne(qPost.groupSize));
