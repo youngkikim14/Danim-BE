@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Controller
 @RequiredArgsConstructor
@@ -45,6 +47,7 @@ public class ChatController {
 					.type(ChatDto.MessageType.ENTER)
 					.roomId(chatDto.getRoomId())
 					.sender(chatDto.getSender())
+					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 					.message(chatDto.getSender() + "님이 입장하셨습니다.")
 					.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
@@ -52,10 +55,16 @@ public class ChatController {
 
 			case TALK -> {
 				System.out.println("TYPE : TALK");
-				String message = chatDto.getSender();
-				message += " : ";
-				message += chatDto.getMessage();
+
 				chatMessageService.sendMessage(chatDto);
+
+				ChatDto message = ChatDto.builder()
+					.type(ChatDto.MessageType.TALK)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())
+					.message(chatDto.getMessage())
+					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+					.build();
 
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
 			}
@@ -68,6 +77,7 @@ public class ChatController {
 					.type(ChatDto.MessageType.LEAVE)
 					.roomId(chatDto.getRoomId())
 					.sender(chatDto.getSender())
+					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 					.message(chatDto.getSender() + "님이 접속을 끊었습니다.")
 					.build();
 
@@ -82,6 +92,7 @@ public class ChatController {
 					.roomId(chatDto.getRoomId())
 					.sender(chatDto.getSender())
 					.imposter(chatDto.getImposter())
+					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 					.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
 					.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), kickMessage);

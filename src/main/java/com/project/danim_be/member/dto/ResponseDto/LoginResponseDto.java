@@ -9,9 +9,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class LoginResponseDto {
 	private final Long id;
 	private SseEmitter sseEmitter;
+	private String nickName;
+	private String myPageImageUrl;
 
 	public LoginResponseDto(Member member, SseEmitter sseEmitter) {
 		this.id = member.getId();
+		this.nickName = member.getNickname();
+		this.myPageImageUrl = member.getImageUrl();
 		this.sseEmitter = sseEmitter;
 	}
 

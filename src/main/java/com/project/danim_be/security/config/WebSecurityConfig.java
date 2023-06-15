@@ -56,7 +56,8 @@ public class WebSecurityConfig {
 			"/api/chat/allChatRoom",
 			"/api/chat/test",
 			"/api/user/mailCheck",
-			"/stomp"
+			"/stomp",
+			"/info"
 	};
 
 //	// h2콘솔 접근허용
