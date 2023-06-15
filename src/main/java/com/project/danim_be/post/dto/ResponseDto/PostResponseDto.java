@@ -38,12 +38,14 @@ public class PostResponseDto {
 	private List<String> ageRange;				//연령대
 	private List<String> gender;				//성별
 	private Integer numberOfParticipants ;			//현재모집인원수
+	private String myPageImageUrl;
 
 
 
 	public PostResponseDto(Post post){
 		this.postId = post.getId();
 		this.nickName = post.getMember().getNickname();
+		this.myPageImageUrl = post.getMember().getImageUrl();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
 		this.recruitmentEndDate=post.getRecruitmentEndDate();
