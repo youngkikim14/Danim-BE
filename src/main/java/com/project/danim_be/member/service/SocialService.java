@@ -188,6 +188,7 @@ public class SocialService {
                     .password(password)
                     .isDeleted(false)
                     .score(20.0)
+                    .imageUrl("https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png")
                     .build();
 
             memberRepository.save(member);
