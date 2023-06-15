@@ -64,7 +64,7 @@ public class SearchService {
                         qPost.isRecruitmentEnd))
                 .from(qPost)
                 .leftJoin(qPost.member, QMember.member).fetchJoin()
-                .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
+//                .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
                 .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
@@ -144,7 +144,7 @@ public class SearchService {
         List<Post> result = queryFactory
                 .selectFrom(qPost)
                 .leftJoin(qPost.member, QMember.member).fetchJoin()
-                .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
+//                .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
                 .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
                 .where(predicate)
                 .orderBy(qPost.createdAt.desc())
