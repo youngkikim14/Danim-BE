@@ -1,7 +1,6 @@
 package com.project.danim_be.post.service;
 
 import com.project.danim_be.chat.entity.MemberChatRoom;
-import com.project.danim_be.chat.entity.QChatRoom;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.project.danim_be.common.CacheService;
 import com.project.danim_be.common.exception.CustomException;
@@ -167,7 +166,7 @@ public class SearchService {
 
         Post post = postRepository.findById(id)
             .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
-  
+
         List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(post.getChatRoom().getId());
         List<Long> participants = new ArrayList<>();
         for(MemberChatRoom memberChatRoom : memberChatRoomList) {
