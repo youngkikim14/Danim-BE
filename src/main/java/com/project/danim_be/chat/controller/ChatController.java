@@ -52,13 +52,19 @@ public class ChatController {
 
 			case TALK -> {
 				System.out.println("TYPE : TALK");
-				String message = chatDto.getSender();
-				message += " : ";
-				message += chatDto.getMessage();
+
 				chatMessageService.sendMessage(chatDto);
+
+				ChatDto message = ChatDto.builder()
+					.type(ChatDto.MessageType.TALK)
+					.roomId(chatDto.getRoomId())
+					.sender(chatDto.getSender())
+					.message(chatDto.getMessage())
+					.build();
 
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
 			}
+
 
 			case LEAVE -> {
 				System.out.println("TYPE : LEAVE");
