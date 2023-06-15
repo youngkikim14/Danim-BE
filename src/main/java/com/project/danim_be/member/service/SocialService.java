@@ -187,6 +187,7 @@ public class SocialService {
                     .provider(provider)
                     .password(password)
                     .isDeleted(false)
+                    .score(20.0)
                     .build();
 
             memberRepository.save(member);
