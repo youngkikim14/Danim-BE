@@ -55,6 +55,7 @@ public class WebSecurityConfig {
 			"/api/post/image",
 			"/api/chat/allChatRoom",
 			"/api/chat/test",
+			"/api/user/mailCheck",
 			"/stomp"
 	};
 
