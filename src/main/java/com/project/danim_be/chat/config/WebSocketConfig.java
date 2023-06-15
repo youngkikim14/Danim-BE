@@ -27,10 +27,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry ){
 		// stomp 접속 주소 url => /ws-stomp
-		registry.addEndpoint("/chat").setAllowedOrigins("*").withSockJS();
-// 		registry.addEndpoint("/ws-stomp") // 연결될 엔드포인트
-// 				.setAllowedOrigins("http://localhost:8080")
-// 				.withSockJS(); // SocketJS 를 연결한다는 설정
+// 		registry.addEndpoint("/chat").setAllowedOrigins("*").withSockJS();
+		registry.addEndpoint("/ws-stomp") // 연결될 엔드포인트
+				.setAllowedOrigins("*")
+				.withSockJS(); // SocketJS 를 연결한다는 설정
 		// .withSockJS(); // SocketJS 를 연결한다는 설정
 	}
 	// ws://localhost:8080/ws-stomp
