@@ -32,8 +32,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			.setAllowedOrigins("https://da-nim.com")
 			.setAllowedOrigins("ws://da-nim.com")
 			.setAllowedOrigins("http://127.0.0.1:3000")
+			.setAllowedOrigins("http://jxy.me");
 // 			.setAllowedOrigins("*")
-			.withSockJS(); // SocketJS 를 연결한다는 설정
+// 			.withSockJS(); // SocketJS 를 연결한다는 설정
 		// .withSockJS(); // SocketJS 를 연결한다는 설정
 	}
 	// ws://localhost:8080/ws-stomp
