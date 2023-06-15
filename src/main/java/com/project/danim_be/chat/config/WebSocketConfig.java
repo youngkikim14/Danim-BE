@@ -30,6 +30,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 // 		registry.addEndpoint("/chat").setAllowedOrigins("*").withSockJS();
 		registry.addEndpoint("/ws-stomp") // 연결될 엔드포인트
 			.setAllowedOrigins("https://da-nim.com")
+			.setAllowedOrigins("ws://da-nim.com")
+			.setAllowedOrigins("http://127.0.0.1:3000")
 // 			.setAllowedOrigins("*")
 			.withSockJS(); // SocketJS 를 연결한다는 설정
 		// .withSockJS(); // SocketJS 를 연결한다는 설정
