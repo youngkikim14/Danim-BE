@@ -17,6 +17,7 @@ import com.project.danim_be.post.entity.QImage;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,21 @@ public class SearchService {
 //                .then(1)
 //                .otherwise(0);
 
-        List<Post> postList = queryFactory
-                .selectFrom(qPost)
+        List<CardPostResponseDto> cardPostResponseDtoList = queryFactory
+                .select(Projections.constructor(CardPostResponseDto.class,
+                        qPost.id,
+                        qPost.postTitle,
+                        qPost.recruitmentEndDate,
+                        qPost.member.nickname,
+                        qPost.numberOfParticipants,
+                        qPost.groupSize,
+                        qPost.location,
+                        qPost.keyword,
+                        qPost.ageRange,
+                        qPost.imageUrls.get(0).imageUrl.coalesce("noImage"),
+                        qPost.gender,
+                        qPost.isRecruitmentEnd))
+                .from(qPost)
                 .leftJoin(qPost.member, QMember.member).fetchJoin()
                 .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
                 .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
@@ -57,14 +71,15 @@ public class SearchService {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회 성공", cardPostResponseDtoList));
 
-        List<CardPostResponseDto> cardPostResponseDtoList = new ArrayList<>();
-
-        for (Post post : postList) {
-            cardPostResponseDtoList.add(new CardPostResponseDto(post));
-        }
-
-        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회성공", cardPostResponseDtoList));
+//        List<CardPostResponseDto> cardPostResponseDtoList = new ArrayList<>();
+//
+//        for (Post post : postList) {
+//            cardPostResponseDtoList.add(new CardPostResponseDto(post));
+//        }
+//
+//        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회성공", cardPostResponseDtoList));
     }
 
     // 상세 검색

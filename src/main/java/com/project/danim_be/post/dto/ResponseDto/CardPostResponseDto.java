@@ -2,15 +2,17 @@ package com.project.danim_be.post.dto.ResponseDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.danim_be.post.entity.Post;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Date;
 
 @Getter
+@AllArgsConstructor
 public class CardPostResponseDto {
 
     private Long id;
-    private String title;
+    private String postTitle;
     @JsonFormat(pattern="yyyy-MM-dd", timezone = "Asia/Seoul")
     private Date recruitmentEndDate;
     private String nickname;
@@ -27,7 +29,7 @@ public class CardPostResponseDto {
 
     public CardPostResponseDto(Post post) {
         this.id = post.getId();
-        this.title = post.getPostTitle();
+        this.postTitle = post.getPostTitle();
         this.recruitmentEndDate = post.getRecruitmentEndDate();
         if (!post.getImageUrls().isEmpty()) {
             this.imageUrl = post.getImageUrls().get(0).getImageUrl();
