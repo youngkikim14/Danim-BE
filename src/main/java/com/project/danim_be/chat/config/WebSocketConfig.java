@@ -33,7 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 			.setAllowedOrigins("ws://da-nim.com")
 			.setAllowedOrigins("http://127.0.0.1:3000")
 			.setAllowedOrigins("http://jxy.me")
-			.setAllowedOrigins("*")
+			.setAllowedOriginPatterns("*")
 			.withSockJS(); // SocketJS 를 연결한다는 설정
 		// .withSockJS(); // SocketJS 를 연결한다는 설정
 	}
