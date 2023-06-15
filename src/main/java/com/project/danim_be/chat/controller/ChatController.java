@@ -45,6 +45,7 @@ public class ChatController {
 					.type(ChatDto.MessageType.ENTER)
 					.roomId(chatDto.getRoomId())
 					.sender(chatDto.getSender())
+					.time(LocalDateTime.now())
 					.message(chatDto.getSender() + "님이 입장하셨습니다.")
 					.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
@@ -60,11 +61,11 @@ public class ChatController {
 					.roomId(chatDto.getRoomId())
 					.sender(chatDto.getSender())
 					.message(chatDto.getMessage())
+					.time(LocalDateTime.now())
 					.build();
 
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
 			}
-
 
 			case LEAVE -> {
 				System.out.println("TYPE : LEAVE");
@@ -74,6 +75,7 @@ public class ChatController {
 					.type(ChatDto.MessageType.LEAVE)
 					.roomId(chatDto.getRoomId())
 					.sender(chatDto.getSender())
+					.time(LocalDateTime.now())
 					.message(chatDto.getSender() + "님이 접속을 끊었습니다.")
 					.build();
 
@@ -88,6 +90,7 @@ public class ChatController {
 					.roomId(chatDto.getRoomId())
 					.sender(chatDto.getSender())
 					.imposter(chatDto.getImposter())
+					.time(LocalDateTime.now())
 					.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
 					.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), kickMessage);
