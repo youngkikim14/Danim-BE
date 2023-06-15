@@ -2,6 +2,7 @@ package com.project.danim_be.member.controller;
 
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.member.dto.RequestDto.*;
+import com.project.danim_be.member.service.MailService;
 import com.project.danim_be.member.service.MemberService;
 import com.project.danim_be.member.service.SocialService;
 import com.project.danim_be.security.auth.UserDetailsImpl;
@@ -27,6 +28,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 	private final SocialService socialService;
+	private final MailService mailService;
 
 	//일반 회원가입
 	@Operation(summary = "일반 회원가입 API", description = "일반 회원가입")
@@ -54,6 +56,14 @@ public class MemberController {
 	@GetMapping("/randomNickname")
 	public ResponseEntity<Message> nicknameCreate() {
 		return memberService.nicknameCreate();
+	}
+
+	//일반 회원가입시 이메일 인증
+	@Operation(summary = "일반 회원가입 이메일 인증", description = "이메일 인증")
+	@GetMapping("/mailCheck")
+	@ResponseBody
+	public String mailCheck(String email) {
+		return mailService.mailCheck(email);
 	}
 
 	//로그인
