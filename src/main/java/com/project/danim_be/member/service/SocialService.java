@@ -108,7 +108,9 @@ public class SocialService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
-        body.add("client_secret", clientSecret);
+         if(!provider.equals("KAKAO")){
+            body.add("client_secret", clientSecret);
+        }
         body.add("redirect_uri", redirectUri);
         body.add("code", code);
 
