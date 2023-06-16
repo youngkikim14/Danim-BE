@@ -45,12 +45,12 @@ public class ChatController {
 
 				ChatDto message = ChatDto.builder()
 					.type(ChatDto.MessageType.ENTER)
-					.roomId(chatDto.getRoomId())
+					.roomName(chatDto.getRoomName())
 					.sender(chatDto.getSender())
 					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 					.message(chatDto.getSender() + "님이 입장하셨습니다.")
 					.build();
-				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), message);
 			}
 
 			case TALK -> {
@@ -60,13 +60,13 @@ public class ChatController {
 
 				ChatDto message = ChatDto.builder()
 					.type(ChatDto.MessageType.TALK)
-					.roomId(chatDto.getRoomId())
+					.roomName(chatDto.getRoomName())
 					.sender(chatDto.getSender())
 					.message(chatDto.getMessage())
 					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 					.build();
 
-				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), message);
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), message);
 			}
 
 			case LEAVE -> {
@@ -75,13 +75,13 @@ public class ChatController {
 				//SSE요청시작!
 				ChatDto leaveMessage = ChatDto.builder()
 					.type(ChatDto.MessageType.LEAVE)
-					.roomId(chatDto.getRoomId())
+					.roomName(chatDto.getRoomName())
 					.sender(chatDto.getSender())
 					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 					.message(chatDto.getSender() + "님이 접속을 끊었습니다.")
 					.build();
 
-				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), leaveMessage);
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), leaveMessage);
 			}
 			case KICK -> {
 				System.out.println("TYPE : KICK");
@@ -89,13 +89,13 @@ public class ChatController {
 
 				ChatDto kickMessage = ChatDto.builder()
 					.type(ChatDto.MessageType.KICK)
-					.roomId(chatDto.getRoomId())
+					.roomName(chatDto.getRoomName())
 					.sender(chatDto.getSender())
 					.imposter(chatDto.getImposter())
 					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 					.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
 					.build();
-				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomId(), kickMessage);
+				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), kickMessage);
 			}
 		}
 	}
