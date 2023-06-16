@@ -48,7 +48,7 @@ public class Member extends Timestamped implements Serializable {
 	private Double score;		//점수
 
 	@Builder
-	public Member(String userId, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted, Boolean agreeForAge, Boolean agreeForGender, Double score) {
+	public Member(String userId, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted, Boolean agreeForAge, Boolean agreeForGender, Double score, String imageUrl) {
 		this.userId = userId;
 		this.gender = gender;
 		this.password = password;
@@ -59,6 +59,12 @@ public class Member extends Timestamped implements Serializable {
 		this.agreeForGender = agreeForGender;
 		this.agreeForAge = agreeForAge;
 		this.score = score;
+		this.imageUrl = imageUrl;
+	}
+
+	// 테스트용 생성자
+	public Member(String memberId, String memberPassword, String memberNickName) {
+		super();
 	}
 
 	public void editMember (MypageRequestDto mypageRequestDto,String imageUrl) {

@@ -19,7 +19,7 @@ public class ChatDto {
 	}
 
 	private MessageType type;
-	private String roomId;
+	private String roomName;
 	private String sender;
 	private String imposter;
 	private String message;
