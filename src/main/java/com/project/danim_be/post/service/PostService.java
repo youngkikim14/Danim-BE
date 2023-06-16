@@ -103,10 +103,8 @@ public class PostService {
 		}
 
 		String imageUrl = uploader(imageFile);
-
-		Image image = new Image(imageUrl);
-		imageRepository.save(image);
-
+		// Image image = new Image(imageUrl);
+		// imageRepository.save(image);
 		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공",imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}

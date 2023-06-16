@@ -5,16 +5,17 @@ import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
-public class PostResponseDto {
+public class PostResponseDto implements Serializable {
 
 
-	private Long 		postId;					//게시글번호
+	private Long 		id;					//게시글번호
 	private String		nickName;				//닉네임
 	private String 		postTitle;				//게시글제목
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -26,9 +27,9 @@ public class PostResponseDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date tripEndDate;					//여행 마감날짜
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime createdAt;			//게시글 작성시간
+	private Date createdAt;			//게시글 작성시간
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime modifiedAt;			//게시글 수정시간
+	private Date modifiedAt;			//게시글 수정시간
 	private Long chatRoomId;					//채팅방아이디
 	private String map;							//지도 api 정보
 	private int groupSize;						//인원수
@@ -39,9 +40,11 @@ public class PostResponseDto {
 	private String content;						//게시글
 
 
+	public PostResponseDto() {
+	}
 
 	public PostResponseDto(Post post){
-		this.postId = post.getId();
+		this.id = post.getId();
 		this.nickName = post.getMember().getNickname();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();

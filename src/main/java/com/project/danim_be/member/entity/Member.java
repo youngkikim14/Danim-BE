@@ -1,5 +1,7 @@
 package com.project.danim_be.member.entity;
 
+import java.io.Serializable;
+
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.dto.RequestDto.UserInfoRequestDto;
 import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
@@ -13,7 +15,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Member extends Timestamped {
+public class Member extends Timestamped implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
