@@ -17,7 +17,7 @@ public class ReviewResponseDto {
     private String comment;
     private Double score;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
