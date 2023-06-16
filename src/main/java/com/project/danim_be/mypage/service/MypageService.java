@@ -10,7 +10,7 @@ import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypageResponseDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypageReviewResponseDto;
-import com.project.danim_be.post.dto.ResponseDto.MypagePostResponseDto;
+import com.project.danim_be.mypage.dto.ResponseDto.MypagePostResponseDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
