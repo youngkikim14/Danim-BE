@@ -52,7 +52,7 @@ public class ChatMessageService {
 	@Transactional
 	public void visitMember(ChatDto chatDto) {
 
-		String roomName = chatDto.getRoomId();
+		String roomName = chatDto.getRoomName();
 		String sender = chatDto.getSender();
 
 		//sender(nickName)을 통해서 멤버를찾고
@@ -86,7 +86,7 @@ public class ChatMessageService {
 	@Transactional
 	public void sendMessage(ChatDto chatDto) {
 
-		String roomName = chatDto.getRoomId();
+		String roomName = chatDto.getRoomName();
 		//
 		ChatRoom chatRoom = chatRoomRepository.findByRoomName(roomName)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
@@ -141,7 +141,7 @@ public class ChatMessageService {
 	//방을 나갔는지확인해야함	LEAVE
 	@Transactional
 	public void leaveChatRoom(ChatDto chatDto) {
-		String roomName = chatDto.getRoomId();
+		String roomName = chatDto.getRoomName();
 		String sender = chatDto.getSender();
 
 		Member member = memberRepository.findByNickname(sender)
@@ -161,7 +161,7 @@ public class ChatMessageService {
 	@Transactional
 	public void kickMember(ChatDto chatDto) {
 
-		ChatRoom chatRoom = chatRoomRepository.findByRoomName(chatDto.getRoomId())
+		ChatRoom chatRoom = chatRoomRepository.findByRoomName(chatDto.getRoomName())
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		//방장
 		String sen=chatDto.getSender();
@@ -198,7 +198,7 @@ public class ChatMessageService {
 	//메시지조회
 	@Transactional(readOnly = true)
 	public ResponseEntity<Message> chatList(ChatDto chatDto){
-		String roomName = chatDto.getRoomId();
+		String roomName = chatDto.getRoomName();
 		String nickName= chatDto.getSender();
 
 		Member member = memberRepository.findByNickname(nickName)
@@ -221,7 +221,7 @@ public class ChatMessageService {
 	}
 	//채팅메시지 목록 보여주기
 	private List<ChatDto> allChatList(ChatDto chatDto){
-		String roomId = chatDto.getRoomId();
+		String roomId = chatDto.getRoomName();
 		ChatRoom chatRoom = chatRoomRepository.findByRoomName(roomId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
@@ -231,7 +231,7 @@ public class ChatMessageService {
 		List<ChatDto> chatDtoList = chatList.stream()
 			.map(chatMessage -> ChatDto.builder()
 				.type(chatMessage.getType())
-				.roomId(chatMessage.getChatRoom().getRoomName())
+				.roomName(chatMessage.getChatRoom().getRoomName())
 				.sender(chatMessage.getSender())
 				.message(chatMessage.getMessage())
 				.build())
