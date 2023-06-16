@@ -86,10 +86,15 @@ public class MypageService {
     public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
 
         if (ownerId.equals(member.getId())) {
-            String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
-            member.editMember(mypageRequestDto, imageUrl);
+            if (mypageRequestDto.getImage().isEmpty()){
+                member.editNoImageMember(mypageRequestDto);
+                memberRepository.save(member);
+            } else {
+                String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
+                member.editMember(mypageRequestDto, imageUrl);
 
-            memberRepository.save(member);
+                memberRepository.save(member);
+            }
 
         } else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
