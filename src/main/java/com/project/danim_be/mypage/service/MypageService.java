@@ -82,21 +82,17 @@ public class MypageService {
     }
 
     //마이페이지 회원정보 수정
-    @Transactional
+   @Transactional
     public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
 
         if (ownerId.equals(member.getId())) {
-            if (mypageRequestDto.getImage().isEmpty()){
-                member.editNoImageMember(mypageRequestDto);
-                memberRepository.save(member);
-            } else {
+
                 String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
                 member.editMember(mypageRequestDto, imageUrl);
 
                 memberRepository.save(member);
             }
-
-        } else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
+         else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
 
     }
