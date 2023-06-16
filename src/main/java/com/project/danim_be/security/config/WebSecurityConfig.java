@@ -135,6 +135,7 @@ public class WebSecurityConfig {
 		configuration.addAllowedOrigin("http://jxy.me/**");
 		configuration.addAllowedOrigin("http://jxy.me/");
 		configuration.addAllowedOrigin("https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/");
+		configuration.addAllowedOrigin("http://project-danim.s3-website.ap-northeast-2.amazonaws.com/");
 		configuration.addAllowedOrigin("https://da-nim.com");
 
 
