@@ -8,6 +8,7 @@ import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.repository.ChatMessageRepository;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
+import com.project.danim_be.common.CacheService;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
@@ -20,9 +21,11 @@ import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +40,7 @@ import java.util.stream.Collectors;
 public class ChatMessageService {
 
 	@Autowired
-	private RedisTemplate<String, Object> redisTemplate;
+	private RedisTemplate<String, Object> chatRedisTemplate;
 
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
@@ -46,6 +49,7 @@ public class ChatMessageService {
 	private final PostRepository postRepository;
 	private final NotificationService notificationService;
 	private final ChatRoomService chatRoomService;
+	private final CacheService cacheService;
 
 
 	//채팅방 입장멤버 저장메서드	ENTER
@@ -88,7 +92,7 @@ public class ChatMessageService {
 
 		String roomName = chatDto.getRoomName();
 		//
-		ChatRoom chatRoom = chatRoomRepository.findByRoomName(roomName)
+		ChatRoom chatRoom =chatRoomRepository.findByRoomName(roomName)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		//
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender())
@@ -123,19 +127,27 @@ public class ChatMessageService {
 		ChatMessage chatMessage= new ChatMessage(chatDto,chatRoom);
 		notificationService.send(memberIdlist, chatMessage.getId(), memberChatRoom.getId());
 
-		chatMessageRepository.save(chatMessage);
-		// redisTemplate.opsForList().rightPush("chatMessages", chatMessage);
+		// chatMessageRepository.save(chatMessage);
+		chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
 	}
+
+
+
 	// 10분마다 저장
-	// @Scheduled(fixedDelay = 60_000)
-	// public void saveMessages() {
-	// 	List<Object> chatMessages = redisTemplate.opsForList().range("chatMessages", 0, -1);
-	// 	System.out.println("저장");
-	// 	redisTemplate.opsForList().trim("chatMessages", 1, 0);
-	// 	for (Object chatMessage : chatMessages) {
-	// 		chatMessageRepository.save((ChatMessage) chatMessage);
-	// 	}
-	// }
+	@Scheduled(fixedDelay = 600_000)
+	public void saveMessages() {
+		List<Object> chatMessages = chatRedisTemplate.opsForList().range("chatMessages", 0, -1);
+		System.out.println("저장");
+		chatRedisTemplate.opsForList().trim("chatMessages", 1, 0);
+		for (Object chatMessage : chatMessages) {
+			ChatMessage cm = (ChatMessage) chatMessage;
+			ChatRoom chatRoom = chatRoomRepository.findByRoomName(cm.getChatRoomName())
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+			cm.setChatRoom(chatRoom);
+
+			chatMessageRepository.save(cm);
+		}
+	}
 
 
 	//방을 나갔는지확인해야함	LEAVE
@@ -175,9 +187,9 @@ public class ChatMessageService {
 
 		Post post = postRepository.findById(chatRoom.getPost().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-		Member member2 = memberRepository.findById(post.getMember().getId())
-			.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-		System.out.println(member2.getNickname());
+		// Member member2 = memberRepository.findById(post.getMember().getId())
+		// 	.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+		// System.out.println(member2.getNickname());
 		//강퇴당하는 임포스터
 		Member imposter = memberRepository.findByNickname(chatDto.getImposter())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

@@ -31,7 +31,7 @@ public class QPost extends EntityPathBase<Post> {
     public final StringPath content = createString("content");
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+    public final DateTimePath<java.util.Date> createdAt = _super.createdAt;
 
     public final StringPath gender = createString("gender");
 
@@ -54,7 +54,7 @@ public class QPost extends EntityPathBase<Post> {
     public final com.project.danim_be.member.entity.QMember member;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
+    public final DateTimePath<java.util.Date> modifiedAt = _super.modifiedAt;
 
     public final NumberPath<Integer> numberOfParticipants = createNumber("numberOfParticipants", Integer.class);
 

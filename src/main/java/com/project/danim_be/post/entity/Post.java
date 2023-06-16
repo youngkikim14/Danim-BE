@@ -1,15 +1,19 @@
 package com.project.danim_be.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
 import jakarta.persistence.*;
+import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -20,11 +24,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Post extends Timestamped {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+	property = "id")
+public class Post extends Timestamped implements Serializable {
 
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Name("postId")
 	private Long id;
 	@Column(nullable = false)
 	private String postTitle;            		//게시글 제목
@@ -53,11 +60,11 @@ public class Post extends Timestamped {
 	private String content;						// 내용
 	@Column(columnDefinition = "TEXT")
 	private String map;							// 지도 좌표
-	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL)
-	private ChatRoom chatRoom;
-	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
-	private List<Image> imageUrls;
 
+	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private ChatRoom chatRoom;
+	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
+	private List<Image> imageUrls;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")

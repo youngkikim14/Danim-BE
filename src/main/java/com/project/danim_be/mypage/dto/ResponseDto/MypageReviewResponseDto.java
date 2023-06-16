@@ -5,6 +5,7 @@ import com.project.danim_be.review.entity.Review;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 public class MypageReviewResponseDto {
@@ -13,7 +14,7 @@ public class MypageReviewResponseDto {
     private Double point;
     private String review;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     public MypageReviewResponseDto(Review receiveReview) {
         this.userId = receiveReview.getMember().getNickname();
