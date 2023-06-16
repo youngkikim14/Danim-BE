@@ -16,8 +16,8 @@ public class CardPostResponseDto {
     @JsonFormat(pattern="yyyy-MM-dd", timezone = "Asia/Seoul")
     private Date recruitmentEndDate;
     private String nickname;
-    private int numberOfParticipants;
-    private int groupSize;
+    private Integer numberOfParticipants;
+    private Integer groupSize;
     private String location;
     private String keyword;
     private String ageRange;
@@ -45,4 +45,30 @@ public class CardPostResponseDto {
         this.isRecruitmentEnd = post.getIsRecruitmentEnd();
         this.userImage = post.getMember().getImageUrl();
     }
+
+//    public CardPostResponseDto(
+//            Long id,
+//            String postTitle,
+//            Date recruitmentEndDate, String nickname,
+//            Integer numberOfParticipants,
+//            Integer groupSize,
+//            String location,
+//            String keyword,
+//            String ageRange,
+//            String imageUrl,
+//            String gender,
+//            Boolean isRecruitmentEnd) {
+//        this.id = id;
+//        this.postTitle = postTitle;
+//        this.recruitmentEndDate = recruitmentEndDate;
+//        this.nickname = nickname;
+//        this.numberOfParticipants = numberOfParticipants;
+//        this.groupSize = groupSize;
+//        this.location = location;
+//        this.keyword = keyword;
+//        this.ageRange = ageRange;
+//        this.imageUrl = imageUrl;
+//        this.gender = gender;
+//        this.isRecruitmentEnd = isRecruitmentEnd;
+//    }
 }

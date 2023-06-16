@@ -16,7 +16,9 @@ import com.project.danim_be.post.entity.QImage;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,12 +60,12 @@ public class SearchService {
                         qPost.location,
                         qPost.keyword,
                         qPost.ageRange,
-                        qPost.imageUrls.get(0).imageUrl.coalesce("noImage"),
+                        qPost.imageUrls.get(0).imageUrl.coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/basicImage.png"),
                         qPost.gender,
                         qPost.isRecruitmentEnd))
                 .from(qPost)
-                .leftJoin(qPost.member, QMember.member).fetchJoin()
-                .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
+//                .leftJoin(qPost.member, QMember.member).fetchJoin()
+//                .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
