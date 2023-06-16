@@ -66,6 +66,11 @@ public class Member extends Timestamped {
 		this.nickname = mypageRequestDto.getNickname();
 	}
 
+	public void editNoImageMember (MypageRequestDto mypageRequestDto) {
+		this.content = mypageRequestDto.getContent();
+		this.nickname = mypageRequestDto.getNickname();
+	}
+
 
 	public String getUserId() {
 		return userId;
