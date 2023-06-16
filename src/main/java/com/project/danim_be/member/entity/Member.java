@@ -60,6 +60,11 @@ public class Member extends Timestamped {
 		this.imageUrl = imageUrl;
 	}
 
+	// 테스트용 생성자
+	public Member(String memberId, String memberPassword, String memberNickName) {
+		super();
+	}
+
 	public void editMember (MypageRequestDto mypageRequestDto,String imageUrl) {
 		this.imageUrl = imageUrl;
 		this.content = mypageRequestDto.getContent();
