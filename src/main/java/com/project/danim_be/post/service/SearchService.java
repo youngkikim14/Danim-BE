@@ -17,6 +17,7 @@ import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class SearchService {
     @Transactional(readOnly = true)
     public ResponseEntity<Message> allPosts(Pageable pageable){
         QPost qPost = QPost.post;
+        QImage qImage = QImage.image;
 //        NumberExpression<Integer> condition = new CaseBuilder().when(qPost.groupSize.eq(qPost.numberOfParticipants))
 //                .then(1)
 //                .otherwise(0);
@@ -58,12 +60,13 @@ public class SearchService {
                         qPost.location,
                         qPost.keyword,
                         qPost.ageRange,
-                        qPost.imageUrls,
+                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/basicImage.png"))
+                                .from(qImage)
+                                .where(qImage.post.id.eq(qPost.id))
+                                .orderBy(qImage.id.asc()),
                         qPost.gender,
                         qPost.isRecruitmentEnd))
                 .from(qPost)
-//                .leftJoin(qPost.member, QMember.member).fetchJoin()
-//                .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -87,6 +90,7 @@ public class SearchService {
         // QueryDSL을 활용하여 동적 쿼리 작성
         BooleanBuilder predicate = new BooleanBuilder();
         QPost qPost = QPost.post;
+        QImage qImage = QImage.image;
         // 지역에 관한 필터
         if (searchRequestDto.getLocation() != null) {
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
@@ -139,24 +143,30 @@ public class SearchService {
         predicate.and(qPost.isDeleted.eq(false));
 
         // 동적 쿼리 실행
-        List<Post> result = queryFactory
-                .selectFrom(qPost)
-                .leftJoin(qPost.member, QMember.member).fetchJoin()
-//                .leftJoin(qPost.chatRoom, QChatRoom.chatRoom).fetchJoin()
-                .leftJoin(qPost.imageUrls, QImage.image).fetchJoin()
-                .where(predicate)
+
+        return queryFactory
+                .select(Projections.constructor(CardPostResponseDto.class,
+                        qPost.id,
+                        qPost.postTitle,
+                        qPost.recruitmentEndDate,
+                        qPost.member.nickname,
+                        qPost.numberOfParticipants,
+                        qPost.groupSize,
+                        qPost.location,
+                        qPost.keyword,
+                        qPost.ageRange,
+                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/basicImage.png"))
+                                .from(qImage)
+                                .where(qImage.post.id.eq(qPost.id))
+                                .orderBy(qImage.id.asc()),
+                        qPost.gender,
+                        qPost.isRecruitmentEnd))
+                .from(qPost)
+                .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-        // 결과를 CardPostResponseDto로 변환
-        List<CardPostResponseDto> cardPostResponseDtoList = new ArrayList<>();
-        for (Post post : result) {
-            cardPostResponseDtoList.add(new CardPostResponseDto(post));
-        }
-
-        return cardPostResponseDtoList;
     }
     // 게시글 상세 조회
 
