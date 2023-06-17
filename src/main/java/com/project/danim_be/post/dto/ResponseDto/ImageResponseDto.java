@@ -17,6 +17,5 @@ public class ImageResponseDto {
 		this.imageUrl= image.getImageUrl();
 
 
-
 	}
 }
