@@ -15,12 +15,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostRequestDto {
-
+	@Size(min = 0, max = 50 ,message = "최대 50글자까지 입력해주세요")
 	private String postTitle;					//게시글제목
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date recruitmentStartDate;			//모집 시작날짜
+	private Date recruitmentStartDate;				//모집 시작날짜
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date recruitmentEndDate;			//모집 마감날짜
+	private Date recruitmentEndDate;				//모집 마감날짜
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date tripStartDate;					//여행 시작날짜
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -33,8 +33,8 @@ public class PostRequestDto {
 	private String location;					//출발(모집)지역
 	private String gender;						//성별
 
-	private List<String> ageRange;				//연령대
-	private List<String> contentsImages;		//이미지Url
+	private List<String> ageRange;					//연령대
+	private List<String> contentsImages;				//이미지Url
 
 
 
