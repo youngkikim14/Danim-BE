@@ -1,7 +1,6 @@
 package com.project.danim_be.post.service;
 
 import com.project.danim_be.chat.entity.MemberChatRoom;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.danim_be.chat.entity.QChatRoom;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.project.danim_be.common.CacheService;
@@ -20,9 +19,7 @@ import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +38,6 @@ public class SearchService {
     private final MemberChatRoomRepository memberChatRoomRepository;
     @Autowired
     private CacheService cacheService;
-    private final MemberChatRoomRepository memberChatRoomRepository;
 
     //전체 조회
     @Transactional(readOnly = true)
