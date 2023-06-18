@@ -38,6 +38,7 @@ public class PostResponseDto implements Serializable {
 	private List<String> ageRange;			//연령대
 	private List<String> gender;				//성별
 	private Integer numberOfParticipants ;			//현재모집인원수
+	private String myPageImageUrl;
 	private List<Long> participants;			//모임신청자들
 	private String content;						  //게시글
 
@@ -47,6 +48,7 @@ public class PostResponseDto implements Serializable {
 	public PostResponseDto(Post post){
 		this.id = post.getId();
 		this.nickName = post.getMember().getNickname();
+		this.myPageImageUrl = post.getMember().getImageUrl();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
 		this.recruitmentEndDate=post.getRecruitmentEndDate();
@@ -68,6 +70,7 @@ public class PostResponseDto implements Serializable {
 	public PostResponseDto(Post post, List<Long> participants){
 		this.id = post.getId();
 		this.nickName = post.getMember().getNickname();
+		this.myPageImageUrl = post.getMember().getImageUrl();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
 		this.recruitmentEndDate=post.getRecruitmentEndDate();
