@@ -44,8 +44,29 @@ public class PostResponseDto implements Serializable {
 	public PostResponseDto() {
 	}
 
+	public PostResponseDto(Post post){
+		this.id = post.getId();
+		this.nickName = post.getMember().getNickname();
+		this.postTitle = post.getPostTitle();
+		this.recruitmentStartDate=post.getRecruitmentStartDate();
+		this.recruitmentEndDate=post.getRecruitmentEndDate();
+		this.tripStartDate = post.getTripStartDate();
+		this.tripEndDate = post.getTripEndDate();
+		this.location = post.getLocation();
+		this.groupSize = post.getGroupSize();
+		this.keyword = post.getKeyword();
+		this.ageRange = post.getAgeRange();
+		this.gender = post.getGender();
+		this.content = post.getContent();
+		this.map = post.getMap();
+		this.chatRoomId = post.getChatRoom().getId();
+		this.createdAt = post.getCreatedAt();
+		this.modifiedAt = post.getModifiedAt();
+		this.numberOfParticipants= post.getNumberOfParticipants();
+	}
+
 	public PostResponseDto(Post post, List<Long> participants){
-		this.postId = post.getId();
+		this.id = post.getId();
 		this.nickName = post.getMember().getNickname();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
