@@ -105,6 +105,7 @@ public class WebSecurityConfig {
 				.requestMatchers("/status", "/images/**").permitAll()
 				.requestMatchers("/ws/**").permitAll()
 				.requestMatchers("/stomp").permitAll()
+				.requestMatchers("/ws-stomp").permitAll()
 				.requestMatchers("/health-check").permitAll()
 				.anyRequest()
 				.authenticated()
