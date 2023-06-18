@@ -38,14 +38,12 @@ public class PostResponseDto {
 	private List<String> ageRange;				//연령대
 	private List<String> gender;				//성별
 	private Integer numberOfParticipants ;			//현재모집인원수
-	private String myPageImageUrl;
+	private List<Long> participants;			//모임신청자들
 
 
-
-	public PostResponseDto(Post post){
+	public PostResponseDto(Post post, List<Long> participants){
 		this.postId = post.getId();
 		this.nickName = post.getMember().getNickname();
-		this.myPageImageUrl = post.getMember().getImageUrl();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
 		this.recruitmentEndDate=post.getRecruitmentEndDate();
@@ -62,5 +60,6 @@ public class PostResponseDto {
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();
 		this.numberOfParticipants= post.getNumberOfParticipants();
+		this.participants = participants;
 	}
 }
