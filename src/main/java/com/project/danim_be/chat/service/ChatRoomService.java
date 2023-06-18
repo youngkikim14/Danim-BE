@@ -150,7 +150,7 @@ public class ChatRoomService {
 			chatRoomDtoList.put("nickName", nickNames);
 
 			// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
-			if (!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomName(member.getId(), chatRoom.getRoomName())) {
+			if (!memberChatRoomRepository.existsByMember_IdAndChatRoom_Id(member.getId(), chatRoom.getId())) {
 				post.incNumberOfParticipants();
 				postRepository.save(post);
 			}
