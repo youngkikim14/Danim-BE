@@ -1,19 +1,14 @@
 package com.project.danim_be.post.dto.ResponseDto;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.danim_be.post.entity.Post;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-
 @Getter
 @Setter
 public class PostResponseDto {
-
-
 	private Long 		postId;				//게시글번호
 	private String		nickName;			//닉네임
 	private String 		postTitle;			//게시글제목
@@ -38,12 +33,16 @@ public class PostResponseDto {
 	private List<String> ageRange;				//연령대
 	private List<String> gender;				//성별
 	private Integer numberOfParticipants ;			//현재모집인원수
+	private String myPageImageUrl;
 	private List<Long> participants;			//모임신청자들
 
 
+
+	public PostResponseDto(Post post){
 	public PostResponseDto(Post post, List<Long> participants){
 		this.postId = post.getId();
 		this.nickName = post.getMember().getNickname();
+		this.myPageImageUrl = post.getMember().getImageUrl();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
 		this.recruitmentEndDate=post.getRecruitmentEndDate();
