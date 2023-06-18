@@ -9,18 +9,20 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class Timestamped {
+public class Timestamped  implements Serializable {
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime modifiedAt;
+    private Date modifiedAt;
 }

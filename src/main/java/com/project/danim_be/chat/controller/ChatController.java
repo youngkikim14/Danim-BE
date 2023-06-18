@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+
 import java.time.ZoneId;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -99,23 +101,25 @@ public class ChatController {
 			}
 		}
 	}
-//		@PostMapping("api/chat/{roomId}")
-//		public ResponseEntity<Message> joinChatRoom (@PathVariable("Post_id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-//			return chatRoomService.joinChatRoom(id, userDetails.getMember());
-//		}
-// 	채팅방 참여(웹소켓연결/방입장)
-//	매칭 신청
- //	버튼
- 	@PostMapping("/api/chat/room/{roomId}")
- 	public ResponseEntity<Message> joinChatRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
- 		return chatRoomService.joinChatRoom(roomId, userDetails.getMember());
- 	}
 
- 	//내가 쓴글의 채팅방 목록조회
- 	@GetMapping("/api/chat/myChatRoom")
- 	public ResponseEntity<Message> myChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
- 		return chatRoomService.myChatRoom(userDetails.getMember().getId());
- 	}
+	//		@PostMapping("api/chat/{roomId}")
+	//		public ResponseEntity<Message> joinChatRoom (@PathVariable("Post_id") Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+	//			return chatRoomService.joinChatRoom(id, userDetails.getMember());
+	//		}
+	// 	채팅방 참여(웹소켓연결/방입장)
+	//	매칭 신청
+	//	버튼
+	@PostMapping("/api/chat/room/{roomId}")
+	public ResponseEntity<Message> joinChatRoom(@PathVariable Long roomId,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return chatRoomService.joinChatRoom(roomId, userDetails.getMember());
+	}
+
+	//내가 쓴글의 채팅방 목록조회
+	// @GetMapping("/api/chat/myChatRoom")
+	// public ResponseEntity<Message> myChatRoom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	// 	return chatRoomService.myChatRoom(userDetails.getMember().getId());
+	// }
 
 	//=========================================================테스트용 메서드(완료시 삭제)===================================
 	@GetMapping("/api/chat/allChatRoom")
@@ -124,19 +128,19 @@ public class ChatController {
 	}
 
 	@PostMapping("/api/chat/test")
-	public ResponseEntity<Message> chatTestMember(@RequestBody RoomIdRequestDto roomIdRequestDto){
-
+	public ResponseEntity<Message> chatTestMember(@RequestBody RoomIdRequestDto roomIdRequestDto) {
 
 		return chatRoomService.roomMember(roomIdRequestDto);
 	}
+}
 
 	//=========================================================테스트용 메서드(완료시 삭제)===================================
- 	//내가 신청한 채팅방 목록조회
- 	@GetMapping("/api/chat/joinChatRoom")
- 	public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
- 		return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
- 	}
- }
+ // 	//내가 신청한 채팅방 목록조회
+ // 	@GetMapping("/api/chat/joinChatRoom")
+ // 	public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+ // 		return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
+ // 	}
+ // }
 
 
 
