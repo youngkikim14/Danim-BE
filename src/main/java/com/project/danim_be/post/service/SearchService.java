@@ -38,6 +38,7 @@ public class SearchService {
 
     private final JPAQueryFactory queryFactory;
     private final PostRepository postRepository;
+    private final MemberChatRoomRepository memberChatRoomRepository;
     @Autowired
     private CacheService cacheService;
     private final MemberChatRoomRepository memberChatRoomRepository;
@@ -153,9 +154,9 @@ public class SearchService {
     @Transactional
     public ResponseEntity<Message> readPost(Long id) {
 
-        Post post = postRepository.findById(id).orElseThrow(()
-            ->new CustomException(ErrorCode.POST_NOT_FOUND));
-
+        Post post = postRepository.findById(id)
+            .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
+  
         List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(post.getChatRoom().getId());
         List<Long> participants = new ArrayList<>();
         for(MemberChatRoom memberChatRoom : memberChatRoomList) {
