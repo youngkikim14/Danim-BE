@@ -39,6 +39,7 @@ public class PostResponseDto {
 
 
 	public PostResponseDto(Post post){
+	}
 	public PostResponseDto(Post post, List<Long> participants){
 		this.postId = post.getId();
 		this.nickName = post.getMember().getNickname();
