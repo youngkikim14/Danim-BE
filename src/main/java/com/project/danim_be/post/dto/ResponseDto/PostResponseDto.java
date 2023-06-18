@@ -37,14 +37,16 @@ public class PostResponseDto implements Serializable {
 	private String location;					  //지역
 	private List<String> ageRange;			//연령대
 	private List<String> gender;				//성별
+	private Integer numberOfParticipants ;			//현재모집인원수
+	private List<Long> participants;			//모임신청자들
 	private String content;						  //게시글
 
 
 	public PostResponseDto() {
 	}
-
-	public PostResponseDto(Post post){
-		this.id = post.getId();
+  
+	public PostResponseDto(Post post, List<Long> participants){
+		this.postId = post.getId();
 		this.nickName = post.getMember().getNickname();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
@@ -61,5 +63,7 @@ public class PostResponseDto implements Serializable {
 		this.chatRoomId = post.getChatRoom().getId();
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();
+		this.numberOfParticipants= post.getNumberOfParticipants();
+		this.participants = participants;
 	}
 }
