@@ -2,7 +2,9 @@ package com.project.danim_be.post.dto.RequestDto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @Getter
 @NoArgsConstructor
 public class SearchRequestDto {

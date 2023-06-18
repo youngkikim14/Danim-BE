@@ -38,17 +38,17 @@ public class ChatRoomService {
 	private final MemberRepository memberRepository;
 	private final JPAQueryFactory queryFactory;
 
-	// //내가 쓴글의 채팅방 목록조회
-	// public ResponseEntity<Message> myChatRoom(Long id) {
-	// 	List<Post> postList = postRepository.findByMember_Id(id);
-	// 	List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
-	// 	for (Post post : postList) {
-	// 		ChatRoom chatRoom = post.getChatRoom();
-	// 		ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom);
-	// 		chatRoomResponseDtoList.add(chatRoomResponseDto);
-	// 	}
-	// 	return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 채팅방", chatRoomResponseDtoList));
-	// }
+	//내가 쓴글의 채팅방 목록조회
+	public ResponseEntity<Message> myChatRoom(Long id) {
+		List<Post> postList = postRepository.findByMember_Id(id);
+		List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
+		for (Post post : postList) {
+			ChatRoom chatRoom = post.getChatRoom();
+			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom);
+			chatRoomResponseDtoList.add(chatRoomResponseDto);
+		}
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 게시물의 채팅방", chatRoomResponseDtoList));
+	}
 	//======================================================테스트용 메서드=========================================//
 	public ResponseEntity<Message> allChatRoom() {
 		List <ChatRoom> chatRooms = chatRoomRepository.findAll();

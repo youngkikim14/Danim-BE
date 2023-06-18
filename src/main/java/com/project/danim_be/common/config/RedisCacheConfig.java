@@ -46,11 +46,10 @@ public class RedisCacheConfig {
 	//레디스 서버에 연결하는 메서드
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host,port);
 		redisStandaloneConfiguration.setHostName(host);
 		redisStandaloneConfiguration.setPort(port);
-		LettuceConnectionFactory connectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
-		return connectionFactory;
+		return new LettuceConnectionFactory(redisStandaloneConfiguration);
 	}
 	@Bean
 	public Jackson2JsonRedisSerializer jackson2JsonRedisSerializer() {

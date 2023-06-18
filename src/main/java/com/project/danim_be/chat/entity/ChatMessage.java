@@ -27,7 +27,7 @@ public class ChatMessage extends Timestamped implements Serializable {
 	private String chatRoomName;
 	private String sender;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private ChatRoom chatRoom;
 

@@ -24,12 +24,10 @@ public class ExceptionAdvisor {
 
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
 	public ResponseEntity<ErrorResponse> handleMaxSizeException(MaxUploadSizeExceededException exc) {
-		exc.getMaxUploadSize();
-		exc.getMessage();
 		String errorMessage = "업로드하려는 파일의 크기가 10MB를 초과했습니다.";
 		return ResponseEntity
 			.status(HttpStatus.EXPECTATION_FAILED)
-			.body(new ErrorResponse("FILE_CAPACITY_ERROR",HttpStatus.BAD_REQUEST.value(), errorMessage));
+			.body(new ErrorResponse("FILE_CAPACITY_ERROR",HttpStatus.BAD_REQUEST.value(), errorMessage,""));
 	}
 
 

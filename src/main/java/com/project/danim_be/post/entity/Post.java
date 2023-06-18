@@ -39,7 +39,6 @@ public class Post extends Timestamped implements Serializable {
 	private Date recruitmentStartDate;    		//모집 등록날짜
 	@Column(nullable = false)
 	private Date recruitmentEndDate;    		//모집 마감날짜
-	private Boolean isRecruitmentEnd;			//모집 마감기한 지났는지 여부
 	@Column(nullable = false)
 	private Date tripStartDate;            		//여행 시작날짜
 	@Column(nullable = false)
@@ -54,6 +53,7 @@ public class Post extends Timestamped implements Serializable {
 	private String location;            		//지역
 	@Column(nullable = false)
 	private Integer groupSize;            		//인원수
+	private Boolean isRecruitmentEnd;			//모집 마감기한 지났는지 여부
 	@Column(nullable = false)
 	private Integer numberOfParticipants ;    	//현재참여자수
 	@Column(columnDefinition = "TEXT")
