@@ -1,8 +1,12 @@
 package com.project.danim_be.post.service;
 
+
 import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.entity.QChatRoom;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.danim_be.chat.entity.QChatRoom;
+import com.project.danim_be.common.CacheService;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
@@ -18,6 +22,9 @@ import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +41,8 @@ public class SearchService {
     private final JPAQueryFactory queryFactory;
     private final PostRepository postRepository;
     private final MemberChatRoomRepository memberChatRoomRepository;
+    @Autowired
+    private CacheService cacheService;
 
     //전체 조회
     @Transactional(readOnly = true)
@@ -142,23 +151,31 @@ public class SearchService {
         return cardPostResponseDtoList;
     }
     // 게시글 상세 조회
-    @Transactional(readOnly = true)
+
+    @Transactional
     public ResponseEntity<Message> readPost(Long id) {
-
-        Post post = postRepository.findById(id).orElseThrow(()
-            ->new CustomException(ErrorCode.POST_NOT_FOUND));
-
+        Post post = postRepository.findById(id)
+            .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
+  
         List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(post.getChatRoom().getId());
         List<Long> participants = new ArrayList<>();
         for(MemberChatRoom memberChatRoom : memberChatRoomList) {
             Long memberId = memberChatRoom.getMember().getId();
             participants.add(memberId);
         }
-
+  
         PostResponseDto postResponseDto = new PostResponseDto(post, participants);
 
         Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공", postResponseDto);
         return new ResponseEntity<>(message, HttpStatus.OK);
-
     }
+
+    // @Transactional
+    // public ResponseEntity<Message> readPost(Long id) throws JsonProcessingException {
+    //     PostResponseDto postResponseDto  = cacheService.postRes(id);
+    //     Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공", postResponseDto);
+    //     return new ResponseEntity<>(message, HttpStatus.OK);
+    // }
+
+
 }
