@@ -107,7 +107,7 @@ public class ChatRoomService {
 			throw new CustomException(ErrorCode.POST_NOT_FOUND);
 		}
 		//방장(작성자) 체크
-		if(!member.getId().equals(post.getMember().getId())) {
+		if(member.getId().equals(post.getMember().getId())) {
 			throw new CustomException(ErrorCode.ADMIN_USER);
 		}
 		//연령대 조건 비교하고
