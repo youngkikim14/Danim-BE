@@ -27,7 +27,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 public void registerStompEndpoints(StompEndpointRegistry registry){
     registry.addEndpoint("/ws-stomp")
-            .setAllowedOriginPatterns("http://localhost:8080", "http://jxy.me","http://localhost:3000","http://127.0.0.1:3000","http://project-danim.s3-website.ap-northeast-2.amazonaws.com")
+            .setAllowedOriginPatterns("http://localhost:8080", "http://jxy.me","http://localhost:3000","http://127.0.0.1:3000",
+				      "http://project-danim.s3-website.ap-northeast-2.amazonaws.com","https://www.da-nim.com","https://da-nim.com")
             .withSockJS();
 }
 
