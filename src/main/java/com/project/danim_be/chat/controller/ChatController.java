@@ -14,10 +14,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -46,12 +43,12 @@ public class ChatController {
 				chatMessageService.visitMember(chatDto);
 
 				ChatDto message = ChatDto.builder()
-					.type(ChatDto.MessageType.ENTER)
-					.roomName(chatDto.getRoomName())
-					.sender(chatDto.getSender())
-					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-					.message(chatDto.getSender() + "님이 입장하셨습니다.")
-					.build();
+						.type(ChatDto.MessageType.ENTER)
+						.roomName(chatDto.getRoomName())
+						.sender(chatDto.getSender())
+						.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+						.message(chatDto.getSender() + "님이 입장하셨습니다.")
+						.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), message);
 			}
 
@@ -61,12 +58,12 @@ public class ChatController {
 				chatMessageService.sendMessage(chatDto);
 
 				ChatDto message = ChatDto.builder()
-					.type(ChatDto.MessageType.TALK)
-					.roomName(chatDto.getRoomName())
-					.sender(chatDto.getSender())
-					.message(chatDto.getMessage())
-					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-					.build();
+						.type(ChatDto.MessageType.TALK)
+						.roomName(chatDto.getRoomName())
+						.sender(chatDto.getSender())
+						.message(chatDto.getMessage())
+						.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+						.build();
 
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), message);
 			}
@@ -76,12 +73,12 @@ public class ChatController {
 				chatMessageService.leaveChatRoom(chatDto);
 				//SSE요청시작!
 				ChatDto leaveMessage = ChatDto.builder()
-					.type(ChatDto.MessageType.LEAVE)
-					.roomName(chatDto.getRoomName())
-					.sender(chatDto.getSender())
-					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-					.message(chatDto.getSender() + "님이 접속을 끊었습니다.")
-					.build();
+						.type(ChatDto.MessageType.LEAVE)
+						.roomName(chatDto.getRoomName())
+						.sender(chatDto.getSender())
+						.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+						.message(chatDto.getSender() + "님이 접속을 끊었습니다.")
+						.build();
 
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), leaveMessage);
 			}
@@ -90,13 +87,13 @@ public class ChatController {
 				chatMessageService.kickMember(chatDto);
 
 				ChatDto kickMessage = ChatDto.builder()
-					.type(ChatDto.MessageType.KICK)
-					.roomName(chatDto.getRoomName())
-					.sender(chatDto.getSender())
-					.imposter(chatDto.getImposter())
-					.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-					.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
-					.build();
+						.type(ChatDto.MessageType.KICK)
+						.roomName(chatDto.getRoomName())
+						.sender(chatDto.getSender())
+						.imposter(chatDto.getImposter())
+						.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+						.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
+						.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), kickMessage);
 			}
 		}
@@ -111,7 +108,7 @@ public class ChatController {
 	//	버튼
 	@PostMapping("/api/chat/room/{roomId}")
 	public ResponseEntity<Message> joinChatRoom(@PathVariable Long roomId,
-		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+												@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return chatRoomService.joinChatRoom(roomId, userDetails.getMember());
 	}
 
@@ -132,9 +129,14 @@ public class ChatController {
 
 		return chatRoomService.roomMember(roomIdRequestDto);
 	}
-}
 
-	//=========================================================테스트용 메서드(완료시 삭제)===================================
+	//신청취소(나가기)
+	@DeleteMapping("/api/chat/room/{roomId}")
+	public ResponseEntity<Message> leaveChatRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return chatRoomService.leaveChatRoom(roomId, userDetails.getMember());
+	}
+}
+//=========================================================테스트용 메서드(완료시 삭제)===================================
  // 	//내가 신청한 채팅방 목록조회
  // 	@GetMapping("/api/chat/joinChatRoom")
  // 	public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -147,7 +149,7 @@ public class ChatController {
 	//추방하기
 
 
-	//신청취소(나가기)
+
 	//=================================================================================================================================
 
 
