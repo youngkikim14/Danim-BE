@@ -41,10 +41,9 @@ public class PostResponseDto implements Serializable {
 	private List<Long> participants;			//모임신청자들
 	private String content;						  //게시글
 
-
 	public PostResponseDto() {
 	}
-  
+
 	public PostResponseDto(Post post, List<Long> participants){
 		this.postId = post.getId();
 		this.nickName = post.getMember().getNickname();

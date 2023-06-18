@@ -6,6 +6,7 @@ import com.project.danim_be.chat.dto.test.ChatRoomMemberInfoDto;
 import com.project.danim_be.chat.dto.test.RoomIdRequestDto;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.entity.MemberChatRoom;
+import com.project.danim_be.chat.entity.QChatRoom;
 import com.project.danim_be.chat.entity.QMemberChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
@@ -14,6 +15,7 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
+import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
@@ -64,7 +66,7 @@ public class ChatRoomService {
 	public ResponseEntity<Message> roomMember(RoomIdRequestDto roomIdRequestDto) {
 		log.info(roomIdRequestDto.getRoomId());
 		ChatRoom chatRoom =chatRoomRepository.findByRoomName(roomIdRequestDto.getRoomId())
-			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+				.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		System.out.println("chatRoom : "+chatRoom.getId());
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(chatRoom.getId());
 		List<ChatRoomMemberInfoDto> chatRoomMemberInfoDto = new ArrayList<>();
@@ -74,7 +76,8 @@ public class ChatRoomService {
 			chatRoomMemberInfoDto.add(infoDto);
 		}
 		return  ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "채팅방유저 목록조회완료", chatRoomMemberInfoDto));
-		}
+	}
+
 	//=========================================테스트용 메서드===================================================//
 	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
@@ -106,20 +109,18 @@ public class ChatRoomService {
 		if(post.getIsDeleted().equals(true)) {
 			throw new CustomException(ErrorCode.POST_NOT_FOUND);
 		}
-		//신청한유저를찾고
-		Member subscriber = memberRepository.findById(member.getId())
-				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		//연령대 조건 비교하고
-		if (!chatRoom.getAdminMemberId().equals(member.getId()) && !post.getAgeRange().contains(subscriber.getAgeRange())) {
-			throw new CustomException(ErrorCode.USER_KICKED);
+		//방장(작성자) 체크
+		if(!member.getId().equals(post.getMember().getId())) {
+			throw new CustomException(ErrorCode.ADMIN_USER);
 		}
-		System.out.println(post.getGender());
-		System.out.println(subscriber.getGender());
+		//연령대 조건 비교하고
+		if (!post.getAgeRange().contains(member.getAgeRange())) {
+			throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
+		}
 		//성별 조건 비교하고
-		// if (!chatRoom.getAdminMemberId().equals(member.getId()) &&!post.getGender().contains(subscriber.getGender())) {
-		// 	throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
-		// }
+		 if (!post.getGender().contains(member.getGender())) {
+		 	throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
+		 }
 
 		Date recruitmentEndDate = post.getRecruitmentEndDate();
 		// LocalDate 타입으로 변환
@@ -132,7 +133,6 @@ public class ChatRoomService {
 		if (afterDate) throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 		if (memberChatRooms != null) {
-			System.out.println("안됨");
 			if (memberChatRooms.getKickMember()) {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
@@ -149,7 +149,7 @@ public class ChatRoomService {
 			}
 			chatRoomDtoList.put("nickName", nickNames);
 
-			// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
+			// 방에 처음 들어온다면 참여인원 +1
 			if (!memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomName(member.getId(), chatRoom.getRoomName())) {
 				post.incNumberOfParticipants();
 				postRepository.save(post);
@@ -160,4 +160,29 @@ public class ChatRoomService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모임 신청 완료", chatRoomDtoList));
 	}
 
+	//신청취소(나가기)
+	@Transactional
+	public ResponseEntity<Message> leaveChatRoom(Long id, Member member) {
+		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
+
+		ChatRoom chatRoom = chatRoomRepository.findById(id)
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		Post post = postRepository.findByChatRoom_Id(id)
+				.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+		MemberChatRoom leaveMember = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom)
+				.orElseThrow(() -> new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM));
+
+		if(member.getId().equals(leaveMember.getMember().getId())) {
+			post.decNumberOfParticipants();
+			postRepository.save(post);
+		} else {
+			throw new CustomException(ErrorCode.FAIL_LEAVE_CHATROOM);
+		}
+
+		queryFactory.delete(qMemberChatRoom)
+				.where(qMemberChatRoom.chatRoom.id.eq(id), qMemberChatRoom.member.id.eq(member.getId()))
+				.execute();
+
+		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "신청 취소 완료"));
+	}
 }

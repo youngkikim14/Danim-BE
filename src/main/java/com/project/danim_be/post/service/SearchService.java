@@ -1,11 +1,9 @@
 package com.project.danim_be.post.service;
 
-
 import com.project.danim_be.chat.entity.MemberChatRoom;
-import com.project.danim_be.chat.entity.QChatRoom;
-import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.danim_be.chat.entity.QChatRoom;
+import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.project.danim_be.common.CacheService;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
@@ -43,6 +41,7 @@ public class SearchService {
     private final MemberChatRoomRepository memberChatRoomRepository;
     @Autowired
     private CacheService cacheService;
+    private final MemberChatRoomRepository memberChatRoomRepository;
 
     //전체 조회
     @Transactional(readOnly = true)
@@ -154,6 +153,7 @@ public class SearchService {
 
     @Transactional
     public ResponseEntity<Message> readPost(Long id) {
+
         Post post = postRepository.findById(id)
             .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
   
@@ -163,7 +163,7 @@ public class SearchService {
             Long memberId = memberChatRoom.getMember().getId();
             participants.add(memberId);
         }
-  
+
         PostResponseDto postResponseDto = new PostResponseDto(post, participants);
 
         Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공", postResponseDto);
