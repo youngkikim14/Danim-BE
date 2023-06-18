@@ -106,20 +106,18 @@ public class ChatRoomService {
 		if(post.getIsDeleted().equals(true)) {
 			throw new CustomException(ErrorCode.POST_NOT_FOUND);
 		}
-		//신청한유저를찾고
-		Member subscriber = memberRepository.findById(member.getId())
-				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		//연령대 조건 비교하고
-		if (!chatRoom.getAdminMemberId().equals(member.getId()) && !post.getAgeRange().contains(subscriber.getAgeRange())) {
-			throw new CustomException(ErrorCode.USER_KICKED);
+		//방장(작성자) 체크
+		if(!member.getId().equals(post.getMember().getId())) {
+			throw new CustomException(ErrorCode.ADMIN_USER);
 		}
-		System.out.println(post.getGender());
-		System.out.println(subscriber.getGender());
+		//연령대 조건 비교하고
+		if (!post.getAgeRange().contains(member.getAgeRange())) {
+			throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
+		}
 		//성별 조건 비교하고
-		// if (!chatRoom.getAdminMemberId().equals(member.getId()) &&!post.getGender().contains(subscriber.getGender())) {
-		// 	throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
-		// }
+		 if (!post.getGender().contains(member.getGender())) {
+		 	throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
+		 }
 
 		Date recruitmentEndDate = post.getRecruitmentEndDate();
 		// LocalDate 타입으로 변환
@@ -132,7 +130,6 @@ public class ChatRoomService {
 		if (afterDate) throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 		if (memberChatRooms != null) {
-			System.out.println("안됨");
 			if (memberChatRooms.getKickMember()) {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
@@ -149,7 +146,7 @@ public class ChatRoomService {
 			}
 			chatRoomDtoList.put("nickName", nickNames);
 
-			// 작성자가 아니고?? 방에 처음 들어온다면 참여인원 +1
+			// 방에 처음 들어온다면 참여인원 +1
 			if (!memberChatRoomRepository.existsByMember_IdAndChatRoom_Id(member.getId(), chatRoom.getId())) {
 				post.incNumberOfParticipants();
 				postRepository.save(post);
@@ -157,7 +154,6 @@ public class ChatRoomService {
 		} else {
 			throw new CustomException(ErrorCode.COMPLETE_MATCHING);
 		}
-
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모임 신청 완료", chatRoomDtoList));
 	}
 
