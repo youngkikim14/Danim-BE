@@ -22,6 +22,7 @@ public class CardPostResponseDto {
     private String imageUrl;
     private String gender;
     private Boolean isRecruitmentEnd;
+    private String userImage;
 
 
     public CardPostResponseDto(Post post) {
@@ -40,5 +41,6 @@ public class CardPostResponseDto {
         this.ageRange = String.join(",", post.getAgeRange());
         this.gender = String.join(",", post.getGender());
         this.isRecruitmentEnd = post.getIsRecruitmentEnd();
+        this.userImage = post.getMember().getImageUrl();
     }
 }
