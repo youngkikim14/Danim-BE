@@ -1,18 +1,25 @@
 package com.project.danim_be.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.project.danim_be.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberChatRoom {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+	property = "id")
+public class MemberChatRoom implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +29,7 @@ public class MemberChatRoom {
 	private Member member;
 
 	@ManyToOne
+	@JsonBackReference
 	private ChatRoom chatRoom;
 
 	private LocalDateTime firstJoinRoom;	// 맨처음 채팅방에 들어온시간
