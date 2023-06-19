@@ -59,7 +59,7 @@ public class SearchService {
                         qPost.location,
                         qPost.keyword,
                         qPost.ageRange,
-                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448.png"))
+                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448+(2).png"))
                                 .from(qImage)
                                 .where(qImage.post.id.eq(qPost.id))
                                 .orderBy(qImage.id.asc()),
@@ -155,7 +155,7 @@ public class SearchService {
                         qPost.location,
                         qPost.keyword,
                         qPost.ageRange,
-                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448.png"))
+                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448+(2).png"))
                                 .from(qImage)
                                 .where(qImage.post.id.eq(qPost.id))
                                 .orderBy(qImage.id.asc()),
