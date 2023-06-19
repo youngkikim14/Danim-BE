@@ -3,6 +3,7 @@ package com.project.danim_be.chat.entity;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.common.entity.Timestamped;
 import jakarta.persistence.*;
