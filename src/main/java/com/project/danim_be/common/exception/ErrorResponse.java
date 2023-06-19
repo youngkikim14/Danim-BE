@@ -17,7 +17,7 @@ public class ErrorResponse {
 	private String message;
 	private int status;
 	private String detail;
-	private Object data;
+
 
 	public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode){
 		return ResponseEntity

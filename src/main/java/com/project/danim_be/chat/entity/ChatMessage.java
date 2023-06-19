@@ -3,17 +3,20 @@ package com.project.danim_be.chat.entity;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.common.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatMessage extends Timestamped implements Serializable {
 
 	@Id
@@ -37,6 +40,7 @@ public class ChatMessage extends Timestamped implements Serializable {
 		this.sender = chatDto.getSender();
 		this.chatRoomName = chatRoom.getRoomName();
 		this.chatRoom = chatRoom;
+
 	}
 
 	public void setChatRoom(ChatRoom chatRoom) {

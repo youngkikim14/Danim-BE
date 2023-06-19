@@ -40,15 +40,8 @@ public class ChatController {
 			case ENTER -> {
 				System.out.println("TYPE : ENTER");
 
-				chatMessageService.visitMember(chatDto);
+				ChatDto message= chatMessageService.visitMember(chatDto);
 
-				ChatDto message = ChatDto.builder()
-						.type(ChatDto.MessageType.ENTER)
-						.roomName(chatDto.getRoomName())
-						.sender(chatDto.getSender())
-						.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-						.message(chatDto.getSender() + "님이 입장하셨습니다.")
-						.build();
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), message);
 			}
 
@@ -107,10 +100,11 @@ public class ChatController {
 	//	매칭 신청
 	//	버튼
 	@PostMapping("/api/chat/room/{roomId}")
-	public ResponseEntity<Message> joinChatRoom(@PathVariable Long roomId,
-												@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	public ResponseEntity<Message> joinChatRoom(@PathVariable Long roomId,	@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return chatRoomService.joinChatRoom(roomId, userDetails.getMember());
 	}
+
+
 
 	// 내가 쓴글의 채팅방 목록조회
 	@GetMapping("/api/chat/myChatRoom")
@@ -136,10 +130,10 @@ public class ChatController {
 		return chatRoomService.leaveChatRoom(roomId, userDetails.getMember());
 	}
 
-	@GetMapping("/api/chat/joinChatRoom")
-	public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
-	}
+	// @GetMapping("/api/chat/joinChatRoom")
+	// public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	// 	return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
+	// }
 }
 //=========================================================테스트용 메서드(완료시 삭제)===================================
  	//내가 신청한 채팅방 목록조회
