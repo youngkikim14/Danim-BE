@@ -52,8 +52,8 @@ public class MemberService {
 		String ageRange = signupRequestDto.getAgeRange();
 		String gender = signupRequestDto.getGender();
 
-		boolean agreeForGender = signupRequestDto.isAgreeForGender();
-		boolean agreeForAge = signupRequestDto.isAgreeForAge();
+		Boolean agreeForGender = signupRequestDto.getAgreeForGender();
+		Boolean agreeForAge = signupRequestDto.getAgreeForAge();
 
 		if(memberRepository.findByUserId(userId).isPresent()){
 			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
