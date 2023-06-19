@@ -1,6 +1,7 @@
 package com.project.danim_be.chat.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.danim_be.chat.entity.ChatMessage;
 import com.project.danim_be.chat.entity.ChatRoom;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRoomResponseDto {
 
 	private Long roomId;
