@@ -7,7 +7,6 @@ import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
-import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.post.dto.RequestDto.SearchRequestDto;
 import com.project.danim_be.post.dto.ResponseDto.CardPostResponseDto;
 import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
@@ -27,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
