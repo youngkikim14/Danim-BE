@@ -14,32 +14,32 @@ import java.util.List;
 @Setter
 public class PostResponseDto implements Serializable {
 
-
-	private Long 		  id;					    //게시글번호
-	private String		nickName;				  	//닉네임
-	private String 		postTitle;					//게시글제목
+	private Long 		  id;					      //게시글번호
+	private String		nickName;				  //닉네임
+	private String 		postTitle;				//게시글제목
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date recruitmentStartDate;				//모집 시작날짜
+	private Date recruitmentStartDate;	//모집 시작날짜
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date recruitmentEndDate;				//모집 마감날짜
+	private Date recruitmentEndDate;		//모집 마감날짜
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date tripStartDate;						//여행 시작날짜
+	private Date tripStartDate;					//여행 시작날짜
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date tripEndDate;						//여행 마감날짜
+	private Date tripEndDate;					  //여행 마감날짜
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createdAt;			        		//게시글 작성시간
+	private Date createdAt;			        //게시글 작성시간
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date modifiedAt;			      		//게시글 수정시간
-	private Long chatRoomId;					  	//채팅방아이디
+	private Date modifiedAt;			      //게시글 수정시간
+	private Long chatRoomId;					  //채팅방아이디
 	private String map;							    //지도 api 정보
-	private int groupSize;						  	//인원수
-	private String keyword;						  	//키워드
-	private String location;					  	//지역
-	private List<String> ageRange;					//연령대
-	private List<String> gender;					//성별
+	private int groupSize;						  //인원수
+	private String keyword;						  //키워드
+	private String location;					  //지역
+	private List<String> ageRange;			//연령대
+	private List<String> gender;				//성별
 	private Integer numberOfParticipants ;			//현재모집인원수
-	private List<Long> participants;				//모임신청자들
-	private String content;						  	//게시글
+	private String myPageImageUrl;
+	private List<Long> participants;			//모임신청자들
+	private String content;						  //게시글
 
 	public PostResponseDto() {
 	}
@@ -47,6 +47,7 @@ public class PostResponseDto implements Serializable {
 	public PostResponseDto(Post post){
 		this.id = post.getId();
 		this.nickName = post.getMember().getNickname();
+		this.myPageImageUrl = post.getMember().getImageUrl();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
 		this.recruitmentEndDate=post.getRecruitmentEndDate();
@@ -68,6 +69,7 @@ public class PostResponseDto implements Serializable {
 	public PostResponseDto(Post post, List<Long> participants){
 		this.id = post.getId();
 		this.nickName = post.getMember().getNickname();
+		this.myPageImageUrl = post.getMember().getImageUrl();
 		this.postTitle = post.getPostTitle();
 		this.recruitmentStartDate=post.getRecruitmentStartDate();
 		this.recruitmentEndDate=post.getRecruitmentEndDate();

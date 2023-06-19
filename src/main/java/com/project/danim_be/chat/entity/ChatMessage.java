@@ -46,4 +46,8 @@ public class ChatMessage extends Timestamped implements Serializable {
 	public void setChatRoom(ChatRoom chatRoom) {
 		this.chatRoom=chatRoom;
 	}
+
+	public void setChatRoom(ChatRoom chatRoom) {
+		this.chatRoom=chatRoom;
+	}
 }

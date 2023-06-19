@@ -159,7 +159,7 @@ public class SearchService {
             Long memberId = memberChatRoom.getMember().getId();
             participants.add(memberId);
         }
-
+      
         PostResponseDto postResponseDto = new PostResponseDto(post, participants);
 
         Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공", postResponseDto);

@@ -103,7 +103,8 @@ public class WebSecurityConfig {
 				.requestMatchers(HttpMethod.GET, "/api/post/{postId}", "/api/post/{postId}/review").permitAll()
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/status", "/images/**").permitAll()
-				// .requestMatchers("/ws/**").permitAll()
+				.requestMatchers("/ws/**").permitAll()
+				.requestMatchers("/stomp").permitAll()
 				.requestMatchers("/ws-stomp").permitAll()
 				.requestMatchers("/health-check").permitAll()
 				.anyRequest()
@@ -135,7 +136,9 @@ public class WebSecurityConfig {
 		configuration.addAllowedOrigin("http://jxy.me/**");
 		configuration.addAllowedOrigin("http://jxy.me/");
 		configuration.addAllowedOrigin("https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/");
+		configuration.addAllowedOrigin("http://project-danim.s3-website.ap-northeast-2.amazonaws.com/");
 		configuration.addAllowedOrigin("https://da-nim.com");
+		configuration.addAllowedOrigin("https://www.da-nim.com");
 
 
 

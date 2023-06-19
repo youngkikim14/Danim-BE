@@ -164,10 +164,9 @@ public class ChatRoomService {
 			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모임 신청 완료", chatRoomDto));
 		} else {
 			throw new CustomException(ErrorCode.COMPLETE_MATCHING);
-		}
-
 	}
 
+}
 
 	//신청취소(나가기)
 	@Transactional
