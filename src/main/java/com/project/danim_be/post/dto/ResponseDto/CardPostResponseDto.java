@@ -22,6 +22,7 @@ public class CardPostResponseDto {
     private String imageUrl;
     private String gender;
     private Boolean isRecruitmentEnd;
+    private String userImage;
 
 
     public CardPostResponseDto(Post post) {
@@ -31,7 +32,7 @@ public class CardPostResponseDto {
         if (!post.getImageUrls().isEmpty()) {
             this.imageUrl = post.getImageUrls().get(0).getImageUrl();
         } else {
-            this.imageUrl = "https://danimdata.s3.ap-northeast-2.amazonaws.com/basicImage.png";}
+            this.imageUrl = "https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448.png";}
         this.nickname = post.getMember().getNickname();
         this.numberOfParticipants = post.getNumberOfParticipants();
         this.groupSize = post.getGroupSize();
@@ -40,5 +41,6 @@ public class CardPostResponseDto {
         this.ageRange = String.join(",", post.getAgeRange());
         this.gender = String.join(",", post.getGender());
         this.isRecruitmentEnd = post.getIsRecruitmentEnd();
+        this.userImage = post.getMember().getImageUrl();
     }
 }
