@@ -28,10 +28,10 @@ public class SignupRequestDto {
 	 @Enumerated(EnumType.STRING)
 	 private String gender;
 
-	 @JsonProperty("AgreeForGender")
-	 private boolean agreeForGender;
+	 // @JsonProperty("AgreeForGender")
+	 private Boolean agreeForGender;
 
-	 @JsonProperty("AgreeForAge")
-	 private boolean agreeForAge;
+	 // @JsonProperty("AgreeForAge")
+	 private Boolean agreeForAge;
 
 }
