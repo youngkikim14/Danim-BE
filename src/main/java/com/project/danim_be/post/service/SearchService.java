@@ -64,7 +64,8 @@ public class SearchService {
                                 .where(qImage.post.id.eq(qPost.id))
                                 .orderBy(qImage.id.asc()),
                         qPost.gender,
-                        qPost.isRecruitmentEnd))
+                        qPost.isRecruitmentEnd,
+                        qPost.member.imageUrl))
                 .from(qPost)
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
@@ -159,7 +160,8 @@ public class SearchService {
                                 .where(qImage.post.id.eq(qPost.id))
                                 .orderBy(qImage.id.asc()),
                         qPost.gender,
-                        qPost.isRecruitmentEnd))
+                        qPost.isRecruitmentEnd,
+                        qPost.member.imageUrl))
                 .from(qPost)
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
