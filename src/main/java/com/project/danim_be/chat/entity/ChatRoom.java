@@ -1,10 +1,12 @@
 package com.project.danim_be.chat.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.project.danim_be.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -13,7 +15,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatRoom {
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+	property = "id")
+public class ChatRoom implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +30,10 @@ public class ChatRoom {
 	private List<MemberChatRoom> memberChatRoomList;
 
 	@OneToOne
-	@JsonIgnore
 	@JoinColumn(name = "post_id")
 	private Post post;
 
-	@OneToMany
-
+	@OneToMany(mappedBy = "chatRoom")
 	private List<ChatMessage> chatMessages;
 
 
