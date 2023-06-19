@@ -3,11 +3,13 @@ package com.project.danim_be.mypage.dto.ResponseDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.danim_be.review.entity.Review;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
+@NoArgsConstructor
 public class MypageReviewResponseDto {
 
     private String userId;
