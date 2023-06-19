@@ -14,7 +14,6 @@ import java.util.List;
 @Setter
 public class PostResponseDto implements Serializable {
 
-
 	private Long 		  id;					      //게시글번호
 	private String		nickName;				  //닉네임
 	private String 		postTitle;				//게시글제목

@@ -1,17 +1,23 @@
 package com.project.danim_be.common.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ErrorResponse {
 
 	private String message;
 	private int status;
 	private String detail;
+
 
 	public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode){
 		return ResponseEntity

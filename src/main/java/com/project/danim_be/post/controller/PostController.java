@@ -1,5 +1,6 @@
 package com.project.danim_be.post.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.post.dto.RequestDto.ImageRequestDto;
 import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
@@ -31,13 +32,13 @@ public class PostController {
 	}
 	@Operation(summary = "이미지 업로드 API", description = "이미지 업로드")
 	@PostMapping(value = "api/post/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Message> imageUpload(@ModelAttribute final ImageRequestDto requestDto){
+	public ResponseEntity<Message> imageUpload(@ModelAttribute ImageRequestDto requestDto){
 		return	postService.imageUpload(requestDto);
 
 	}
 	@Operation(summary = "게시글 조회 API", description = "게시글 조회")
 	@GetMapping("api/post/{postId}")
-	public ResponseEntity<Message> readPost(@PathVariable("postId") Long id){
+	public ResponseEntity<Message> readPost(@PathVariable("postId") Long id) throws JsonProcessingException {
 		return searchService.readPost(id);
 	}
 

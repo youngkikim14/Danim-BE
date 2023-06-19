@@ -1,6 +1,10 @@
 package com.project.danim_be.post.dto.RequestDto;
 
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostRequestDto {
+
 	@Size(min = 0, max = 50 ,message = "최대 50글자까지 입력해주세요")
 	private String postTitle;					//게시글제목
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

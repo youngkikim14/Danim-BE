@@ -5,6 +5,7 @@ import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
+import com.project.danim_be.common.exception.ErrorResponse;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
@@ -45,6 +46,18 @@ public class PostService {
 	//게시글작성
 	@Transactional
 	public ResponseEntity<Message> createPost(Member member, PostRequestDto requestDto) {
+
+		if(requestDto.getPostTitle()==null){
+			throw new CustomException(ErrorCode.TITLE_IS_NULL);
+		}else if(requestDto.getGroupSize()==null){
+			throw new CustomException(ErrorCode.GROUPSIZE_IS_NULL);
+		}else if(requestDto.getAgeRange()==null){
+		 	throw new CustomException(ErrorCode.AGERANGE_IS_NULL);
+		}else if(requestDto.getGender()==null){
+			throw new CustomException(ErrorCode.GENDER_IS_NULL);
+		}else if(requestDto.getLocation()==null){
+			throw new CustomException(ErrorCode.LOCATION_IS_NULL);
+		}
 
 		Post post = Post.builder()
 			.postTitle(requestDto.getPostTitle())
@@ -103,10 +116,8 @@ public class PostService {
 		}
 
 		String imageUrl = uploader(imageFile);
-
-		Image image = new Image(imageUrl);
-		imageRepository.save(image);
-
+		// Image image = new Image(imageUrl);
+		// imageRepository.save(image);
 		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공",imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}

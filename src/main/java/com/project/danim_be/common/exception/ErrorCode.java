@@ -17,6 +17,12 @@ public enum ErrorCode {
 	FILE_CONVERT_FAIL(HttpStatus.BAD_REQUEST, "파일 변환에 실패했습니다", "파일 등록 오류입니다"),
 	CANNOT_WRITE_REVIEW(HttpStatus.BAD_REQUEST, "여행이 종료되어야 작성할 수 있습니다.", "사용자 등록 오류입니다."),
 
+	TITLE_IS_NULL(HttpStatus.BAD_REQUEST, "title", "필수항목에는 빈값을 등록할수 없습니다"),
+	GROUPSIZE_IS_NULL(HttpStatus.BAD_REQUEST, "groupSize", "필수항목에는 빈값을 등록할수 없습니다"),
+	AGERANGE_IS_NULL(HttpStatus.BAD_REQUEST, "ageRange", "필수항목에는 빈값을 등록할수 없습니다"),
+	GENDER_IS_NULL(HttpStatus.BAD_REQUEST, "gender", "필수항목에는 빈값을 등록할수 없습니다"),
+	LOCATION_IS_NULL(HttpStatus.BAD_REQUEST, "location", "필수항목에는 빈값을 등록할수 없습니다"),
+
 	//404
 	ID_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 아이디 입니다.", "사용자 등록 오류입니다."),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "찾을수 없는 회원입니다.", "사용자 등록 오류입니다."),

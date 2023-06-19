@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Getter
@@ -39,6 +40,11 @@ public class ChatMessage extends Timestamped implements Serializable {
 		this.sender = chatDto.getSender();
 		this.chatRoomName = chatRoom.getRoomName();
 		this.chatRoom = chatRoom;
+
+	}
+
+	public void setChatRoom(ChatRoom chatRoom) {
+		this.chatRoom=chatRoom;
 	}
 
 	public void setChatRoom(ChatRoom chatRoom) {
