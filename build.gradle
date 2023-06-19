@@ -48,10 +48,8 @@ dependencies {
     //Jasypt
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 
-
     //AWS S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
 
     // test mockito
     testImplementation 'org.mockito:mockito-core:5.2.0'
@@ -83,13 +81,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+
+
     //json dateTime
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
 
     //logging
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.1.0'
-    implementation 'org.codehaus.janino:janino:3.1.6'
-
 
     //Schedule
     testImplementation 'org.awaitility:awaitility:4.2.0'
@@ -100,10 +98,6 @@ dependencies {
     //mail인증
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.2'
     implementation 'org.springframework:spring-context-support:5.3.9'
-    //AOP
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-
-
 
 }
 
