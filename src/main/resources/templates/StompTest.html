@@ -84,7 +84,7 @@
             background-color: #fff;
         }
 
-        .room-id {
+        .room-name {
             border: 1px solid #fff;
             border-radius: 5px;
             padding: 2px;
@@ -118,8 +118,8 @@
             <option value="KICK">KICK</option>
         </select>
 
-        <label for="roomId">Room ID:</label>
-        <input type="text" id="roomId" name="roomId" value="test">
+        <label for="roomName">Room Name:</label>
+        <input type="text" id="roomName" name="roomName" value="test">
 
         <label for="sender">Sender:</label>
         <input type="text" id="sender" name="sender">
@@ -186,14 +186,14 @@
 
         document.getElementById('send').addEventListener('click', function() {
             var type = document.getElementById('type').value;
-            var roomId = document.getElementById('roomId').value;
+            var roomName = document.getElementById('roomName').value;
             var sender = document.getElementById('sender').value;
             var message = document.getElementById('message').value;
             document.getElementById('message').value = '';
 
             var chatMessage = {
                 'type': type,
-                'roomId': roomId,
+                'roomName': roomName,
                 'sender': sender,
                 'message': message
             };
@@ -212,18 +212,18 @@
 
                     for (var i = 0; i < chatRooms.length; i++) {
                         var chatRoom = chatRooms[i];
-                        var chatroomDiv = $("<div>").addClass("room-id").text(chatRoom.roomId);
+                        var chatroomDiv = $("<div>").addClass("room-id").text(chatRoom.roomName);
 
                         chatroomDiv.on('click', function() {
-                            var clickedRoomId = $(this).text();
-                            $("#subscription").val("/sub/chat/room/" + clickedRoomId);
-                            $("#roomId").val(clickedRoomId);
+                            var clickedRoomName = $(this).text();
+                            $("#subscription").val("/sub/chat/room/" + clickedRoomName);
+                            $("#roomName").val(clickedRoomName);
 
                             $.ajax({
                                 url: 'http://localhost:8080/api/chat/test',
                                 method: 'POST',
                                 contentType: "application/json; charset=utf-8",
-                                data: JSON.stringify({ "roomId": clickedRoomId }),
+                                data: JSON.stringify({ "roomName": clickedRoomName }),
                                 success: function(data) {
                                     console.log(data);
                                     var members = data.data;
@@ -278,7 +278,7 @@
                     if (selectedMember !== kickMember) { // 발신자와 강퇴 멤버가 다른지 확인
                         var chatMessage = {
                             'type': "KICK",
-                            'roomId': $("#roomId").val(),
+                            'roomName': $("#roomName").val(),
                             'sender': selectedMember,
                             'imposter': kickMember
                         };

@@ -31,9 +31,6 @@ public class ExceptionAdvisor {
 			.status(HttpStatus.EXPECTATION_FAILED)
 			.body(new ErrorResponse("FILE_CAPACITY_ERROR",HttpStatus.BAD_REQUEST.value(), errorMessage));
 	}
-
-
-
 	// Valid 예외 핸들러
 	@ExceptionHandler(value = {BindException.class})
 	public ResponseEntity<ErrorResponse> handleBindException(BindException  ex) {
@@ -45,11 +42,13 @@ public class ExceptionAdvisor {
 		}
 		return ErrorResponse.toResponseEntityValid(sb.toString(), HttpStatus.BAD_REQUEST);
 	}
+
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<ErrorResponse> handleException(Exception e){
 		e.printStackTrace();
 		return ErrorResponse.toResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
 	}
+
 	@ExceptionHandler(value = RuntimeException.class)
 	public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e){
 		e.printStackTrace();
