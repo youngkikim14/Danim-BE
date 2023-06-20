@@ -128,10 +128,12 @@ public class ChatRoomService {
 				userInfoList.add(userInfo);
 				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(memberChatRoom.getChatRoom().getId());
 				Date from = Date.from(memberChatRoom.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
-				List<ChatMessage> filteredChatMessages = chatMessages.stream()
-					.filter(message -> message.getCreatedAt().after(from))
-					.toList();
-				// chatRecords.put("chatRecord",filteredChatMessages);
+				List<ChatMessage> filteredChatMessages = new ArrayList<>();
+				for (ChatMessage message : chatMessages) {
+					if (message.getCreatedAt().after(from) &&message.getSender().equals(member.getNickname())) {
+						filteredChatMessages.add(message);
+					}
+				}
 				chatRecord.add(filteredChatMessages);
 			}
 			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomName(),userInfoList,chatRecord);
