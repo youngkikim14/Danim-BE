@@ -141,15 +141,18 @@ public class MypageService {
         QReview qReview = QReview.review1;
         QPost qPost = QPost.post;
 
-        List<Review> reviewList = queryFactory
-                .selectFrom(qReview)
+        //        List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
+//        for (Review review : reviewList) {
+//            mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
+//        }
+        return queryFactory
+                .select(Projections.constructor(MypageReviewResponseDto.class,
+                        qReview.member.nickname,
+                        qReview.point,
+                        qReview.review,
+                        qReview.createdAt))
                 .join(qReview.post, qPost)
                 .where(qPost.member.id.eq(memberId))
                 .fetch();
-        List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
-        for (Review review : reviewList) {
-            mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
-        }
-        return mypageReviewResponseDtoList;
     }
 }
