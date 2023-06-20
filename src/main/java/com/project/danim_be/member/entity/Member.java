@@ -1,4 +1,93 @@
 package com.project.danim_be.member.entity;
 
-public class Member {
+import java.io.Serializable;
+
+import com.project.danim_be.common.entity.Timestamped;
+import com.project.danim_be.member.dto.RequestDto.UserInfoRequestDto;
+import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@NoArgsConstructor
+public class Member extends Timestamped implements Serializable {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Column(nullable = false)
+	private String userId;		//아이디
+
+	@Column(nullable = false)
+	private String password;	//비밀번호
+
+	private String nickname;	//닉네임
+
+	private String ageRange;	//연령대
+
+	private Boolean agreeForAge;
+
+	private String provider;	//소셜
+
+	private String imageUrl;	//프로필이미지
+
+	private String gender;		//성별
+
+	private Boolean agreeForGender;
+
+	private String content;		//(간략한)자기소개
+
+	private Boolean isDeleted;	//탈퇴 여부
+
+	private Double score;		//점수
+
+	@Builder
+	public Member(String userId, String gender, String password, String nickname, String ageRange, String provider, Boolean isDeleted, Boolean agreeForAge, Boolean agreeForGender, Double score, String imageUrl) {
+		this.userId = userId;
+		this.gender = gender;
+		this.password = password;
+		this.nickname = nickname;
+		this.ageRange = ageRange;
+		this.provider = provider;
+		this.isDeleted = isDeleted;
+		this.agreeForGender = agreeForGender;
+		this.agreeForAge = agreeForAge;
+		this.score = score;
+		this.imageUrl = imageUrl;
+	}
+
+	// 테스트용 생성자
+	public Member(String memberId, String memberPassword, String memberNickName) {
+		super();
+	}
+
+	public void editMember (MypageRequestDto mypageRequestDto,String imageUrl) {
+		this.imageUrl = imageUrl;
+		this.content = mypageRequestDto.getContent();
+		this.nickname = mypageRequestDto.getNickname();
+	}
+
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void signOut() {
+		this.isDeleted = true;
+		this.userId = this.userId + "(withdrawal)";
+		this.nickname = this.nickname + "(withdrawal)";
+	}
+
+	public void update(UserInfoRequestDto userInfoRequestDto) {
+		this.gender = userInfoRequestDto.getGender();
+		this.ageRange = userInfoRequestDto.getAgeRange();
+		this.agreeForGender = userInfoRequestDto.isAgreeForGender();
+		this.agreeForAge = userInfoRequestDto.isAgreeForAge();
+	}
 }

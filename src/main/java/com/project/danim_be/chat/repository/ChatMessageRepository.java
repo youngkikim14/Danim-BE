@@ -1,4 +1,19 @@
 package com.project.danim_be.chat.repository;
 
-public interface ChatMessageRepository {
+import com.project.danim_be.chat.entity.ChatMessage;
+import com.project.danim_be.chat.entity.ChatRoom;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
+	List<ChatMessage> findAllByChatRoom(ChatRoom chatRoom);
+
+	ChatMessage findByChatRoom(ChatRoom chatRoom);
+
+	ChatMessage findFirstByChatRoomOrderByCreatedAtDesc(ChatRoom chatRoom);
+
+
+	List<ChatMessage> findByChatRoomId(Long id);
+
 }
