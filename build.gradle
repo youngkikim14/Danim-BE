@@ -82,8 +82,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-
-
     //json dateTime
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
 
@@ -99,6 +97,8 @@ dependencies {
     //mail인증
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.2'
     implementation 'org.springframework:spring-context-support:5.3.9'
+    //AOP
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 
 }
 

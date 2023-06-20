@@ -1,6 +1,7 @@
 package com.project.danim_be.post.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.danim_be.common.Anotation.LogExecutionTime;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.post.dto.RequestDto.ImageRequestDto;
 import com.project.danim_be.post.dto.RequestDto.PostRequestDto;
@@ -38,6 +39,7 @@ public class PostController {
 	}
 	@Operation(summary = "게시글 조회 API", description = "게시글 조회")
 	@GetMapping("api/post/{postId}")
+	@LogExecutionTime
 	public ResponseEntity<Message> readPost(@PathVariable("postId") Long id) throws JsonProcessingException {
 		return searchService.readPost(id);
 	}
