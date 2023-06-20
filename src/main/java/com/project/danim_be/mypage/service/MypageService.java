@@ -77,9 +77,8 @@ public class MypageService {
     //마이페이지 내가 받은 후기
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberReview(Long ownerId, Long memberId) {
-        Boolean owner = findMember(ownerId);
-        Boolean member = findMember(memberId);
-        if (!owner || !member){
+
+        if (!findMember(ownerId) || !findMember(memberId)){
             throw new CustomException(USER_NOT_FOUND);
         }
         List<MypageReviewResponseDto> reviewList;
