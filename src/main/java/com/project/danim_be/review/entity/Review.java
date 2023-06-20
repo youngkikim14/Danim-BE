@@ -29,6 +29,7 @@ public class Review extends Timestamped {
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "post_id")
 	private Post post;
 
 	public Review(ReviewRequestDto reviewRequestDto, Post post, Member member) {

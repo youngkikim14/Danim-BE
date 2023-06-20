@@ -14,8 +14,8 @@ import com.project.danim_be.mypage.dto.ResponseDto.MypageResponseDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypageReviewResponseDto;
 import com.project.danim_be.post.entity.QImage;
 import com.project.danim_be.post.entity.QPost;
-import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.review.entity.QReview;
+import com.project.danim_be.review.entity.Review;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.project.danim_be.common.exception.ErrorCode.USER_NOT_FOUND;
@@ -37,7 +38,6 @@ public class MypageService {
     private final MemberRepository memberRepository;
     private final S3Uploader s3Uploader;
     private final JPAQueryFactory queryFactory;
-    private final PostRepository postRepository;
 
 
     //마이페이지 - 사용자 정보
@@ -145,26 +145,26 @@ public class MypageService {
         QReview qReview = QReview.review;
         QPost qPost = QPost.post;
 
-        return queryFactory
-                .select(Projections.constructor(MypageReviewResponseDto.class,
-                        qReview.member.nickname,
-                        qReview.point,
-                        qReview.comment,
-                        qReview.createdAt))
-                .join(qReview.post, qPost)
-                .where(qPost.member.id.eq(memberId))
-                .fetch();
-
-//        List<Review> reviewList = queryFactory
-//                .selectFrom(qReview)
-//                .join(qReview.post, qPost).fetchJoin()
+//        return queryFactory
+//                .select(Projections.constructor(MypageReviewResponseDto.class,
+//                        qReview.member.nickname,
+//                        qReview.point,
+//                        qReview.comment,
+//                        qReview.createdAt))
+//                .join(qReview.post, qPost)
 //                .where(qPost.member.id.eq(memberId))
 //                .fetch();
 
-//        List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
-//        for (Review review : reviewList) {
-//            mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
-//        }
-//        return mypageReviewResponseDtoList;
+        List<Review> reviewList = queryFactory
+                .selectFrom(qReview)
+                .join(qReview.post, qPost).fetchJoin()
+                .where(qPost.member.id.eq(memberId))
+                .fetch();
+
+        List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
+        for (Review review : reviewList) {
+            mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
+        }
+        return mypageReviewResponseDtoList;
     }
 }
