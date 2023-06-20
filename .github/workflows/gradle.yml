@@ -9,13 +9,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        
       - name: 자바17 설치
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-          
       - name: Gradle 캐싱
         uses: actions/cache@v3
         with:
@@ -24,22 +22,16 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('*/.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
-          
       - name: properties 생성
         run: touch ./src/main/resources/application.properties
-        
       - name: PKCS12 file 생성
         run: |
           echo "${{ secrets.PKCS12_SECRET }}" | base64 --decode > ./src/main/resources/certificate.p12
-          
       - name: jasypt key 주입
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
-        
       - name: PROPERTIES secret 추가
         run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
-        
-#       - name: 터미널에 properties 출력
-#         run: cat ./src/main/resources/application.properties
-
+      #       - name: 터미널에 properties 출력
+      #         run: cat ./src/main/resources/application.properties
       - name: 테스트 없는 Build
         run: ./gradlew build -x test

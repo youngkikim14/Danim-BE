@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,19 +69,19 @@ public class ChatMessageService {
 		ChatRoom chatRoom= chatRoomRepository.findByRoomName(roomName)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		Post post = postRepository.findByChatRoom_Id(chatRoom.getId()).get();
-		// 방에 처음 들어온다면 참여인원 +1
 
 		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
-		// 강퇴당한사람인지 검사한다.
+
 
 		//첫 연결시도이면
 		if(isFirstVisit(member.getId(),roomName)){
 			memberChatRoom = new MemberChatRoom(member, chatRoom);
 			memberChatRoom.setFirstJoinRoom(LocalDateTime.now());	//맨처음 연결한시간과
-			post.incNumberOfParticipants();
-			postRepository.save(post);
-
+			if(!chatRoom.getAdminMemberId().equals(member.getId())) {
+				post.incNumberOfParticipants();
+			}
+				postRepository.save(post);
 
 		}else{
 			if(memberChatRoom==null){
