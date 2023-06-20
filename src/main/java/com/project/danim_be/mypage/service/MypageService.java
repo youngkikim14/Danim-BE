@@ -9,10 +9,9 @@ import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
+import com.project.danim_be.mypage.dto.ResponseDto.MypagePostResponseDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypageResponseDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypageReviewResponseDto;
-import com.project.danim_be.mypage.dto.ResponseDto.MypagePostResponseDto;
-import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QImage;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
@@ -74,14 +73,17 @@ public class MypageService {
     //마이페이지 내가 받은 후기
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberReview(Long ownerId, Long memberId) {
-        Member owner = findMember(ownerId);
-        Member member = findMember(memberId);
+        Boolean owner = findMember(ownerId);
+        Boolean member = findMember(memberId);
+        if (!owner || !member){
+            throw new CustomException(USER_NOT_FOUND);
+        }
         List<MypageReviewResponseDto> reviewList;
 
         if (ownerId.equals(memberId)){
-            reviewList = getReview(member.getId());
+            reviewList = getReview(memberId);
         } else {
-            reviewList = getReview(owner.getId());
+            reviewList = getReview(ownerId);
         }
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
     }
@@ -107,6 +109,7 @@ public class MypageService {
 //        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
+        QMember qMember = QMember.member;
 
 //        List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
 //        for (Post post : postList) {
@@ -130,10 +133,8 @@ public class MypageService {
     }
 
     //멤버 검증 공통 메서드
-    private Member findMember(Long id) {
-        return memberRepository.findById(id).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND)
-        );
+    private Boolean findMember(Long id) {
+        return memberRepository.existsById(id);
     }
 
     //마이페이지 리뷰 공통 메서드
@@ -141,12 +142,8 @@ public class MypageService {
         QReview qReview = QReview.review;
         QPost qPost = QPost.post;
 
-        //        List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
-//        for (Review review : reviewList) {
-//            mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
-//        }
         return queryFactory
-                .select(Projections.fields(MypageReviewResponseDto.class,
+                .select(Projections.constructor(MypageReviewResponseDto.class,
                         qReview.member.nickname,
                         qReview.point,
                         qReview.comment,
@@ -154,5 +151,17 @@ public class MypageService {
                 .join(qReview.post, qPost)
                 .where(qPost.member.id.eq(memberId))
                 .fetch();
+
+//        List<Review> reviewList = queryFactory
+//                .selectFrom(qReview)
+//                .join(qReview.post, qPost).fetchJoin()
+//                .where(qPost.member.id.eq(memberId))
+//                .fetch();
+
+//        List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
+//        for (Review review : reviewList) {
+//            mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
+//        }
+//        return mypageReviewResponseDtoList;
     }
 }
