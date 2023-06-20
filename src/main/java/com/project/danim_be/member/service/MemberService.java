@@ -52,8 +52,8 @@ public class MemberService {
 		String ageRange = signupRequestDto.getAgeRange();
 		String gender = signupRequestDto.getGender();
 
-		boolean agreeForGender = signupRequestDto.isAgreeForGender();
-		boolean agreeForAge = signupRequestDto.isAgreeForAge();
+		Boolean agreeForGender = signupRequestDto.getAgreeForGender();
+		Boolean agreeForAge = signupRequestDto.getAgreeForAge();
 
 		if(memberRepository.findByUserId(userId).isPresent()){
 			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
@@ -153,6 +153,7 @@ public class MemberService {
 
 		LoginResponseDto loginResponseDto =new LoginResponseDto(member, sseEmitter);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
+		
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
 
