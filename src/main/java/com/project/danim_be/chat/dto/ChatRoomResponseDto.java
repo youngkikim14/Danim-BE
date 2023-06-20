@@ -14,9 +14,10 @@ import java.util.Map;
 public class ChatRoomResponseDto {
 	private String roomName;
 	private List<Map<String, Object>> userInfo;
-	private List<Map<String,Object>> chatRecord;
+	// private List<Map<String,Object>> chatRecord;
+	private List<Object> chatRecord;
 
-	public ChatRoomResponseDto(String roomName, List<Map<String, Object>> userInfo, List<Map<String,Object>> chatRecord) {
+	public ChatRoomResponseDto(String roomName, List<Map<String, Object>> userInfo, List<Object> chatRecord) {
 		this.roomName = roomName;
 		this.userInfo = userInfo;
 		this.chatRecord =  chatRecord;

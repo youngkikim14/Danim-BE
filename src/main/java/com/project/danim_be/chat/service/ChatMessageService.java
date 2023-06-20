@@ -89,7 +89,7 @@ public class ChatMessageService {
 			}
 		}
 		memberChatRoom.setRecentConnect(LocalDateTime.now());  //최근 접속한 시간
-		memberChatRoomRepository.save(memberChatRoom);
+		
 
 		ChatDto message = ChatDto.builder()
 			.type(ChatDto.MessageType.ENTER)
@@ -98,7 +98,7 @@ public class ChatMessageService {
 			.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 			.message(isFirstVisit(member.getId(),roomName) ? chatDto.getSender() + "님이 입장하셨습니다." : "")
 			.build();
-
+		memberChatRoomRepository.save(memberChatRoom);
 
 		return message;
 

@@ -116,28 +116,33 @@ public class ChatRoomService {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
 		}
-		if (post.getNumberOfParticipants() < post.getGroupSize()) {
-			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
+		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
+			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(member.getId());
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
-			List<Map<String,Object>> chatRecord =new ArrayList<>();
+			List<Object> chatRecord =new ArrayList<>();
 			for (MemberChatRoom memberChatRoom : memberChatRoomList) {
 				Map<String, Object> userInfo = new HashMap<>();
-				Map<String, Object> chatRecords =new HashMap<>();
+				// Map<String, Object> chatRecords =new HashMap<>();
 				userInfo.put("nickname", memberChatRoom.getMember().getNickname());
 				userInfo.put("imageUrl", memberChatRoom.getMember().getImageUrl());
 				userInfoList.add(userInfo);
-				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(memberChatRoom.getChatRoom().getId());
 				Date from = Date.from(memberChatRoom.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
-				List<ChatMessage> filteredChatMessages = chatMessages.stream()
-					.filter(message -> message.getCreatedAt().after(from))
-					.toList();
-				chatRecords.put("chatRecord",filteredChatMessages);
-				chatRecord.add(chatRecords);
+
+
+				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(memberChatRoom.getChatRoom().getId());
+				List<ChatMessage> filteredChatMessages = new ArrayList<>();
+				for (ChatMessage message : chatMessages) {
+					if (message.getCreatedAt().after(from) ) {
+						filteredChatMessages.add(message);
+					}
+				}
+				chatRecord.add(filteredChatMessages);
 			}
 			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomName(),userInfoList,chatRecord);
 
+
 			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모임 신청 완료", chatRoomResponseDto));
-		} else {
+		}else {
 			throw new CustomException(ErrorCode.COMPLETE_MATCHING);
 		}
 
