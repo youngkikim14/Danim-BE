@@ -45,8 +45,11 @@ public class MypageService {
     //마이페이지 - 사용자 정보
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
-        Member owner = findMember(ownerId);
-        Member member = findMember(memberId);
+        Boolean owner = findMember(ownerId);
+        Boolean member = findMember(memberId);
+        if (!owner || !member){
+            throw new CustomException(USER_NOT_FOUND);
+        }
         MypageResponseDto mypageResponseDto;
         if (ownerId.equals(memberId)){
             mypageResponseDto = new MypageResponseDto(member, true);
@@ -59,13 +62,16 @@ public class MypageService {
     //마이페이지 게시물 정보
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberPosts(Long ownerId, Long memberId) {
-        Member owner = findMember(ownerId);
-        Member member = findMember(memberId);
+        Boolean owner = findMember(ownerId);
+        Boolean member = findMember(memberId);
+        if (!owner || !member){
+            throw new CustomException(USER_NOT_FOUND);
+        }
         List<MypagePostResponseDto> mypagePostResponseDtoList;
         if (ownerId.equals(memberId)) {
-            mypagePostResponseDtoList = validMember(member, true);
+            mypagePostResponseDtoList = validMember(memberId, true);
         } else {
-            mypagePostResponseDtoList = validMember(owner, false);
+            mypagePostResponseDtoList = validMember(ownerId, false);
         }
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
     }
@@ -105,7 +111,7 @@ public class MypageService {
     }
 
     //마이페이지 게시물 공통 메서드
-    private List<MypagePostResponseDto> validMember(Member member, Boolean owner) {
+    private List<MypagePostResponseDto> validMember(Long memberId, Boolean owner) {
 //        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
@@ -127,7 +133,7 @@ public class MypageService {
                                 .orderBy(qImage.id.asc()),
                         Expressions.asBoolean(owner).as("owner")))
                 .from(qPost)
-                .where(qPost.member.id.eq(member.getId()))
+                .where(qPost.member.id.eq(memberId))
                 .orderBy(qPost.createdAt.desc())
                 .fetch();
     }
