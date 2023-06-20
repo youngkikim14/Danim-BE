@@ -35,7 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// 토큰이 존재하면 유효성 검사를 수행하고, 유효하지 않은 경우 예외 처리
 		if(access_token == null){
-			filterChain.doFilter(request, response);
+			jwtExceptionHandler(response, "ACCESS_TOKEN Expired", HttpStatus.UNAUTHORIZED.value());
+			return;
+			// filterChain.doFilter(request, response);
 		} else {
 			if (jwtUtil.validateToken(access_token)) {
 				setAuthentication(jwtUtil.getUserInfoFromToken(access_token));

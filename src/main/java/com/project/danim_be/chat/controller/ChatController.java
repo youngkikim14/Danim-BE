@@ -92,12 +92,11 @@ public class ChatController {
 		}
 	}
 
+
 	@PostMapping("/api/chat/room/{roomId}")
 	public ResponseEntity<Message> joinChatRoom(@PathVariable Long roomId,	@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return chatRoomService.joinChatRoom(roomId, userDetails.getMember());
 	}
-
-
 
 	// 내가 쓴글의 채팅방 목록조회
 	@GetMapping("/api/chat/myChatRoom")
@@ -105,7 +104,7 @@ public class ChatController {
 		return chatRoomService.myChatRoom(userDetails.getMember().getId());
 	}
 
-	
+
 	//신청취소(나가기)
 	@DeleteMapping("/api/chat/room/{roomId}")
 	public ResponseEntity<Message> leaveChatRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -117,5 +116,4 @@ public class ChatController {
 		return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
 	}
 }
-
 
