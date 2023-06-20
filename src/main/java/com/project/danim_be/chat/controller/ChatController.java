@@ -1,7 +1,6 @@
 package com.project.danim_be.chat.controller;
 
 import com.project.danim_be.chat.dto.ChatDto;
-import com.project.danim_be.chat.dto.test.RoomIdRequestDto;
 import com.project.danim_be.chat.service.ChatMessageService;
 import com.project.danim_be.chat.service.ChatRoomService;
 import com.project.danim_be.common.util.Message;
@@ -14,11 +13,13 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-
 import java.time.ZoneId;
 
 

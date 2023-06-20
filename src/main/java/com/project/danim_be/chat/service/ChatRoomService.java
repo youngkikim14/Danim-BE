@@ -1,11 +1,7 @@
 package com.project.danim_be.chat.service;
 
 import com.project.danim_be.chat.dto.ChatListResponseDto;
-import com.project.danim_be.chat.dto.ChatRoomDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
-import com.project.danim_be.chat.dto.test.ChatRoomIdDto;
-import com.project.danim_be.chat.dto.test.ChatRoomMemberInfoDto;
-import com.project.danim_be.chat.dto.test.RoomIdRequestDto;
 import com.project.danim_be.chat.entity.ChatMessage;
 import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.entity.MemberChatRoom;
@@ -31,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

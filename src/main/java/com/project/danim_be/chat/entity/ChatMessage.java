@@ -1,7 +1,5 @@
 package com.project.danim_be.chat.entity;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.danim_be.chat.dto.ChatDto;
@@ -10,7 +8,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
+import java.io.Serializable;
 
 @Entity
 @Getter

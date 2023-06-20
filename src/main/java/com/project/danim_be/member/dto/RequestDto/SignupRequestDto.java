@@ -1,6 +1,5 @@
 package com.project.danim_be.member.dto.RequestDto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Pattern;
