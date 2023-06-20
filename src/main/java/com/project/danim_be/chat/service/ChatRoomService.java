@@ -116,7 +116,7 @@ public class ChatRoomService {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
 		}
-		if (post.getNumberOfParticipants() < post.getGroupSize()) {
+		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
 			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
 			List<Object> chatRecord =new ArrayList<>();
