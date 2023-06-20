@@ -77,9 +77,6 @@ public class ChatRoomService {
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	@Transactional
 	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
-		//프론트에 커스텀 에러 전달용
-		// Member member= memberRepository.findById(member.getId())
-		// 		.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		ChatRoom chatRoom = chatRoomRepository.findById(id)
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
@@ -130,18 +127,19 @@ public class ChatRoomService {
 				userInfoList.add(userInfo);
 			}
 
-			Date from = Date.from(memberChatRooms.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
-			List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(id);
-			List<ChatMessage> filteredChatMessages = new ArrayList<>();
-			for (ChatMessage message : chatMessages) {
-				if (message.getCreatedAt().after(from) ) {
-					filteredChatMessages.add(message);
+			if(memberChatRooms != null) {
+				Date from = Date.from(memberChatRooms.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
+				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(id);
+				List<ChatMessage> filteredChatMessages = new ArrayList<>();
+				for (ChatMessage message : chatMessages) {
+					if (message.getCreatedAt().after(from) ) {
+						filteredChatMessages.add(message);
+					}
 				}
+				chatRecord.add(filteredChatMessages);
 			}
-			chatRecord.add(filteredChatMessages);
 
 			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomName(),userInfoList,chatRecord);
-
 
 			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모임 신청 완료", chatRoomResponseDto));
 		}else {
