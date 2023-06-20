@@ -6,16 +6,21 @@ import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
+import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypageResponseDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypageReviewResponseDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypagePostResponseDto;
 import com.project.danim_be.post.entity.Post;
+import com.project.danim_be.post.entity.QImage;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.review.entity.QReview;
 import com.project.danim_be.review.entity.Review;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -99,12 +104,29 @@ public class MypageService {
 
     //마이페이지 게시물 공통 메서드
     private List<MypagePostResponseDto> validMember(Member member, Boolean owner) {
-        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
-        List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
-        for (Post post : postList) {
-            mypagePostResponseDtoList.add(new MypagePostResponseDto(post, owner));
-        }
-        return mypagePostResponseDtoList;
+//        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
+        QPost qPost = QPost.post;
+        QImage qImage = QImage.image;
+
+//        List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
+//        for (Post post : postList) {
+//            mypagePostResponseDtoList.add(new MypagePostResponseDto(post, owner));
+//        }
+        return queryFactory.
+                select(Projections.constructor(MypagePostResponseDto.class,
+                        qPost.id,
+                        qPost.postTitle,
+                        qPost.tripEndDate,
+                        qPost.content,
+                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448+(2).png"))
+                                .from(qImage)
+                                .where(qImage.post.id.eq(qPost.id))
+                                .orderBy(qImage.id.asc()),
+                        Expressions.asBoolean(owner).as("owner")))
+                .from(qPost)
+                .where(qPost.member.id.eq(member.getId()))
+                .orderBy(qPost.createdAt.desc())
+                .fetch();
     }
 
     //멤버 검증 공통 메서드
