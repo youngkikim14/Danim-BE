@@ -138,7 +138,7 @@ public class MypageService {
 
     //마이페이지 리뷰 공통 메서드
     private List<MypageReviewResponseDto> getReview(Long memberId) {
-        QReview qReview = QReview.review1;
+        QReview qReview = QReview.review;
         QPost qPost = QPost.post;
 
         //        List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
@@ -146,10 +146,10 @@ public class MypageService {
 //            mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
 //        }
         return queryFactory
-                .select(Projections.constructor(MypageReviewResponseDto.class,
+                .select(Projections.fields(MypageReviewResponseDto.class,
                         qReview.member.nickname,
                         qReview.point,
-                        qReview.review,
+                        qReview.comment,
                         qReview.createdAt))
                 .join(qReview.post, qPost)
                 .where(qPost.member.id.eq(memberId))

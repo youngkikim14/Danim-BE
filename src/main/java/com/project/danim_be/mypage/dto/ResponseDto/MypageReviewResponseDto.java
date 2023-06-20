@@ -16,14 +16,14 @@ public class MypageReviewResponseDto {
 
     private String nickName;
     private Double point;
-    private String review;
+    private String comment;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
 
     public MypageReviewResponseDto(Review receiveReview) {
         this.nickName = receiveReview.getMember().getNickname();
         this.point = receiveReview.getPoint();
-        this.review = receiveReview.getReview();
+        this.comment = receiveReview.getComment();
         this.createdAt = receiveReview.getCreatedAt();
     }
 }
