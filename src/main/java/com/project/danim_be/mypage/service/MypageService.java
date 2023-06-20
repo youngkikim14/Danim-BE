@@ -16,7 +16,6 @@ import com.project.danim_be.post.entity.QImage;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.review.entity.QReview;
-import com.project.danim_be.review.entity.Review;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.project.danim_be.common.exception.ErrorCode.USER_NOT_FOUND;
@@ -45,11 +43,12 @@ public class MypageService {
     //마이페이지 - 사용자 정보
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
-        Boolean owner = findMember(ownerId);
-        Boolean member = findMember(memberId);
-        if (!owner || !member){
-            throw new CustomException(USER_NOT_FOUND);
-        }
+        Member owner = memberRepository.findById(ownerId).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
         MypageResponseDto mypageResponseDto;
         if (ownerId.equals(memberId)){
             mypageResponseDto = new MypageResponseDto(member, true);
@@ -62,9 +61,8 @@ public class MypageService {
     //마이페이지 게시물 정보
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberPosts(Long ownerId, Long memberId) {
-        Boolean owner = findMember(ownerId);
-        Boolean member = findMember(memberId);
-        if (!owner || !member){
+
+        if (!findMember(ownerId) || !findMember(memberId)){
             throw new CustomException(USER_NOT_FOUND);
         }
         List<MypagePostResponseDto> mypagePostResponseDtoList;
