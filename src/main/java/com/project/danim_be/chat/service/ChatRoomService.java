@@ -56,6 +56,7 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 채팅방", chatListResponseDtoList));
 	}
+
 	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
@@ -72,6 +73,7 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 참여한 채팅방", chatListResponseDtoList)); // 쿼리문 짜기
 	}
+
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	@Transactional
 	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
@@ -97,9 +99,9 @@ public class ChatRoomService {
 			throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
 		}
 		//성별 조건 비교하고
-		 if (!post.getGender().contains(member.getGender())) {
-		 	throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
-		 }
+		if (!post.getGender().contains(member.getGender())) {
+			throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
+		}
 
 		Date recruitmentEndDate = post.getRecruitmentEndDate();
 		// LocalDate 타입으로 변환
@@ -117,7 +119,7 @@ public class ChatRoomService {
 			}
 		}
 		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
-			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(member.getId());
+			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
 			List<Object> chatRecord =new ArrayList<>();
 			for (MemberChatRoom memberChatRoom : memberChatRoomList) {
@@ -126,18 +128,18 @@ public class ChatRoomService {
 				userInfo.put("nickname", memberChatRoom.getMember().getNickname());
 				userInfo.put("imageUrl", memberChatRoom.getMember().getImageUrl());
 				userInfoList.add(userInfo);
-				Date from = Date.from(memberChatRoom.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
-
-
-				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(memberChatRoom.getChatRoom().getId());
-				List<ChatMessage> filteredChatMessages = new ArrayList<>();
-				for (ChatMessage message : chatMessages) {
-					if (message.getCreatedAt().after(from) ) {
-						filteredChatMessages.add(message);
-					}
-				}
-				chatRecord.add(filteredChatMessages);
 			}
+
+			Date from = Date.from(memberChatRooms.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
+			List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(id);
+			List<ChatMessage> filteredChatMessages = new ArrayList<>();
+			for (ChatMessage message : chatMessages) {
+				if (message.getCreatedAt().after(from) ) {
+					filteredChatMessages.add(message);
+				}
+			}
+			chatRecord.add(filteredChatMessages);
+
 			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomName(),userInfoList,chatRecord);
 
 
@@ -147,6 +149,7 @@ public class ChatRoomService {
 		}
 
 }
+
 	//신청취소(나가기)
 	@Transactional
 	public ResponseEntity<Message> leaveChatRoom(Long id, Member member) {
