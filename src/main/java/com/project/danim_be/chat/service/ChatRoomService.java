@@ -119,10 +119,10 @@ public class ChatRoomService {
 		if (post.getNumberOfParticipants() < post.getGroupSize()) {
 			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
-			List<Map<String,Object>> chatRecord =new ArrayList<>();
+			List<Object> chatRecord =new ArrayList<>();
 			for (MemberChatRoom memberChatRoom : memberChatRoomList) {
 				Map<String, Object> userInfo = new HashMap<>();
-				Map<String, Object> chatRecords =new HashMap<>();
+				// Map<String, Object> chatRecords =new HashMap<>();
 				userInfo.put("nickname", memberChatRoom.getMember().getNickname());
 				userInfo.put("imageUrl", memberChatRoom.getMember().getImageUrl());
 				userInfoList.add(userInfo);
@@ -131,8 +131,8 @@ public class ChatRoomService {
 				List<ChatMessage> filteredChatMessages = chatMessages.stream()
 					.filter(message -> message.getCreatedAt().after(from))
 					.toList();
-				chatRecords.put("chatRecord",filteredChatMessages);
-				chatRecord.add(chatRecords);
+				// chatRecords.put("chatRecord",filteredChatMessages);
+				chatRecord.add(filteredChatMessages);
 			}
 			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomName(),userInfoList,chatRecord);
 
