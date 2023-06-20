@@ -117,7 +117,7 @@ public class ChatRoomService {
 			}
 		}
 		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
-			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
+			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(member.getId());
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
 			List<Object> chatRecord =new ArrayList<>();
 			for (MemberChatRoom memberChatRoom : memberChatRoomList) {
@@ -126,11 +126,13 @@ public class ChatRoomService {
 				userInfo.put("nickname", memberChatRoom.getMember().getNickname());
 				userInfo.put("imageUrl", memberChatRoom.getMember().getImageUrl());
 				userInfoList.add(userInfo);
-				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(memberChatRoom.getChatRoom().getId());
 				Date from = Date.from(memberChatRoom.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
+
+
+				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(memberChatRoom.getChatRoom().getId());
 				List<ChatMessage> filteredChatMessages = new ArrayList<>();
 				for (ChatMessage message : chatMessages) {
-					if (message.getCreatedAt().after(from) &&message.getSender().equals(member.getNickname())) {
+					if (message.getCreatedAt().after(from) ) {
 						filteredChatMessages.add(message);
 					}
 				}
@@ -138,8 +140,9 @@ public class ChatRoomService {
 			}
 			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomName(),userInfoList,chatRecord);
 
+
 			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모임 신청 완료", chatRoomResponseDto));
-		} else {
+		}else {
 			throw new CustomException(ErrorCode.COMPLETE_MATCHING);
 		}
 
