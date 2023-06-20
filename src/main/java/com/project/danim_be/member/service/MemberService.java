@@ -177,10 +177,12 @@ public class MemberService {
 	public ResponseEntity<Message> signOut(Member member) {
 		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-		try {
-			socialService.naverSignout(member);
-		} catch (IOException e) {
-			throw new CustomException(FAIL_SIGNOUT);
+		if(!member.getProvider().equals("DANIM")) {
+			try {
+				socialService.naverSignout(member);
+			} catch (IOException e) {
+				throw new CustomException(FAIL_SIGNOUT);
+			}
 		}
 
 		member.signOut();
