@@ -18,6 +18,8 @@ import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -44,6 +46,7 @@ public class SearchService {
     private CacheService cacheService;
 
     //전체 조회
+
   @Transactional(readOnly = true)
 public ResponseEntity<Message> allPosts(Pageable pageable){
     QPost qPost = QPost.post;
@@ -81,15 +84,7 @@ public ResponseEntity<Message> allPosts(Pageable pageable){
 
     return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회 성공", cardPostResponseDtoList));
 }
-
-//        List<CardPostResponseDto> cardPostResponseDtoList = new ArrayList<>();
-//
-//        for (Post post : postList) {
-//            cardPostResponseDtoList.add(new CardPostResponseDto(post));
-//        }
-//
-//        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회성공", cardPostResponseDtoList));
-    
+   
 
     // 상세 검색
     @Transactional(readOnly = true)
@@ -198,12 +193,7 @@ public ResponseEntity<Message> allPosts(Pageable pageable){
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    // @Transactional
-    // public ResponseEntity<Message> readPost(Long id) throws JsonProcessingException {
-    //     PostResponseDto postResponseDto  = cacheService.postRes(id);
-    //     Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공", postResponseDto);
-    //     return new ResponseEntity<>(message, HttpStatus.OK);
-    // }
+  
 
 
 }
