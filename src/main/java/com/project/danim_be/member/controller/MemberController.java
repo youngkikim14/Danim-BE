@@ -42,14 +42,14 @@ public class MemberController {
 	//일반 회원가입 아이디 중복 검사
 	@Operation(summary = "일반 회원가입 아이디 중복 검사 API", description = "아이디 중복 검사")
 	@PostMapping("/checkId")
-	public ResponseEntity<Message> checkId(@RequestBody CheckIdRequestDto checkIdRequestDto) {
+	public ResponseEntity<Message> checkId(@Valid @RequestBody CheckIdRequestDto checkIdRequestDto) {
 		return memberService.checkId(checkIdRequestDto);
 	}
 
 	//일반 회원가입 닉네임 중복 검사
 	@Operation(summary = "일반 회원가입 닉네임 중복 검사 API", description = "닉네임 중복 검사")
 	@PostMapping("/checkNickname")
-	public ResponseEntity<Message> checkNickname(@RequestBody CheckNicknameRequestDto checkNicknameRequestDto) {
+	public ResponseEntity<Message> checkNickname(@Valid @RequestBody CheckNicknameRequestDto checkNicknameRequestDto) {
 		return memberService.checkNickname(checkNicknameRequestDto);
   }
 
