@@ -196,6 +196,7 @@ public class MemberService {
 		}
 
 		member.signOut();
+		refreshTokenRepository.delete(refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "DANIM").get());
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "탈퇴 성공"));
 	}
 
