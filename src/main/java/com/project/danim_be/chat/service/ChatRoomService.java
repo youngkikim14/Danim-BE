@@ -1,15 +1,8 @@
 package com.project.danim_be.chat.service;
 
 import com.project.danim_be.chat.dto.ChatListResponseDto;
-import com.project.danim_be.chat.dto.ChatRoomDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
-import com.project.danim_be.chat.dto.test.ChatRoomIdDto;
-import com.project.danim_be.chat.dto.test.ChatRoomMemberInfoDto;
-import com.project.danim_be.chat.dto.test.RoomIdRequestDto;
-import com.project.danim_be.chat.entity.ChatMessage;
-import com.project.danim_be.chat.entity.ChatRoom;
-import com.project.danim_be.chat.entity.MemberChatRoom;
-import com.project.danim_be.chat.entity.QMemberChatRoom;
+import com.project.danim_be.chat.entity.*;
 import com.project.danim_be.chat.repository.ChatMessageRepository;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
@@ -31,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,16 +33,19 @@ public class ChatRoomService {
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final ChatRoomRepository chatRoomRepository;
 	private final PostRepository postRepository;
-	private final MemberRepository memberRepository;
 	private final JPAQueryFactory queryFactory;
 	private final ChatMessageRepository chatMessageRepository;
 
 	//내가 쓴글의 채팅방 목록조회
 	public ResponseEntity<Message> myChatRoom(Long id) {
-		List<Post> postList = postRepository.findByMember_Id(id);
+		QChatRoom qChatRoom = QChatRoom.chatRoom;
+		List<ChatRoom> chatRoomList = queryFactory
+				.selectFrom(qChatRoom)
+				.from(qChatRoom)
+				.where(qChatRoom.adminMemberId.eq(id))
+				.fetch();
 		List<ChatListResponseDto> chatListResponseDtoList = new ArrayList<>();
-		for (Post post : postList) {
-			ChatRoom chatRoom = post.getChatRoom();
+		for (ChatRoom chatRoom : chatRoomList) {
 			ChatListResponseDto chatListResponseDto = new ChatListResponseDto(chatRoom);
 			chatListResponseDtoList.add(chatListResponseDto);
 		}
@@ -58,7 +53,7 @@ public class ChatRoomService {
 	}
 
 	// 내가 신청한 채팅방 목록조회
-	public ResponseEntity<Message> myJoinChatroom(Long id) {
+	public ResponseEntity<Message> myJoinChatroom(Long id) {   // 수정필요.... ㅠㅠㅠ 하지만 넘 힘들음...
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
 		List<ChatRoom> chatRoomList = queryFactory
 				.select(qMemberChatRoom.chatRoom)
