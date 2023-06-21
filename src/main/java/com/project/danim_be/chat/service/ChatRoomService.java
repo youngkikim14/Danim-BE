@@ -116,10 +116,14 @@ public class ChatRoomService {
 			List<Object> chatRecord =new ArrayList<>();
 			for (MemberChatRoom memberChatRoom : memberChatRoomList) {
 				Map<String, Object> userInfo = new HashMap<>();
-				// Map<String, Object> chatRecords =new HashMap<>();
 				userInfo.put("nickname", memberChatRoom.getMember().getNickname());
 				userInfo.put("imageUrl", memberChatRoom.getMember().getImageUrl());
-				userInfoList.add(userInfo);
+
+				if (memberChatRoom.getMember().getId().equals(chatRoom.getAdminMemberId())) {
+					userInfoList.add(0, userInfo); // 리스트의 맨 앞에 추가
+				} else {
+					userInfoList.add(userInfo); // 리스트의 맨 뒤에 추가
+				}
 			}
 
 			if(memberChatRooms != null) {
