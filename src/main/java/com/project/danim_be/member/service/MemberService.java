@@ -1,5 +1,7 @@
 package com.project.danim_be.member.service;
 
+import com.project.danim_be.chat.entity.MemberChatRoom;
+import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
@@ -40,11 +42,12 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final PostRepository postRepository;
+	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final JwtUtil jwtUtil;
 	private final SocialService socialService;
 	private final RandomNickname randomNickname;
 	private final NotificationService notificationService;
-	private final PostRepository postRepository;
 
 	//회원가입
 	@Transactional
@@ -181,11 +184,19 @@ public class MemberService {
 	public ResponseEntity<Message> signOut(Member member) {
 		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
+
 		List<Post> posts = postRepository.findByMember_Id(member.getId());
 
+		//채팅방입장삭제
+		List<MemberChatRoom> memberChatRooms  =memberChatRoomRepository.findAllByMember_Id(member.getId());
+		memberChatRoomRepository.deleteAll(memberChatRooms);
+		//게시물삭제
+
 		for(Post post : posts){
+			post.decNumberOfParticipants();
 			post.delete();
 		}
+
 
 		if(!member.getProvider().equals("DANIM")) {
 			try {

@@ -51,7 +51,6 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 채팅방", chatListResponseDtoList));
 	}
-
 	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {   // 수정필요.... ㅠㅠㅠ 하지만 넘 힘들음...
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
@@ -68,7 +67,6 @@ public class ChatRoomService {
 		}
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 참여한 채팅방", chatListResponseDtoList)); // 쿼리문 짜기
 	}
-
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	@Transactional
 	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
@@ -102,14 +100,16 @@ public class ChatRoomService {
 
 		// 현재 날짜가 모집 종료일보다 늦다면 true
 		boolean afterDate = today.isAfter(localDate);
-		// 모집이 종료되면
-		if (afterDate) throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
-		if (memberChatRooms != null) {
+		// 모집이 종료되면
+		if(memberChatRooms!=null){
 			if (memberChatRooms.getKickMember()) {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
+		}else if(afterDate){
+			throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		}
+
 		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
 			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
@@ -142,7 +142,6 @@ public class ChatRoomService {
 		}
 
 }
-
 	//신청취소(나가기)
 	@Transactional
 	public ResponseEntity<Message> leaveChatRoom(Long id, Member member) {

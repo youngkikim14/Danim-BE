@@ -75,7 +75,7 @@ public class ChatMessageService {
 		if(isFirstVisit(member.getId(),roomName)){
 			memberChatRoom = new MemberChatRoom(member, chatRoom);
 			memberChatRoom.setFirstJoinRoom(LocalDateTime.now());	//맨처음 연결한시간과
-			if(!chatRoom.getAdminMemberId().equals(member.getId())) {
+			if(!chatRoom.getAdminMemberId().equals(member.getId())&&!post.getId().equals(55L)) {
 				post.incNumberOfParticipants();
 			}
 				postRepository.save(post);
@@ -216,50 +216,13 @@ public class ChatMessageService {
 		}
 
 	}
-	//메시지조회
-	@Transactional(readOnly = true)
-	public ResponseEntity<Message> chatList(ChatDto chatDto){
 
-		ChatRoom chatRoom= chatRoomRepository.findByRoomName(chatDto.getRoomName()).get();
-
-		Member member = memberRepository.findByNickname(chatDto.getSender())
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-
-		List<ChatMessage> chatList = chatMessageRepository.findAllByChatRoom(chatRoom);
-
-
-		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공");
-		return new ResponseEntity<>(message, HttpStatus.OK);
-	}
 	//첫방문 확인
 	private boolean isFirstVisit(Long memberId, String roomName){
 		return !memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomName(memberId, roomName);
-		//xistsBy 메소드는 특정 조건을 만족하는 데이터가 존재하는지를 검사하고
+		//existsBy 메소드는 특정 조건을 만족하는 데이터가 존재하는지를 검사하고
 		//그 결과를 boolean으로 반환
 	}
-	//채팅메시지 목록 보여주기
-	private List<ChatDto> allChatList(ChatDto chatDto){
-
-		ChatRoom chatRoom = chatRoomRepository.findByRoomName(chatDto.getRoomName())
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-
-		List<ChatMessage> chatList = chatMessageRepository.findAllByChatRoom(chatRoom);
-
-		// Convert ChatMessage list to ChatDto list
-		List<ChatDto> chatDtoList = chatList.stream()
-			.map(chatMessage -> ChatDto.builder()
-				.type(chatMessage.getType())
-				.roomName(chatMessage.getChatRoom().getRoomName())
-				.sender(chatMessage.getSender())
-				.message(chatMessage.getMessage())
-				.build())
-			.collect(Collectors.toList());
-
-		return chatDtoList;
-
-	}
-
 
 
 }
