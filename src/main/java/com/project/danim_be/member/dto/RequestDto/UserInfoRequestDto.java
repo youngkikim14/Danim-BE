@@ -15,8 +15,8 @@ public class UserInfoRequestDto {
     private String gender;
     @NotBlank
     private String ageRange;
-    @JsonProperty("AgreeForGender")
+//    @JsonProperty("AgreeForGender")
     private boolean AgreeForGender;
-    @JsonProperty("AgreeForAge")
+//    @JsonProperty("AgreeForAge")
     private boolean AgreeForAge;
 }
