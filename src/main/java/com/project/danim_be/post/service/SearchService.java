@@ -12,6 +12,8 @@ import com.project.danim_be.post.dto.ResponseDto.CardPostResponseDto;
 import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QImage;
+import com.project.danim_be.chat.entity.QChatRoom;
+import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
