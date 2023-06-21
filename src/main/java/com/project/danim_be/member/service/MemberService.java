@@ -164,12 +164,12 @@ public class MemberService {
 	//로그아웃
 	@Transactional
 	public ResponseEntity<Message> logout(Member member, HttpServletRequest request) {
-		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
+		refreshTokenRepository.existsByUserId(member.getUserId());
 
-		String accessToken = request.getHeader("ACCESS_KEY").substring(7);
-		if(refreshToken.isPresent()){
-			Long tokenTime = jwtUtil.getExpirationTime(accessToken);
-			refreshTokenRepository.deleteByUserId(member.getUserId());
+//		String accessToken = request.getHeader("ACCESS_KEY").substring(7);
+		if(refreshTokenRepository.existsByUserId(member.getUserId())){
+//			Long tokenTime = jwtUtil.getExpirationTime(accessToken);
+			refreshTokenRepository.deleteByUserIdAndProvider(member.getUserId(), member.getProvider());
 			Message message = Message.setSuccess(StatusEnum.OK,"로그아웃 성공", member.getUserId());
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		}
@@ -196,7 +196,6 @@ public class MemberService {
 		}
 
 		member.signOut();
-		refreshTokenRepository.delete(refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "DANIM").get());
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "탈퇴 성공"));
 	}
 
