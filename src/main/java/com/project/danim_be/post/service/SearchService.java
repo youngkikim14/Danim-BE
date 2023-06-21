@@ -12,6 +12,8 @@ import com.project.danim_be.post.dto.ResponseDto.CardPostResponseDto;
 import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.entity.QImage;
+import com.project.danim_be.chat.entity.QChatRoom;
+import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
@@ -19,6 +21,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,48 +46,45 @@ public class SearchService {
     private CacheService cacheService;
 
     //전체 조회
-    @Transactional(readOnly = true)
-    public ResponseEntity<Message> allPosts(Pageable pageable){
-        QPost qPost = QPost.post;
-        QImage qImage = QImage.image;
-      NumberExpression<Integer> specialPostFirst = new CaseBuilder()
-                    .when(qPost.id.eq(55L))
-                    .then(0)
-                    .otherwise(1);
-        List<CardPostResponseDto> cardPostResponseDtoList = queryFactory
-                .select(Projections.constructor(CardPostResponseDto.class,
-                        qPost.id,
-                        qPost.postTitle,
-                        qPost.recruitmentEndDate,
-                        qPost.member.nickname,
-                        qPost.numberOfParticipants,
-                        qPost.groupSize,
-                        qPost.location,
-                        qPost.keyword,
-                        qPost.ageRange,
-                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448+(2).png"))
-                                .from(qImage)
-                                .where(qImage.post.id.eq(qPost.id))
-                                .orderBy(qImage.id.asc()),
-                        qPost.gender,
-                        qPost.isRecruitmentEnd,
-                        qPost.member.imageUrl))
-                .from(qPost)
-                .where(qPost.isDeleted.eq(false))
-                .orderBy(qPost.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회 성공", cardPostResponseDtoList));
 
-//        List<CardPostResponseDto> cardPostResponseDtoList = new ArrayList<>();
-//
-//        for (Post post : postList) {
-//            cardPostResponseDtoList.add(new CardPostResponseDto(post));
-//        }
-//
-//        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회성공", cardPostResponseDtoList));
-    }
+  @Transactional(readOnly = true)
+public ResponseEntity<Message> allPosts(Pageable pageable){
+    QPost qPost = QPost.post;
+    QImage qImage = QImage.image;
+
+    NumberExpression<Integer> specialPostFirst = new CaseBuilder()
+        .when(qPost.id.eq(55L))
+        .then(0)
+        .otherwise(1);
+
+    List<CardPostResponseDto> cardPostResponseDtoList = queryFactory
+            .select(Projections.constructor(CardPostResponseDto.class,
+                    qPost.id,
+                    qPost.postTitle,
+                    qPost.recruitmentEndDate,
+                    qPost.member.nickname,
+                    qPost.numberOfParticipants,
+                    qPost.groupSize,
+                    qPost.location,
+                    qPost.keyword,
+                    qPost.ageRange,
+                    JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448+(2).png"))
+                            .from(qImage)
+                            .where(qImage.post.id.eq(qPost.id))
+                            .orderBy(qImage.id.asc()),
+                    qPost.gender,
+                    qPost.isRecruitmentEnd,
+                    qPost.member.imageUrl))
+            .from(qPost)
+            .where(qPost.isDeleted.eq(false))
+            .orderBy(specialPostFirst.asc(), qPost.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+    return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회 성공", cardPostResponseDtoList));
+}
+   
 
     // 상세 검색
     @Transactional(readOnly = true)
@@ -192,12 +193,7 @@ public class SearchService {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    // @Transactional
-    // public ResponseEntity<Message> readPost(Long id) throws JsonProcessingException {
-    //     PostResponseDto postResponseDto  = cacheService.postRes(id);
-    //     Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공", postResponseDto);
-    //     return new ResponseEntity<>(message, HttpStatus.OK);
-    // }
+  
 
 
 }
