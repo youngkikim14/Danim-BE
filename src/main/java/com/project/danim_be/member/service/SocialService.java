@@ -87,7 +87,7 @@ public class SocialService {
 
         createToken(member, response);
 
-        Boolean isExistMember = memberRepository.existsByUser_Id(member.getUserId());
+        Boolean isExistMember = memberRepository.existsByUserId(member.getUserId());
 
         SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
         LoginResponseDto loginResponseDto = new LoginResponseDto(member, sseEmitter, isExistMember);
