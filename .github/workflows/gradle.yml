@@ -7,11 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        server: [server1, server2, server3]
-    
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -36,16 +31,12 @@ jobs:
           
       - name: properties 생성
         run: touch ./src/main/resources/application.properties
-        
-#       - name: PKCS12 file 생성
-#         run: |
-#           echo "${{ secrets.PKCS12_SECRET }}" | base64 --decode > ./src/main/resources/certificate.p12
-          
+     
       - name: jasypt key 주입
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
         
       - name: PROPERTIES secret 추가
-        run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties    
+        run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
 
       - name: 테스트 없는 Build
         run: ./gradlew build -x test
@@ -69,14 +60,43 @@ jobs:
       - name: Application Run
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.${{ matrix.server.toUpperCase() }}_HOST }}
-          username: ${{ secrets.${{ matrix.server.toUpperCase() }}_USERNAME }}
-          key: ${{ secrets.${{ matrix.server.toUpperCase() }}_KEY }}
+          host: ${{ secrets.SERVER1_HOST  }}
+          username: ${{ secrets.SERVER1_USERNAME  }}
+          key: ${{ secrets.SERVER1_KEY  }}
           script: |
-            if [[ "${{ matrix.server }}" == "server2" ]]; then
-              sleep 30
-            fi
+            sudo docker kill ${{ secrets.PROJECT_NAME }}
+            sudo docker rm -f ${{ secrets.PROJECT_NAME }}
+            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+            sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
+            --name ${{ secrets.PROJECT_NAME }} \
+            -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             
+      - name: 무중단 배포를 위한 30초 delay
+        run: sleep 30
+
+      - name: Deploy to Server2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER2_HOST }}
+          username: ${{ secrets.SERVER2_USERNAME }}
+          key: ${{ secrets.SERVER2_KEY }}
+          script: |
+            sudo docker kill ${{ secrets.PROJECT_NAME }}
+            sudo docker rm -f ${{ secrets.PROJECT_NAME }}
+            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+            sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
+            --name ${{ secrets.PROJECT_NAME }} \
+            -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+
+      - name: Deploy to Server3
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER3_HOST }}
+          username: ${{ secrets.SERVER3_USERNAME }}
+          key: ${{ secrets.SERVER3_KEY }}
+          script: |
             sudo docker kill ${{ secrets.PROJECT_NAME }}
             sudo docker rm -f ${{ secrets.PROJECT_NAME }}
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
