@@ -2,10 +2,7 @@ package com.project.danim_be.chat.service;
 
 import com.project.danim_be.chat.dto.ChatListResponseDto;
 import com.project.danim_be.chat.dto.ChatRoomResponseDto;
-import com.project.danim_be.chat.entity.ChatMessage;
-import com.project.danim_be.chat.entity.ChatRoom;
-import com.project.danim_be.chat.entity.MemberChatRoom;
-import com.project.danim_be.chat.entity.QMemberChatRoom;
+import com.project.danim_be.chat.entity.*;
 import com.project.danim_be.chat.repository.ChatMessageRepository;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
@@ -16,7 +13,10 @@ import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.entity.Post;
+import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,10 +42,14 @@ public class ChatRoomService {
 
 	//내가 쓴글의 채팅방 목록조회
 	public ResponseEntity<Message> myChatRoom(Long id) {
-		List<Post> postList = postRepository.findByMember_Id(id);
+		QChatRoom qChatRoom = QChatRoom.chatRoom;
+		List<ChatRoom> chatRoomList = queryFactory
+				.selectFrom(qChatRoom)
+				.from(qChatRoom)
+				.where(qChatRoom.adminMemberId.eq(id))
+				.fetch();
 		List<ChatListResponseDto> chatListResponseDtoList = new ArrayList<>();
-		for (Post post : postList) {
-			ChatRoom chatRoom = post.getChatRoom();
+		for (ChatRoom chatRoom : chatRoomList) {
 			ChatListResponseDto chatListResponseDto = new ChatListResponseDto(chatRoom);
 			chatListResponseDtoList.add(chatListResponseDto);
 		}
@@ -53,7 +57,7 @@ public class ChatRoomService {
 	}
 
 	// 내가 신청한 채팅방 목록조회
-	public ResponseEntity<Message> myJoinChatroom(Long id) {
+	public ResponseEntity<Message> myJoinChatroom(Long id) {   // 수정필요.... ㅠㅠㅠ 하지만 넘 힘들음...
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
 		List<ChatRoom> chatRoomList = queryFactory
 				.select(qMemberChatRoom.chatRoom)
