@@ -204,6 +204,8 @@ public class MemberService {
 			} catch (IOException e) {
 				throw new CustomException(FAIL_SIGNOUT);
 			}
+		} else {
+			refreshTokenRepository.delete(refreshTokenRepository.findByUserId(member.getUserId()).get());
 		}
 
 		member.signOut();
