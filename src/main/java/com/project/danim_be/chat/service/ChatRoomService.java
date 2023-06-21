@@ -33,7 +33,6 @@ public class ChatRoomService {
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final ChatRoomRepository chatRoomRepository;
 	private final PostRepository postRepository;
-	private final MemberRepository memberRepository;
 	private final JPAQueryFactory queryFactory;
 	private final ChatMessageRepository chatMessageRepository;
 
