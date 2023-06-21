@@ -78,8 +78,8 @@ dependencies {
 
     //Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.0.4'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.springframework.boot:spring-boot-starter-cache:3.1.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
 
 
     //json dateTime
@@ -87,7 +87,7 @@ dependencies {
 
     //logging
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.1.0'
-    implementation 'org.codehaus.janino:janino:3.1.6'
+    implementation 'org.codehaus.janino:janino:3.1.9'
 
     //Schedule
     testImplementation 'org.awaitility:awaitility:4.2.0'
@@ -96,11 +96,11 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.24.2'
 
     //mail인증
-    implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.2'
-    implementation 'org.springframework:spring-context-support:5.3.9'
+    implementation 'org.springframework.boot:spring-boot-starter-mail:3.0.4'
+    implementation 'org.springframework:spring-context-support:6.0.6'
 
     //AOP
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-aop:3.0.4'
 }
 
 // Querydsl 설정부

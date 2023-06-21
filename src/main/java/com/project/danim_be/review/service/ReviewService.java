@@ -38,6 +38,10 @@ public class ReviewService {
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
+        // 방장인지 확인
+        if(member.getId().equals(post.getMember().getId())) {
+            throw new CustomException(ErrorCode.ADMIN_USER_REVIEW);
+        }
         // 작성 여부 체크
         if(!reviewRepository.existsByMember_IdAndPost_Id(member.getId(), postId)){
 

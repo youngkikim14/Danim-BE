@@ -1,7 +1,5 @@
 package com.project.danim_be.member.entity;
 
-import java.io.Serializable;
-
 import com.project.danim_be.common.entity.Timestamped;
 import com.project.danim_be.member.dto.RequestDto.UserInfoRequestDto;
 import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
@@ -10,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 @Getter
 @Setter

@@ -5,7 +5,6 @@ import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
-import com.project.danim_be.common.exception.ErrorResponse;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;

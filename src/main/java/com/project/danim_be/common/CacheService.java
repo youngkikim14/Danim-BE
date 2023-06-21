@@ -1,26 +1,18 @@
 package com.project.danim_be.common;
 
-import java.util.LinkedHashMap;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.danim_be.chat.dto.ChatDto;
-import com.project.danim_be.chat.entity.ChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
-import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.dto.ResponseDto.PostResponseDto;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -40,9 +39,8 @@ public class PostResponseDto implements Serializable {
 	private String myPageImageUrl;
 	private List<Long> participants;			//모임신청자들
 	private String content;						  //게시글
+	private Boolean isComplete;
 
-	public PostResponseDto() {
-	}
 
 	public PostResponseDto(Post post){
 		this.id = post.getId();
@@ -64,6 +62,7 @@ public class PostResponseDto implements Serializable {
 		this.createdAt = post.getCreatedAt();
 		this.modifiedAt = post.getModifiedAt();
 		this.numberOfParticipants= post.getNumberOfParticipants();
+		this.isComplete = post.getGroupSize().equals(post.getNumberOfParticipants());
 	}
 
 	public PostResponseDto(Post post, List<Long> participants){
@@ -87,5 +86,6 @@ public class PostResponseDto implements Serializable {
 		this.modifiedAt = post.getModifiedAt();
 		this.numberOfParticipants= post.getNumberOfParticipants();
 		this.participants = participants;
+		this.isComplete = post.getGroupSize().equals(post.getNumberOfParticipants());
 	}
 }

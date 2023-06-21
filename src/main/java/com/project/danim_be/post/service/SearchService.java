@@ -163,7 +163,7 @@ public class SearchService {
                         qPost.isRecruitmentEnd,
                         qPost.member.imageUrl))
                 .from(qPost)
-                .where(qPost.isDeleted.eq(false))
+                .where(predicate)
                 .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
