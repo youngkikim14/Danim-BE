@@ -7,6 +7,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server: [server1, server2, server3]
+    
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -40,10 +45,7 @@ jobs:
         run: echo "jasypt.password=${{ secrets.JASYPT }}" >> ./src/main/resources/application.properties
         
       - name: PROPERTIES secret 추가
-        run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
-        
-#       - name: 터미널에 properties 출력
-#         run: cat ./src/main/resources/application.properties
+        run: echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties    
 
       - name: 테스트 없는 Build
         run: ./gradlew build -x test
@@ -65,12 +67,16 @@ jobs:
         
       # EC2 인스턴스 접속 및 애플리케이션 실행
       - name: Application Run
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_KEY }}
+          host: ${{ secrets.${{ matrix.server.toUpperCase() }}_HOST }}
+          username: ${{ secrets.${{ matrix.server.toUpperCase() }}_USERNAME }}
+          key: ${{ secrets.${{ matrix.server.toUpperCase() }}_KEY }}
           script: |
+            if [[ "${{ matrix.server }}" == "server2" ]]; then
+              sleep 30
+            fi
+            
             sudo docker kill ${{ secrets.PROJECT_NAME }}
             sudo docker rm -f ${{ secrets.PROJECT_NAME }}
             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
