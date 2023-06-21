@@ -65,6 +65,9 @@ public class SocialService {
 
         MemberRequestDto memberRequestDto = getUserInfo(accessToken, provider);
 
+        // 이미 가입한 유저인지 확인
+        Boolean isExistMember = memberRepository.existsByUserId(memberRequestDto.getUserId());
+
         // google은 refreshToken을 안줌
         if(!provider.equals("GOOGLE")) {
             List<RefreshToken> refreshTokenList = refreshTokenRepository.findAllByUserId(memberRequestDto.getUserId());
@@ -86,8 +89,6 @@ public class SocialService {
         System.out.println("userId : " + member.getUserId());
 
         createToken(member, response);
-
-        Boolean isExistMember = memberRepository.existsByUserId(member.getUserId());
 
         SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
         LoginResponseDto loginResponseDto = new LoginResponseDto(member, sseEmitter, isExistMember);
