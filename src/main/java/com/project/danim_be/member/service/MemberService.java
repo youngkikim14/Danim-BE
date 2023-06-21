@@ -19,6 +19,7 @@ import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -194,7 +195,12 @@ public class MemberService {
 				throw new CustomException(FAIL_SIGNOUT);
 			}
 		} else {
-			refreshTokenRepository.delete(refreshTokenRepository.findByUserId(member.getUserId()).get());
+			try {
+				refreshTokenRepository.delete(refreshTokenRepository.findByUserId(member.getUserId()).get());
+			} catch (IncorrectResultSizeDataAccessException e) {
+				throw new CustomException(FAIL_SIGNOUT);
+			}
+
 		}
 
 		member.signOut();
