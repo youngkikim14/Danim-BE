@@ -75,7 +75,7 @@ public class ChatMessageService {
 		if(isFirstVisit(member.getId(),roomName)){
 			memberChatRoom = new MemberChatRoom(member, chatRoom);
 			memberChatRoom.setFirstJoinRoom(LocalDateTime.now());	//맨처음 연결한시간과
-			if(!chatRoom.getAdminMemberId().equals(member.getId())) {
+			if(!chatRoom.getAdminMemberId().equals(member.getId())&&!post.getId().equals(55L)) {
 				post.incNumberOfParticipants();
 			}
 				postRepository.save(post);
