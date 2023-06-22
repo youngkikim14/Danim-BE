@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberRequestDto {
     private String userId;
-//    private String userImage;
+    private String userImage;
 
     @Builder
-    public MemberRequestDto(String email) {
+    public MemberRequestDto(String email, String userImage) {
         this.userId = email;
-//        this.userImage = userImage;
+        this.userImage = userImage;
     }
 }
