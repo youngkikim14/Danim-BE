@@ -114,7 +114,6 @@ public class MypageService {
 //        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
-        QMember qMember = QMember.member;
 
 //        List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
 //        for (Post post : postList) {
