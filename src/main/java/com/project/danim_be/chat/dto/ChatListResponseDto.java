@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +27,7 @@ public class ChatListResponseDto {
 	private Date createAtTime;
 	private String roomName;
 	private ChatMessage lastMessage;
-	private List<String> imageUrls;
+//	private Stirng imageUrl;
 
 
 	public ChatListResponseDto(ChatRoom chatRoom) {
@@ -43,13 +42,5 @@ public class ChatListResponseDto {
 		} else {
 			this.lastMessage = null;
 		}
-		List<MemberChatRoom> memberChatRoomList = chatRoom.getMemberChatRoomList();
-		List<String> imageUrls = new ArrayList<>();
-		for (MemberChatRoom memberChatRoom : memberChatRoomList) {
-			String imageUrl = memberChatRoom.getMember().getImageUrl();
-			imageUrls.add(imageUrl);
-		}
-		this.imageUrls = imageUrls;
-
 	}
 }
