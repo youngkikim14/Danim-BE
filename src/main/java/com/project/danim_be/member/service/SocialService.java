@@ -162,7 +162,7 @@ public class SocialService {
         JsonNode userInfoData = objectMapper.readTree(responseBody);
         System.out.println("userInfoData : " + userInfoData);
         String email = null;
-//        String userImage = null;
+        String userImage = null;
 
         switch (provider) {
             case "NAVER" -> {
@@ -172,8 +172,8 @@ public class SocialService {
             case "KAKAO" -> {
                 email = userInfoData.get("kakao_account").get("email").asText();
                 System.out.println("email : "+email);
-//                userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
-//                System.out.println("image : "+userImage);
+                userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
+                System.out.println("image : "+userImage);
                 break;
             }
             case "GOOGLE" -> {
@@ -181,7 +181,7 @@ public class SocialService {
                 break;
             }
         }
-        return new MemberRequestDto(email);
+        return new MemberRequestDto(email, userImage);
     }
 
     private Member saveMember(MemberRequestDto memberRequestDto, String provider) {
@@ -198,16 +198,16 @@ public class SocialService {
                     .password(password)
                     .isDeleted(false)
                     .score(20.0)
-                    .imageUrl("https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png")
-//                    .imageUrl(memberRequestDto.getUserImage())
+//                    .imageUrl("https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png")
+                    .imageUrl(memberRequestDto.getUserImage())
                     .build();
 
             memberRepository.save(member);
             return member;
-//        } else {
-//            // 재로그인시 프로필 정보가 바뀌었다면? 이메일은 바뀔리 없지만 사진은 바뀔수도 있지? 사진만 업데이트? ㅇㅋ
-//            socialMember.setImageUrl(memberRequestDto.getUserImage());
-//            memberRepository.save(socialMember);
+        } else {
+            // 재로그인시 프로필 정보가 바뀌었다면? 이메일은 바뀔리 없지만 사진은 바뀔수도 있지? 사진만 업데이트? ㅇㅋ
+            socialMember.setImageUrl(memberRequestDto.getUserImage());
+            memberRepository.save(socialMember);
         }
         return socialMember;
     }
