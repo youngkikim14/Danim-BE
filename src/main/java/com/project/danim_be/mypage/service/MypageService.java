@@ -94,9 +94,8 @@ public class MypageService {
     //마이페이지 회원정보 수정
    @Transactional
     public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
-
-        if (ownerId.equals(member.getId())) {
-            if (memberRepository.existsByNickname(mypageRequestDto.getNickname())){
+            if (ownerId.equals(member.getId())) {
+                if (!mypageRequestDto.getNickname().equals(member.getNickname()) && memberRepository.existsByNickname(mypageRequestDto.getNickname())){
                 throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
             }
                 String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
