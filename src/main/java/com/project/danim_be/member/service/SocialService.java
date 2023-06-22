@@ -172,8 +172,12 @@ public class SocialService {
             case "KAKAO" -> {
                 email = userInfoData.get("kakao_account").get("email").asText();
                 System.out.println("email : "+email);
-                userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
-                System.out.println("image : "+userImage);
+                if(userInfoData.get("kakao_account").get("profile_image_needs_agreement").equals(false)) {
+                    userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
+                    System.out.println("image : "+userImage);
+                } else {
+                    userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
+                }
                 break;
             }
             case "GOOGLE" -> {
@@ -198,7 +202,6 @@ public class SocialService {
                     .password(password)
                     .isDeleted(false)
                     .score(20.0)
-//                    .imageUrl("https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png")
                     .imageUrl(memberRequestDto.getUserImage())
                     .build();
 
@@ -229,6 +232,7 @@ public class SocialService {
         String userId = member.getUserId();
         TokenDto tokenDto = jwtUtil.createAllToken(userId);
         int count = 0;
+        System.out.println("ACCESS_KEY : "+tokenDto.getAccessToken());
 
         List<RefreshToken> refreshTokenList = refreshTokenRepository.findAllByUserId(userId);
         for(RefreshToken refreshToken : refreshTokenList) {
