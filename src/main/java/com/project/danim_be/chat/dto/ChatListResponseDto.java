@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.danim_be.chat.entity.ChatMessage;
 import com.project.danim_be.chat.entity.ChatRoom;
+import com.project.danim_be.chat.entity.MemberChatRoom;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +28,7 @@ public class ChatListResponseDto {
 	private Date createAtTime;
 	private String roomName;
 	private ChatMessage lastMessage;
-	private String imageUrl;
+	private List<String> imageUrls;
 
 
 	public ChatListResponseDto(ChatRoom chatRoom) {
@@ -41,6 +43,13 @@ public class ChatListResponseDto {
 		} else {
 			this.lastMessage = null;
 		}
+		List<MemberChatRoom> memberChatRoomList = chatRoom.getMemberChatRoomList();
+		List<String> imageUrls = new ArrayList<>();
+		for (MemberChatRoom memberChatRoom : memberChatRoomList) {
+			String imageUrl = memberChatRoom.getMember().getImageUrl();
+			imageUrls.add(imageUrl);
+		}
+		this.imageUrls = imageUrls;
 
 	}
 }
