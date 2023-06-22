@@ -36,5 +36,4 @@ public class ChatRoom implements Serializable {
 	@OneToMany(mappedBy = "chatRoom")
 	private List<ChatMessage> chatMessages;
 
-
 }
