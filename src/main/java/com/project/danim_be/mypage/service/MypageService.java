@@ -96,7 +96,9 @@ public class MypageService {
     public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
 
         if (ownerId.equals(member.getId())) {
-
+            if (memberRepository.existsByNickname(mypageRequestDto.getNickname())){
+                throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+            }
                 String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
                 member.editMember(mypageRequestDto, imageUrl);
 
@@ -112,7 +114,6 @@ public class MypageService {
 //        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
-        QMember qMember = QMember.member;
 
 //        List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
 //        for (Post post : postList) {

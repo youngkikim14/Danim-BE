@@ -21,7 +21,7 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> messageId = createNumber("messageId", Long.class);
+    public final StringPath message = createString("message");
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
