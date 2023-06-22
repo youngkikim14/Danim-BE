@@ -11,7 +11,6 @@ import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -39,10 +38,13 @@ public class ChatRoomService {
 	//내가 쓴글의 채팅방 목록조회
 	public ResponseEntity<Message> myChatRoom(Long id) {
 		QChatRoom qChatRoom = QChatRoom.chatRoom;
+		QChatMessage qChatMessage = QChatMessage.chatMessage;
 		List<ChatRoom> chatRoomList = queryFactory
 				.selectFrom(qChatRoom)
 				.from(qChatRoom)
+				.join(qChatRoom.chatMessages, qChatMessage).fetchJoin()
 				.where(qChatRoom.adminMemberId.eq(id))
+				.orderBy(qChatMessage.createdAt.desc())
 				.fetch();
 		List<ChatListResponseDto> chatListResponseDtoList = new ArrayList<>();
 		for (ChatRoom chatRoom : chatRoomList) {
@@ -55,10 +57,13 @@ public class ChatRoomService {
 	// 내가 신청한 채팅방 목록조회
 	public ResponseEntity<Message> myJoinChatroom(Long id) {   // 수정필요.... ㅠㅠㅠ 하지만 넘 힘들음...
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
+		QChatMessage qChatMessage = QChatMessage.chatMessage;
 		List<ChatRoom> chatRoomList = queryFactory
 				.select(qMemberChatRoom.chatRoom)
 				.from(qMemberChatRoom)
+				.join(qMemberChatRoom.chatRoom.chatMessages, qChatMessage).fetchJoin()
 				.where(qMemberChatRoom.member.id.eq(id))
+				.orderBy(qChatMessage.createdAt.desc())
 				.fetch();
 		List<ChatListResponseDto> chatListResponseDtoList = new ArrayList<>();
 		for (ChatRoom chatroom : chatRoomList) {
