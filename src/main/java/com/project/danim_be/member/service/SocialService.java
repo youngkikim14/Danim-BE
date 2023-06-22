@@ -171,10 +171,8 @@ public class SocialService {
             }
             case "KAKAO" -> {
                 email = userInfoData.get("kakao_account").get("email").asText();
-                System.out.println("email : "+email);
-                if(userInfoData.get("kakao_account").get("profile_image_needs_agreement").equals(false)) {
+                if(userInfoData.get("kakao_account").get("profile_image_needs_agreement").asText().equals("false")) {
                     userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
-                    System.out.println("image : "+userImage);
                 } else {
                     userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
                 }
