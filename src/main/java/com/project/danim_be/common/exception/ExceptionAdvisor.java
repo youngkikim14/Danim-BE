@@ -54,5 +54,11 @@ public class ExceptionAdvisor {
 		e.printStackTrace();
 		return ErrorResponse.toResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
 	}
+	
+	@ExceptionHandler(value = NullPointerException.class)
+	public ResponseEntity<ErrorResponse> handleNullPointerException(NullPointerException e){
+		e.printStackTrace();
+		return ErrorResponse.toResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+	}
 
 }
