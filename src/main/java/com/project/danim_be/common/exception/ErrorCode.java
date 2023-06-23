@@ -51,6 +51,7 @@ public enum ErrorCode {
 	NOT_MATCHING(HttpStatus.NOT_ACCEPTABLE, "매칭 조건과 맞지 않습니다.", "권한이 없는 사용자입니다"),
 	IMAGE_UPLOAD_FAIL(HttpStatus.BAD_REQUEST,"정의된 이미지 확장자를 사용해주세요(jpg, jpeg, png, gif)" ,"이미지 업로드 오류입니다."),
 	FAIL_LEAVE_CHATROOM(HttpStatus.BAD_REQUEST, "신청 취소에 실패했습니다.", "취소 실패"),
+	CANNOT_FOUND_KAKAO_IMAGE(HttpStatus.UNAUTHORIZED, "카카오 프로필 이미지를 가져올 수 없습니다.", "미동의"),
 	ADMIN_USER(HttpStatus.UNAUTHORIZED, "게시글 작성자는 모임에 신청할 수 없습니다.", "권한이 없는 사용자입니다."),
 	ADMIN_USER_REVIEW(HttpStatus.UNAUTHORIZED, "게시글 작성자는 후기를 작성할 수 없습니다.", "권한이 없는 사용자입니다.");
 
