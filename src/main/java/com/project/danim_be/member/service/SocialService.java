@@ -177,9 +177,6 @@ public class SocialService {
                     } catch (CustomException e) {
                         throw new CustomException(ErrorCode.CANNOT_FOUND_KAKAO_IMAGE);
                     }
-                    else {
-                        userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
-                    }
                 } else {
                     userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
                 }
