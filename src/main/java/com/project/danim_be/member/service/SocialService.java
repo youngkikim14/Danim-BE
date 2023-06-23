@@ -173,7 +173,7 @@ public class SocialService {
                 email = userInfoData.get("kakao_account").get("email").asText();
                 JsonNode userProfile = userInfoData.get("kakao_account").get("profile");
                 if(userProfile != null && userInfoData.get("kakao_account").get("profile_image_needs_agreement").asText().equals("false")){
-                    userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
+                    userImage = userProfile.get("profile_image_url").asText();
                 } else {
                     userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
                 }
