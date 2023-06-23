@@ -171,12 +171,9 @@ public class SocialService {
             }
             case "KAKAO" -> {
                 email = userInfoData.get("kakao_account").get("email").asText();
-                if(userInfoData.get("kakao_account").get("profile_image_needs_agreement").asText().equals("false")) {
-                    try {
-                        userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
-                    } catch (CustomException e) {
-                        throw new CustomException(ErrorCode.CANNOT_FOUND_KAKAO_IMAGE);
-                    }
+                JsonNode userProfile = userInfoData.get("kakao_account").get("profile");
+                if(userProfile != null && userInfoData.get("kakao_account").get("profile_image_needs_agreement").asText().equals("false")){
+                    userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
                 } else {
                     userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
                 }
