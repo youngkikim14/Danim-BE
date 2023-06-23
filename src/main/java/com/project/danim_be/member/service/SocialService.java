@@ -172,7 +172,7 @@ public class SocialService {
             case "KAKAO" -> {
                 email = userInfoData.get("kakao_account").get("email").asText();
                 if(userInfoData.get("kakao_account").get("profile_image_needs_agreement").asText().equals("false")) {
-                    if(!userInfoData.get("kakao_account").get("profile").get("profile_image_url").isNull()){
+                    if(!userInfoData.get("kakao_account").get("profile").asText().isEmpty()){
                         userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
                     }
                     else {
