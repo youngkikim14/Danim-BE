@@ -172,8 +172,10 @@ public class SocialService {
             case "KAKAO" -> {
                 email = userInfoData.get("kakao_account").get("email").asText();
                 if(userInfoData.get("kakao_account").get("profile_image_needs_agreement").asText().equals("false")) {
-                    if(!userInfoData.get("kakao_account").get("profile").asText().isEmpty()){
+                    try {
                         userImage = userInfoData.get("kakao_account").get("profile").get("profile_image_url").asText();
+                    } catch (CustomException e) {
+                        throw new CustomException(ErrorCode.CANNOT_FOUND_KAKAO_IMAGE);
                     }
                     else {
                         userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
