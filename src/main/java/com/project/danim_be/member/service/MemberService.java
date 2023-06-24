@@ -32,6 +32,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.project.danim_be.common.exception.ErrorCode.FAIL_SIGNOUT;
 import static com.project.danim_be.common.exception.ErrorCode.USER_NOT_FOUND;
@@ -127,8 +130,8 @@ public class MemberService {
 
 		member.update(userInfoRequestDto);
 
-		SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member, sseEmitter);
+		// SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
 	}
 
@@ -139,14 +142,26 @@ public class MemberService {
 		String userId = requestDto.getUserId();
 		String password = requestDto.getPassword();
 
-		Member member = memberRepository.findByUserId(userId).orElseThrow(
+		ExecutorService executor = Executors.newFixedThreadPool(2); // 병렬처리를 위한 ExecutorService 생성
+
+		// 비동기로 member 정보를 가져옴
+		CompletableFuture<Member> memberFuture = CompletableFuture.supplyAsync(() ->
+			memberRepository.findByUserId(userId).orElseThrow(
 				() -> new CustomException(ErrorCode.ID_NOT_FOUND)
-		);
+			), executor);
+
+		// 비동기로 token 정보를 생성
+		CompletableFuture<TokenDto> tokenFuture = CompletableFuture.supplyAsync(() ->
+				jwtUtil.createAllToken(userId)
+			, executor);
+
+		// CompletableFuture의 join 메서드를 사용하면 ExecutionException을 UncheckedExecutionException으로 래핑하여 던집니다.
+		Member member = memberFuture.join(); // 작업 결과를 가져옴
+		TokenDto tokenDto = tokenFuture.join(); // 작업 결과를 가져옴
 
 		if (!passwordEncoder.matches(password, member.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
-		TokenDto tokenDto = jwtUtil.createAllToken(userId);
 
 		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
 		if (refreshToken.isPresent()) {
@@ -155,15 +170,18 @@ public class MemberService {
 			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
 			refreshTokenRepository.save(newToken);
 		}
+
 		setHeader(response, tokenDto);
 
 		SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
 
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member, sseEmitter);
+		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
-		
+
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
+
 
 	//로그아웃
 	@Transactional
