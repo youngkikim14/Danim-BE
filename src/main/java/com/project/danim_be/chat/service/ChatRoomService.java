@@ -107,13 +107,14 @@ public class ChatRoomService {
 		boolean afterDate = today.isAfter(localDate);
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 		// 모집이 종료되면
-		if(memberChatRooms!=null){
+		if(memberChatRooms!=null || post.getMember().getId().equals(chatRoom.getAdminMemberId())){
 			if (memberChatRooms.getKickMember()) {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
 		}else if(afterDate){
 			throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		}
+
 
 		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
 			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
