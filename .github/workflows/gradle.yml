@@ -34,4 +34,8 @@ jobs:
       #       - name: 터미널에 properties 출력
       #         run: cat ./src/main/resources/application.properties
       - name: 테스트 없는 Build
+
         run: ./gradlew build -x test
+
+     
+
