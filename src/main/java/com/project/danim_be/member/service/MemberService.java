@@ -58,7 +58,6 @@ public class MemberService {
 	public ResponseEntity<Message> signup(SignupRequestDto signupRequestDto) {
 
 		String userId = signupRequestDto.getUserId();
-		// String password = passwordEncoder.encode(signupRequestDto.getPassword());
 		String password = passwordEncoder.encode(signupRequestDto.getPassword());
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
@@ -151,30 +150,30 @@ public class MemberService {
 				() -> new CustomException(ErrorCode.ID_NOT_FOUND)
 			), executor);
 
-		// // 비동기로 token 정보를 생성
-		// CompletableFuture<TokenDto> tokenFuture = CompletableFuture.supplyAsync(() ->
-		// 		jwtUtil.createAllToken(userId)
-		// 	, executor);
+		// 비동기로 token 정보를 생성
+		CompletableFuture<TokenDto> tokenFuture = CompletableFuture.supplyAsync(() ->
+				jwtUtil.createAllToken(userId)
+			, executor);
 
 		// CompletableFuture의 join 메서드를 사용하면 ExecutionException을 UncheckedExecutionException으로 래핑하여 던집니다.
 		Member member = memberFuture.join(); // 작업 결과를 가져옴
-		// TokenDto tokenDto = tokenFuture.join(); // 작업 결과를 가져옴
+		TokenDto tokenDto = tokenFuture.join(); // 작업 결과를 가져옴
 
 		if (!passwordEncoder.matches(password, member.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
 
-		// Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
-		// if (refreshToken.isPresent()) {
-		// 	refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-		// } else {
-		// 	RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
-		// 	refreshTokenRepository.save(newToken);
-		// }
-		//
-		// setHeader(response, tokenDto);
+		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
+		if (refreshToken.isPresent()) {
+			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+		} else {
+			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
+			refreshTokenRepository.save(newToken);
+		}
 
-		SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+		setHeader(response, tokenDto);
+
+		// SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
