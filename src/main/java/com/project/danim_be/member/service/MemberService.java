@@ -231,19 +231,19 @@ public class MemberService {
 	}
 
 	@Transactional
-	public ResponseEntity<Message> refreshAccessToken(RefreshTokenRequestDto refreshTokenRequestDto, HttpServletResponse response) {
+	public ResponseEntity<Message> refreshAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse response) {
 
-		String refreshToken = refreshTokenRequestDto.getRefreshToken();
+		String refresh_token = jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
 
-		if (!jwtUtil.refreshTokenValid(refreshToken)) {
+		if (!jwtUtil.refreshTokenValid(refresh_token)) {
 			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		}
 
-		String userId = jwtUtil.getUserInfoFromToken(refreshToken);
+		String userId = jwtUtil.getUserInfoFromToken(refresh_token);
 
 		String newAccessToken = jwtUtil.createToken(userId, "Access");
 
-		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).get();
+		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken(refresh_token).get();
 		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
 		refreshTokenRepository.save(updatedRefreshToken);
 
