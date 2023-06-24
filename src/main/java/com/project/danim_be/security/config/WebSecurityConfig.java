@@ -55,7 +55,8 @@ public class WebSecurityConfig {
 			"/api/chat/test",
 			"/api/user/mailCheck",
 			"/stomp",
-			"/info"
+			"/info",
+			"/api/user/refreshToken"
 	};
 
 
