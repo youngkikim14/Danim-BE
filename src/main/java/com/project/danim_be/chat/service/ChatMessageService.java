@@ -91,11 +91,12 @@ public class ChatMessageService {
 			.message(isFirstVisit(member.getId(),roomName) ? chatDto.getSender() + "님이 입장하셨습니다." : "")
 			.build();
 
-		memberChatRoomRepository.save(memberChatRoom);
+
 		if (isFirstVisit(member.getId(),roomName)){
 			ChatMessage chatMessage = new ChatMessage(message, chatRoom);
 			chatMessageRepository.save(chatMessage);
 		}
+		memberChatRoomRepository.save(memberChatRoom);
 		return message;
 
 	}
