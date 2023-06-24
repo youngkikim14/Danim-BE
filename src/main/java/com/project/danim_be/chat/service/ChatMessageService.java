@@ -120,6 +120,7 @@ public class ChatMessageService {
 // 		}
 
 
+
 		// 메세지를 보낸사람. 이 사람에겐 알람을 안보내기 위해
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findByChatRoom(chatRoom);
 		List<Member> members = new ArrayList<>();
