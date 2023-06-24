@@ -91,9 +91,7 @@ public class ChatRoomService {
 		// }
 		//연령대 조건 비교하고
 		if(!post.getMember().getId().equals(chatRoom.getAdminMemberId())) {
-			if (!post.getAgeRange().contains(member.getAgeRange()) || post.getMember()
-				.getId()
-				.equals(chatRoom.getAdminMemberId())) {
+			if (!post.getAgeRange().contains(member.getAgeRange())) {
 				throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
 			}
 			//성별 조건 비교하고
