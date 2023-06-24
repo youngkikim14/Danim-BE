@@ -130,7 +130,7 @@ public class MypageService {
                                 .orderBy(qImage.id.asc()),
                         Expressions.asBoolean(owner).as("owner")))
                 .from(qPost)
-                .where(qPost.member.id.eq(memberId))
+                .where(qPost.member.id.eq(memberId), qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
                 .fetch();
     }
