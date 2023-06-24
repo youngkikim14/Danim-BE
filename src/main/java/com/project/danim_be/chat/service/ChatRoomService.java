@@ -90,7 +90,7 @@ public class ChatRoomService {
 		// 	throw new CustomException(ErrorCode.ADMIN_USER);
 		// }
 		//연령대 조건 비교하고
-		if(!post.getMember().getId().equals(chatRoom.getAdminMemberId())) {
+		if(!member.getId().equals(chatRoom.getAdminMemberId())) {
 			if (!post.getAgeRange().contains(member.getAgeRange())) {
 				throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
 			}
