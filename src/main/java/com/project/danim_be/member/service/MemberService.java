@@ -31,6 +31,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -230,25 +231,27 @@ public class MemberService {
 	}
 
 	@Transactional
-	public ResponseEntity<Message> refreshAccessToken(RefreshTokenRequestDto refreshTokenRequestDto, HttpServletResponse response) {
+	public ResponseEntity<Message> refreshAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse response) {
 
-		String refreshToken = refreshTokenRequestDto.getRefreshToken();
+		String refresh_token = jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
 
-		if (!jwtUtil.refreshTokenValid(refreshToken)) {
+		if (!jwtUtil.refreshTokenValid(refresh_token)) {
 			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		}
 
-		String userId = jwtUtil.getUserInfoFromToken(refreshToken);
+		String userId = jwtUtil.getUserInfoFromToken(refresh_token);
 
 		String newAccessToken = jwtUtil.createToken(userId, "Access");
-
-		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).get();
+		refresh_token = "Bearer " + jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
+				RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken(refresh_token).orElseThrow(
+				NoSuchElementException::new
+		);
 		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
 		refreshTokenRepository.save(updatedRefreshToken);
 
 		jwtUtil.setHeaderAccessToken(response, newAccessToken);
 
-		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공");
+		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공", response);
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
