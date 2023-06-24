@@ -135,35 +135,50 @@ public class MemberService {
 	//로그인
 	@Transactional
 	public ResponseEntity<Message> login(LoginRequestDto requestDto, HttpServletResponse response) {
-
-		String userId = requestDto.getUserId();
-		String password = requestDto.getPassword();
-
-		Member member = memberRepository.findByUserId(userId).orElseThrow(
-				() -> new CustomException(ErrorCode.ID_NOT_FOUND)
-		);
-
-		if (!passwordEncoder.matches(password, member.getPassword())) {
-			throw new CustomException(ErrorCode.INVALID_PASSWORD);
-		}
-		TokenDto tokenDto = jwtUtil.createAllToken(userId);
-
-		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
-		if (refreshToken.isPresent()) {
-			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-		} else {
-			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
-			refreshTokenRepository.save(newToken);
-		}
-		setHeader(response, tokenDto);
-
-		SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
-
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member, sseEmitter);
-		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
-		
-		return new ResponseEntity<>(message, HttpStatus.OK);
+	
+	    String userId = requestDto.getUserId();
+	    String password = requestDto.getPassword();
+	
+	    ExecutorService executor = Executors.newFixedThreadPool(2); // 병렬처리를 위한 ExecutorService 생성
+	
+	    // 비동기로 member 정보를 가져옴
+	    CompletableFuture<Member> memberFuture = CompletableFuture.supplyAsync(() -> 
+	        memberRepository.findByUserId(userId).orElseThrow(
+	            () -> new CustomException(ErrorCode.ID_NOT_FOUND)
+	        ), executor);
+	
+	    // 비동기로 token 정보를 생성
+	    CompletableFuture<TokenDto> tokenFuture = CompletableFuture.supplyAsync(() -> 
+	        jwtUtil.createAllToken(userId)
+	    , executor);
+	
+	    CompletableFuture.allOf(memberFuture, tokenFuture).join(); // 두 작업이 모두 완료될 때까지 대기
+	
+	    Member member = memberFuture.get(); // 작업 결과를 가져옴
+	    TokenDto tokenDto = tokenFuture.get(); // 작업 결과를 가져옴
+	
+	    if (!passwordEncoder.matches(password, member.getPassword())) {
+	        throw new CustomException(ErrorCode.INVALID_PASSWORD);
+	    }
+	
+	    Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
+	    if (refreshToken.isPresent()) {
+	        refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+	    } else {
+	        RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
+	        refreshTokenRepository.save(newToken);
+	    }
+	
+	    setHeader(response, tokenDto);
+	
+	    // SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+	
+	    LoginResponseDto loginResponseDto = new LoginResponseDto(member);
+	    Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
+	
+	    return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
 
 	//로그아웃
 	@Transactional
