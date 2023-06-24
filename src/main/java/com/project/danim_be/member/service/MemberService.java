@@ -251,7 +251,7 @@ public class MemberService {
 
 		jwtUtil.setHeaderAccessToken(response, newAccessToken);
 
-		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공", response);
+		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공");
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
