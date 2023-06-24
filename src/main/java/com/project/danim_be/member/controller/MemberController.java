@@ -122,9 +122,9 @@ public class MemberController {
 	}
 
 	@Operation(summary = "액세스 토큰 재발급 API", description = "액세스 토큰 재발급")
-	@PostMapping("/refreshToken")
-	public ResponseEntity<Message> refreshAccessToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto, HttpServletResponse response) {
-		return memberService.refreshAccessToken(refreshTokenRequestDto,response);
+	@GetMapping("/refreshToken")
+	public ResponseEntity<Message> refreshAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse response) {
+		return memberService.refreshAccessToken(httpServletRequest,response);
 	}
 }
 
