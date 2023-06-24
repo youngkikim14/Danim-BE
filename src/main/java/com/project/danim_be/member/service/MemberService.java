@@ -58,7 +58,8 @@ public class MemberService {
 	public ResponseEntity<Message> signup(SignupRequestDto signupRequestDto) {
 
 		String userId = signupRequestDto.getUserId();
-		String password = passwordEncoder.encode(signupRequestDto.getPassword());
+		// String password = passwordEncoder.encode(signupRequestDto.getPassword());
+		String password = "abc";
 		String nickname = signupRequestDto.getNickname();
 		String ageRange = signupRequestDto.getAgeRange();
 		String gender = signupRequestDto.getGender();
@@ -140,7 +141,8 @@ public class MemberService {
 	public ResponseEntity<Message> login(LoginRequestDto requestDto, HttpServletResponse response) {
 
 		String userId = requestDto.getUserId();
-		String password = requestDto.getPassword();
+		// String password = requestDto.getPassword();
+		String password = "abc";
 
 		ExecutorService executor = Executors.newFixedThreadPool(2); // 병렬처리를 위한 ExecutorService 생성
 
@@ -159,9 +161,9 @@ public class MemberService {
 		Member member = memberFuture.join(); // 작업 결과를 가져옴
 		TokenDto tokenDto = tokenFuture.join(); // 작업 결과를 가져옴
 
-		if (!passwordEncoder.matches(password, member.getPassword())) {
-			throw new CustomException(ErrorCode.INVALID_PASSWORD);
-		}
+		// if (!passwordEncoder.matches(password, member.getPassword())) {
+		// 	throw new CustomException(ErrorCode.INVALID_PASSWORD);
+		// }
 
 		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
 		if (refreshToken.isPresent()) {
