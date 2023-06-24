@@ -176,7 +176,9 @@ public class MemberService {
 
 		// SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
 
-		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
+
+		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
+
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
