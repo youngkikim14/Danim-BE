@@ -22,11 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
-
-@Slf4j
+import java.util.*;@Slf4j
 @Service
 @RequiredArgsConstructor
+
+
 public class ChatRoomService {
 
 	private final MemberChatRoomRepository memberChatRoomRepository;
@@ -106,12 +106,13 @@ public class ChatRoomService {
 		// 현재 날짜가 모집 종료일보다 늦다면 true
 		boolean afterDate = today.isAfter(localDate);
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
-		// 모집이 종료되면
+		// 채팅방에 이미 입장했을 때
 		if(memberChatRooms!=null){
 			if (memberChatRooms.getKickMember()) {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
-		}else if(afterDate){
+			// 처음 신청하거나 방장이 아닐때 모집이 종료되면
+		}else if(afterDate && !post.getMember().getId().equals(chatRoom.getAdminMemberId())){
 			throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		}
 
