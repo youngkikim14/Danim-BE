@@ -134,7 +134,7 @@ public ResponseEntity<Message> allPosts(Pageable pageable){
         }
 
         // 모집 마감글에 대한 필터
-        if (!searchRequestDto.getExceptCompletedPost()){
+        if (searchRequestDto.getExceptCompletedPost()){
             predicate.and(qPost.numberOfParticipants.ne(qPost.groupSize));
             predicate.and(qPost.isRecruitmentEnd.eq(false));
         }
