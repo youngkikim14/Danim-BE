@@ -92,6 +92,10 @@ public class ChatMessageService {
 			.build();
 
 		memberChatRoomRepository.save(memberChatRoom);
+		if (isFirstVisit(member.getId(),roomName)){
+			ChatMessage chatMessage = new ChatMessage(message, chatRoom);
+			chatMessageRepository.save(chatMessage);
+		}
 		return message;
 
 	}
