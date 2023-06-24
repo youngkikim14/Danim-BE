@@ -120,5 +120,11 @@ public class MemberController {
 	public ResponseEntity<Message> signOut(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return memberService.signOut(userDetails.getMember());
 	}
+
+	@Operation(summary = "액세스 토큰 재발급 API", description = "액세스 토큰 재발급")
+	@PostMapping("/refreshToken")
+	public ResponseEntity<Message> refreshAccessToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto, HttpServletResponse response) {
+		return memberService.refreshAccessToken(refreshTokenRequestDto,response);
+	}
 }
 

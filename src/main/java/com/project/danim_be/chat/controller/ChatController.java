@@ -59,6 +59,7 @@ public class ChatController {
 						.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 						.build();
 
+
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), message);
 			}
 
