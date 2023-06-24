@@ -90,11 +90,11 @@ public class ChatRoomService {
 		// 	throw new CustomException(ErrorCode.ADMIN_USER);
 		// }
 		//연령대 조건 비교하고
-		if (!post.getAgeRange().contains(member.getAgeRange())) {
+		if (!post.getAgeRange().contains(member.getAgeRange()) ||post.getMember().getId().equals(chatRoom.getAdminMemberId()) ) {
 			throw new CustomException(ErrorCode.NOT_CONTAIN_AGERANGE);
 		}
 		//성별 조건 비교하고
-		if (!post.getGender().contains(member.getGender())) {
+		if (!post.getGender().contains(member.getGender()) ||post.getMember().getId().equals(chatRoom.getAdminMemberId()) ) {
 			throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
 		}
 
