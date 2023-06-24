@@ -223,4 +223,30 @@ public class MemberService {
 		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
 	}
+
+	@Transactional
+	public ResponseEntity<Message> refreshAccessToken(RefreshTokenRequestDto refreshTokenRequestDto, HttpServletResponse response) {
+
+		String refreshToken = refreshTokenRequestDto.getRefreshToken();
+
+		if (!jwtUtil.refreshTokenValid(refreshToken)) {
+			throw new CustomException(ErrorCode.INVALID_TOKEN);
+		}
+
+		String userId = jwtUtil.getUserInfoFromToken(refreshToken);
+
+		String newAccessToken = jwtUtil.createToken(userId, "Access");
+
+		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).get();
+		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
+		refreshTokenRepository.save(updatedRefreshToken);
+
+		jwtUtil.setHeaderAccessToken(response, newAccessToken);
+
+		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공");
+
+		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+
+
 }

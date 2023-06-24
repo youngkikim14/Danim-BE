@@ -236,7 +236,15 @@ class PostServiceTest {
 		void updateTest01() throws Exception{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-			Member member = new Member("userId", "남", "password", "nickname", "ageRange",  "provider",  true, true, true,
+			Member member = new Member("userId",
+				"남",
+				"password",
+				"nickname",
+				"ageRange",
+				"provider",
+				true,
+				true,
+				true,
 				20D);
 			member.setId(1L);
 
