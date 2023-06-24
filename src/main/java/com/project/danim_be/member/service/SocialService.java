@@ -231,7 +231,7 @@ public class SocialService {
         String userId = member.getUserId();
         TokenDto tokenDto = jwtUtil.createAllToken(userId);
         int count = 0;
-        System.out.println("ACCESS_KEY : "+tokenDto.getAccessToken());
+            System.out.println("ACCESS_KEY : "+tokenDto.getAccessToken());
 
         List<RefreshToken> refreshTokenList = refreshTokenRepository.findAllByUserId(userId);
         for(RefreshToken refreshToken : refreshTokenList) {
