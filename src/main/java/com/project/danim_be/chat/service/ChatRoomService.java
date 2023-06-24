@@ -43,7 +43,7 @@ public class ChatRoomService {
 				.selectFrom(qChatRoom)
 				.from(qChatRoom)
 				.join(qChatRoom.chatMessages, qChatMessage).fetchJoin()
-				.where(qChatRoom.adminMemberId.eq(id))
+				.where(qChatRoom.adminMemberId.eq(id), qChatRoom.post.isDeleted.eq(false))
 				.orderBy(qChatMessage.createdAt.desc())
 				.fetch();
 		List<ChatListResponseDto> chatListResponseDtoList = new ArrayList<>();
@@ -61,7 +61,7 @@ public class ChatRoomService {
 				.select(qMemberChatRoom.chatRoom)
 				.from(qMemberChatRoom)
 				.join(qMemberChatRoom.chatRoom.chatMessages, qChatMessage).fetchJoin()
-				.where(qMemberChatRoom.member.id.eq(id))
+				.where(qMemberChatRoom.member.id.eq(id), qMemberChatRoom.chatRoom.post.isDeleted.eq(false))
 				.orderBy(qChatMessage.createdAt.desc())
 				.fetch();
 		List<ChatListResponseDto> chatListResponseDtoList = new ArrayList<>();
