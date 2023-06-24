@@ -109,12 +109,11 @@ public class ChatRoomService {
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 
 		// 채팅방에 이미 입장했을 때
-		if(memberChatRooms!=null){
-			if (memberChatRooms.getKickMember()) {
+		if(memberChatRooms!=null || post.getMember().getId().equals(chatRoom.getAdminMemberId())){
+			if (memberChatRooms!=null && memberChatRooms.getKickMember()) {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
-			// 처음 신청하거나 방장이 아닐때 모집이 종료되면
-		}else if(afterDate && !post.getMember().getId().equals(chatRoom.getAdminMemberId())){
+		}else if(afterDate){
 			throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		}
 
