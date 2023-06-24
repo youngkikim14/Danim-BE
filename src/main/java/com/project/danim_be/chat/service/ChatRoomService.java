@@ -106,6 +106,7 @@ public class ChatRoomService {
 		// 현재 날짜가 모집 종료일보다 늦다면 true
 		boolean afterDate = today.isAfter(localDate);
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
+
 		// 채팅방에 이미 입장했을 때
 		if(memberChatRooms!=null){
 			if (memberChatRooms.getKickMember()) {
@@ -115,6 +116,7 @@ public class ChatRoomService {
 		}else if(afterDate && !post.getMember().getId().equals(chatRoom.getAdminMemberId())){
 			throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		}
+
 
 		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
 			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
