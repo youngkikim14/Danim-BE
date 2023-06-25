@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Member extends Timestamped implements Serializable {
+public class Member extends Timestamped {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
