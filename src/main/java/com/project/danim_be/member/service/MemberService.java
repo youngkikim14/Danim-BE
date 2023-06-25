@@ -247,7 +247,6 @@ public class MemberService {
 
 	@Transactional
 	public ResponseEntity<Message> refreshAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse response) {
-
 		String refresh_token = jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
 
 		if (!jwtUtil.refreshTokenValid(refresh_token)) {
@@ -257,10 +256,11 @@ public class MemberService {
 		String userId = jwtUtil.getUserInfoFromToken(refresh_token);
 
 		String newAccessToken = jwtUtil.createToken(userId, "Access");
-		refresh_token = "Bearer " + jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
-				RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken(refresh_token).orElseThrow(
-				NoSuchElementException::new
+
+		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken("Bearer " + refresh_token).orElseThrow(
+			NoSuchElementException::new
 		);
+
 		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
 		refreshTokenRepository.save(updatedRefreshToken);
 
@@ -270,6 +270,7 @@ public class MemberService {
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
 
 
 }

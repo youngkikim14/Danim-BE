@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -73,6 +75,16 @@ public class WebSecurityConfig {
 	public PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
+		// h2콘솔 접근허용
+		@Bean
+		@Order(Ordered.HIGHEST_PRECEDENCE)	// 이 필터체인이 다른필터체인보다 우선순위가 높음을 표시.
+		SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
+			http.securityMatcher(PathRequest.toH2Console());	//h2콘솔에 대한 요청만 체인을 사용한다.
+			http.csrf((csrf) -> csrf.disable());				//csrf에대한 보호를 비활성한다.
+			http.headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin()));
+			// http.authorizeRequests().dispatcherTypeMatchers(HttpMethod.valueOf("/h2-console/**")).permitAll();
+			return http.build();
+		}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -94,6 +106,7 @@ public class WebSecurityConfig {
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/status", "/images/**").permitAll()
 				.requestMatchers("/ws/**").permitAll()
+				.requestMatchers("/api/user/refreshKey").permitAll()
 				.requestMatchers("/stomp").permitAll()
 				.requestMatchers("/ws-stomp").permitAll()
 				.requestMatchers("/health-check").permitAll()
