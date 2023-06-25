@@ -33,17 +33,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatMessageService {
 
-	@Autowired
-	private RedisTemplate<String, Object> chatRedisTemplate;
-
-	private final ChatRoomRepository chatRoomRepository;
-	private final ChatMessageRepository chatMessageRepository;
 	private final MemberChatRoomRepository memberChatRoomRepository;
+	private final ChatMessageRepository chatMessageRepository;
+	private final ChatRoomRepository chatRoomRepository;
 	private final MemberRepository memberRepository;
 	private final PostRepository postRepository;
 	private final NotificationService notificationService;
-	private final ChatRoomService chatRoomService;
-	private final CacheService cacheService;
 
 
 	//채팅방 입장멤버 저장메서드	ENTER
