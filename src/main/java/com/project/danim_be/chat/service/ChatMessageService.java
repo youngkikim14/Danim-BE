@@ -128,12 +128,12 @@ public class ChatMessageService {
 		increaseAlarm(memberIdList,chatRoom);
 
 		ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
-
+		chatMessageRepository.save(chatMessage);
 		// Change this line
-		chatRedisTemplate.opsForList().rightPush(roomName, chatMessage);
+		// chatRedisTemplate.opsForList().rightPush(roomName, chatMessage);
 	}
 
-		// chatMessageRepository.save(chatMessage);
+
 		// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
 	@Transactional
 	public void alarmList(Long memberId) {
@@ -165,21 +165,30 @@ public class ChatMessageService {
 		}
 	}
 
+// 	Map<Long,Integer>alarm=new HashMap<>();
+// 					alarm.put(memberId,memberChatRoom.getAlarm());
+// 					log.info("Alarm{}",memberChatRoom.getAlarm());
+// 					log.info("memberId :{} ",memberId);
+// 					messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
+//
+// }
+// 				else{
+// 					return;
 	// 10분마다 저장
-	@Scheduled(fixedDelay = 600_000)
-	public void saveMessages() {
-		List<Object> chatMessages = chatRedisTemplate.opsForList().range("chatMessages", 0, -1);
-		System.out.println("저장");
-		chatRedisTemplate.opsForList().trim("chatMessages", 1, 0);
-		for (Object chatMessage : chatMessages) {
-			ChatMessage cm = (ChatMessage) chatMessage;
-			ChatRoom chatRoom = chatRoomRepository.findByRoomName(cm.getChatRoomName())
-				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-			cm.setChatRoom(chatRoom);
-
-			chatMessageRepository.save(cm);
-		}
-	}
+	// @Scheduled(fixedDelay = 600_000)
+	// public void saveMessages() {
+	// 	List<Object> chatMessages = chatRedisTemplate.opsForList().range("chatMessages", 0, -1);
+	// 	System.out.println("저장");
+	// 	chatRedisTemplate.opsForList().trim("chatMessages", 1, 0);
+	// 	for (Object chatMessage : chatMessages) {
+	// 		ChatMessage cm = (ChatMessage) chatMessage;
+	// 		ChatRoom chatRoom = chatRoomRepository.findByRoomName(cm.getChatRoomName())
+	// 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+	// 		cm.setChatRoom(chatRoom);
+	//
+	// 		chatMessageRepository.save(cm);
+	// 	}
+	// }
 	//방을 나갔는지확인해야함	LEAVE
 	@Transactional
 	public void leaveChatRoom(ChatDto chatDto) {
