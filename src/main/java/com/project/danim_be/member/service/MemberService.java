@@ -32,9 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -138,29 +136,39 @@ public class MemberService {
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
 	}
 
-	//로그인
+	// 로그인
+	private static final Queue<LoginRequestDto> loginQueue = new LinkedList<>();
+	private static final Object lock = new Object();
+
 	@Transactional
 	public ResponseEntity<Message> login(LoginRequestDto requestDto, HttpServletResponse response) {
-
 		String userId = requestDto.getUserId();
 		String password = requestDto.getPassword();
 
-		ExecutorService executor = Executors.newFixedThreadPool(2); // 병렬처리를 위한 ExecutorService 생성
+		Member member;
 
-		// 비동기로 member 정보를 가져옴
-		CompletableFuture<Member> memberFuture = CompletableFuture.supplyAsync(() ->
-				memberRepository.findByUserId(userId).orElseThrow(
-						() -> new CustomException(ErrorCode.ID_NOT_FOUND)
-				), executor);
+		synchronized (lock) {
+			loginQueue.add(requestDto);
 
-		// 비동기로 token 정보를 생성
-		CompletableFuture<TokenDto> tokenFuture = CompletableFuture.supplyAsync(() ->
-						jwtUtil.createAllToken(userId)
-				, executor);
+			if (loginQueue.peek() != requestDto) {
+				// 대기 큐에 추가된 요청이 현재 요청이 아니라면 대기 상태로 진입
+				while (loginQueue.peek() != requestDto) {
+					try {
+						lock.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 
-		// CompletableFuture의 join 메서드를 사용하면 ExecutionException을 UncheckedExecutionException으로 래핑하여 던집니다.
-		Member member = memberFuture.join(); // 작업 결과를 가져옴
-		TokenDto tokenDto = tokenFuture.join(); // 작업 결과를 가져옴
+			// 현재 요청이 처리될 차례이므로 대기 큐에서 제거
+			loginQueue.remove();
+			lock.notifyAll();
+
+			member = memberRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.ID_NOT_FOUND));
+		}
+
+		TokenDto tokenDto = jwtUtil.createAllToken(userId);
 
 		if (!passwordEncoder.matches(password, member.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
@@ -176,15 +184,13 @@ public class MemberService {
 
 		setHeader(response, tokenDto);
 
-		// SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
-
-
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
-
+		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
+
 
 	//로그아웃
 	@Transactional
