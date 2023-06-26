@@ -140,6 +140,7 @@ public class ChatMessageService {
 					Map<Long,Integer>alarm=new HashMap<>();
 					alarm.put(memberId,memberChatRoom.getAlarm());
 					log.info("Alarm{}",memberChatRoom.getAlarm());
+					log.info("memberId :{} ",memberId);
 					messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
 
 				}
