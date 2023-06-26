@@ -21,6 +21,8 @@ import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,7 @@ import java.util.concurrent.Executors;
 import static com.project.danim_be.common.exception.ErrorCode.FAIL_SIGNOUT;
 import static com.project.danim_be.common.exception.ErrorCode.USER_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -52,7 +55,6 @@ public class MemberService {
 	private final JwtUtil jwtUtil;
 	private final SocialService socialService;
 	private final RandomNickname randomNickname;
-	private final NotificationService notificationService;
 
 	//회원가입
 	@Transactional
@@ -184,8 +186,6 @@ public class MemberService {
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
 
-
-
 	//로그아웃
 	@Transactional
 	public ResponseEntity<Message> logout(Member member, HttpServletRequest request) {
@@ -247,9 +247,11 @@ public class MemberService {
 
 	@Transactional
 	public ResponseEntity<Message> refreshAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse response) {
+
 		String refresh_token = jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
 
 		if (!jwtUtil.refreshTokenValid(refresh_token)) {
+
 			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		}
 
