@@ -53,7 +53,12 @@ public class MemberChatRoom implements Serializable {
 		this.kickMember = b;
 	}
 
+	//알람수증가
 	public void increaseAlarm (int i) {
 		this.alarm += i;
+	}
+	//알람초기화
+	public void InitializationAlarm(int i) {
+		this.alarm = i;
 	}
 }
