@@ -9,9 +9,13 @@ import lombok.NoArgsConstructor;
 public class MypageResponseDto {
 
     private String nickname;
+
     private String imageUrl;
+
     private String content;
+
     private Boolean owner;
+
     private Double score;
 
     public MypageResponseDto(Member member, Boolean owner) {

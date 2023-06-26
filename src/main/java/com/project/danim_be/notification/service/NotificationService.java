@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
+
     private final static Long DEFAULT_TIMEOUT = 3600000L;
     private final static String NOTIFICATION_NAME = "notify";
     private final EmitterRepository emitterRepository;
@@ -27,6 +28,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     public SseEmitter connectNotification(Long userId) {
+
         // 새로운 SseEmitter를 만든다
         SseEmitter sseEmitter = new SseEmitter(DEFAULT_TIMEOUT);
 
@@ -43,7 +45,9 @@ public class NotificationService {
         } catch (IOException exception) {
             throw new CustomException(ErrorCode.FAIL_CONNECTION);
         }
+
         return sseEmitter;
+
     }
 
 //    public void saveNotification(Long userId, Long messageId) {
@@ -51,13 +55,14 @@ public class NotificationService {
 //    }
 
     public void send(List<Long> userIdList, Long messageId,Long memberChatRoomId) {
+
         // 유저 ID로 SseEmitter를 찾아 이벤트를 발생 시킨다.
-        for (Long userId : userIdList) {
+        for(Long userId : userIdList) {
             MemberChatRoom memberChatRoom = memberChatRoomRepository.findById(memberChatRoomId).orElseThrow(
                     () -> new NoSuchElementException("없는 멤버챗룸임")
             );
 
-            if (memberChatRoom.getRecentDisConnect()!=null && memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
+            if(memberChatRoom.getRecentDisConnect()!=null && memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
                 emitterRepository.get(userId).ifPresentOrElse(sseEmitter -> {
                     try {
                         sseEmitter.send(SseEmitter.event().id(messageId.toString()).name(NOTIFICATION_NAME).data("새로운 메세지가 왔습니다"));

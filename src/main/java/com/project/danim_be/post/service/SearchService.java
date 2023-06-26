@@ -44,47 +44,46 @@ public class SearchService {
     private CacheService cacheService;
 
     //전체 조회
-
-  @Transactional(readOnly = true)
-    public ResponseEntity<Message> allPosts(Pageable pageable){
-    QPost qPost = QPost.post;
-    QImage qImage = QImage.image;
-
-    NumberExpression<Integer> specialPostFirst = new CaseBuilder()
-        .when(qPost.id.eq(55L))
-        .then(0)
-        .otherwise(1);
-
-    List<CardPostResponseDto> cardPostResponseDtoList = queryFactory
-            .select(Projections.constructor(CardPostResponseDto.class,
-                    qPost.id,
-                    qPost.postTitle,
-                    qPost.recruitmentEndDate,
-                    qPost.member.nickname,
-                    qPost.numberOfParticipants,
-                    qPost.groupSize,
-                    qPost.location,
-                    qPost.keyword,
-                    qPost.ageRange,
-                    JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448+(2).png"))
-                            .from(qImage)
-                            .where(qImage.post.id.eq(qPost.id))
-                            .orderBy(qImage.id.asc()),
-                    qPost.gender,
-                    qPost.isRecruitmentEnd,
-                    qPost.member.imageUrl))
-            .from(qPost)
-            .where(qPost.isDeleted.eq(false))
-            .orderBy(specialPostFirst.asc(), qPost.createdAt.desc())
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
+    @Transactional(readOnly = true)
+    public ResponseEntity<Message> allPosts(Pageable pageable) {
 
 
+        QPost qPost = QPost.post;
+        QImage qImage = QImage.image;
 
-    return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회 성공", cardPostResponseDtoList));
-}
-   
+        NumberExpression<Integer> specialPostFirst = new CaseBuilder()
+                .when(qPost.id.eq(55L))
+                .then(0)
+                .otherwise(1);
+
+        List<CardPostResponseDto> cardPostResponseDtoList = queryFactory
+                .select(Projections.constructor(CardPostResponseDto.class,
+                        qPost.id,
+                        qPost.postTitle,
+                        qPost.recruitmentEndDate,
+                        qPost.member.nickname,
+                        qPost.numberOfParticipants,
+                        qPost.groupSize,
+                        qPost.location,
+                        qPost.keyword,
+                        qPost.ageRange,
+                        JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448+(2).png"))
+                                .from(qImage)
+                                .where(qImage.post.id.eq(qPost.id))
+                                .orderBy(qImage.id.asc()),
+                        qPost.gender,
+                        qPost.isRecruitmentEnd,
+                        qPost.member.imageUrl))
+                .from(qPost)
+                .where(qPost.isDeleted.eq(false))
+                .orderBy(specialPostFirst.asc(), qPost.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회 성공", cardPostResponseDtoList));
+    }
+
 
     // 상세 검색
     @Transactional(readOnly = true)
@@ -94,51 +93,57 @@ public class SearchService {
         BooleanBuilder predicate = new BooleanBuilder();
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
+
         // 지역에 관한 필터
-        if (searchRequestDto.getLocation() != null) {
+        if(searchRequestDto.getLocation() != null) {
             predicate.and(qPost.location.eq(searchRequestDto.getLocation()));
         }
+
         // 제목+내용의 검색필터
-        if (searchRequestDto.getSearchKeyword() != null) {
+        if(searchRequestDto.getSearchKeyword() != null) {
             BooleanBuilder searchKeywordPredicate = new BooleanBuilder();
             searchKeywordPredicate.or(qPost.postTitle.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
             searchKeywordPredicate.or(qPost.content.containsIgnoreCase(searchRequestDto.getSearchKeyword()));
             predicate.and(searchKeywordPredicate);
         }
+
         // 모집인원의 검색필터
-        if (searchRequestDto.getGroupSize() != null){
+        if(searchRequestDto.getGroupSize() != null){
             predicate.and(qPost.groupSize.eq(searchRequestDto.getGroupSize()));
         }
+
         // 성별에 대한 검색 필터
-        if (searchRequestDto.getGender() != null){
+        if(searchRequestDto.getGender() != null){
             String[] genderList = searchRequestDto.getGender().split(",");
             BooleanBuilder genderPredicate = new BooleanBuilder();
-            for (String gender : genderList) {
+            for(String gender : genderList) {
                 genderPredicate.or(qPost.gender.containsIgnoreCase(gender));
             }
             predicate.and(genderPredicate);
         }
+
         // 나이대에 대한 검색필터
-        if (searchRequestDto.getAgeRange() != null) {
+        if(searchRequestDto.getAgeRange() != null) {
             String[] ageRangeList = searchRequestDto.getAgeRange().split(",");
             BooleanBuilder ageRangePredicate = new BooleanBuilder();
-            for (String ageRange : ageRangeList) {
+            for(String ageRange : ageRangeList) {
                 ageRangePredicate.or(qPost.ageRange.containsIgnoreCase(ageRange));
             }
             predicate.and(ageRangePredicate);
         }
+
         //키워드에 대한 검색필터
-        if (searchRequestDto.getKeyword() != null) {
+        if(searchRequestDto.getKeyword() != null) {
             String[] keywordList = searchRequestDto.getKeyword().split(",");
             BooleanBuilder keywordPredicate = new BooleanBuilder();
-            for (String keyword : keywordList) {
+            for(String keyword : keywordList) {
                 keywordPredicate.or(qPost.keyword.containsIgnoreCase(keyword));
             }
             predicate.and(keywordPredicate);
         }
 
         // 모집 마감글에 대한 필터
-        if (searchRequestDto.getExceptCompletedPost()){
+        if(searchRequestDto.getExceptCompletedPost()) {
             predicate.and(qPost.numberOfParticipants.ne(qPost.groupSize));
             predicate.and(qPost.isRecruitmentEnd.eq(false));
         }
@@ -146,7 +151,6 @@ public class SearchService {
         predicate.and(qPost.isDeleted.eq(false));
 
         // 동적 쿼리 실행
-
         return queryFactory
                 .select(Projections.constructor(CardPostResponseDto.class,
                         qPost.id,
@@ -171,9 +175,10 @@ public class SearchService {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-    }
-    // 게시글 상세 조회
 
+    }
+
+    // 게시글 상세 조회
     @Transactional
     public ResponseEntity<Message> readPost(Long id) {
 
@@ -191,9 +196,7 @@ public class SearchService {
 
         Message message = Message.setSuccess(StatusEnum.OK, "게시글 단일 조회 성공", postResponseDto);
         return new ResponseEntity<>(message, HttpStatus.OK);
+
     }
-
-  
-
 
 }

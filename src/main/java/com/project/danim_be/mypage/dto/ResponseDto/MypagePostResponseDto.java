@@ -14,11 +14,16 @@ import java.util.Date;
 public class MypagePostResponseDto {
 
     private Long id;
+
     private String postTitle;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date tripEndDate;
+
     private String content;
+
     private String imageUrl;
+
     private Boolean owner;
 
     public MypagePostResponseDto(Post post, Boolean owner) {
@@ -26,11 +31,11 @@ public class MypagePostResponseDto {
         this.postTitle = post.getPostTitle();
         this.tripEndDate = post.getTripEndDate();
         this.content = post.getContent();
-        if (!post.getImageUrls().isEmpty()) {
+        if(!post.getImageUrls().isEmpty()) {
             this.imageUrl = post.getImageUrls().get(0).getImageUrl();
         } else {
-            this.imageUrl = "https://danimdata.s3.ap-northeast-2.amazonaws.com/basicImage.png";}
+            this.imageUrl = "https://danimdata.s3.ap-northeast-2.amazonaws.com/basicImage.png";
+        }
         this.owner = owner;
-
     }
 }

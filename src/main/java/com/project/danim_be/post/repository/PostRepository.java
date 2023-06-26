@@ -12,10 +12,8 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long>, QuerydslPredicateExecutor<Post> {
 
     List<Post> findAllByMemberOrderByCreatedAtDesc(Member member);
-
     List<Post> findAllByOrderByCreatedAt(Pageable pageable);
-
     List<Post> findByMember_Id(Long id);
-
     Optional<Post> findByChatRoom_Id(Long roomId);
+
 }

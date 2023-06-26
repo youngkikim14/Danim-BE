@@ -12,10 +12,15 @@ import java.util.Date;
 public class ReviewResponseDto {
 
     private Long id;
+
     private String userImageUrl;
+
     private String nickname;
+
     private String comment;
+
     private Double score;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
 
@@ -27,4 +32,5 @@ public class ReviewResponseDto {
         this.score = review.getPoint();
         this.createdAt = review.getCreatedAt();
     }
+
 }
