@@ -7,10 +7,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-
-import com.project.danim_be.chat.handler.StompHandler;
-
-// import com.project.danim_be.chat.handler.StompHandler;
+//import com.project.danim_be.chat.handler.StompHandler;
 
 @RequiredArgsConstructor
 @Configuration
@@ -24,8 +21,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	// public void configureClientInboundChannel(ChannelRegistration registration) {
 	// 	registration.interceptors(stompHandler);
 	// }
-
-
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry){
@@ -42,13 +37,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 // 			.withSockJS();
 // 	}
 
-
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 
 		registry.enableSimpleBroker("/queue","/sub");	 //수신 메시지를 구독하는 요청 url => 즉 메시지 받을 때
 		registry.setApplicationDestinationPrefixes("/pub");	 //송신 메시지를 발행하는 요청 url => 즉 메시지 보낼 때
+
 	}
+
 }
 
 
