@@ -22,7 +22,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @RequiredArgsConstructor
 @Configuration
-
 public class RedisCacheConfig {
 
 	@Value("${spring.redis.host}")
@@ -50,7 +49,8 @@ public class RedisCacheConfig {
 		mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance , ObjectMapper.DefaultTyping.NON_FINAL);
 		mapper.registerModule(new JavaTimeModule());
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		serializer.setObjectMapper(mapper);
+//		serializer.setObjectMapper(mapper);
+		serializer.serialize(mapper);
 		return serializer;
 	}
 	@Bean
@@ -72,7 +72,8 @@ public class RedisCacheConfig {
 		// Date 를 timestamp로쓰는것을 비활성화함 >>>iso-8601형식의 String값으로 date를 출력하도록함
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		//지금까지 설정한값을 serializer에 저장함
-		serializer.setObjectMapper(mapper);
+//		serializer.setObjectMapper(mapper);
+		serializer.serialize(mapper);
 
 		//여기서부터는 위의조건을 정한값에대한 key value값을 직렬화를 하기시작함
 		template.setValueSerializer(serializer);
@@ -100,12 +101,26 @@ public class RedisCacheConfig {
 
 		// Jackson2JsonRedisSerializer 설정
 		Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-		jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+		jackson2JsonRedisSerializer.serialize(objectMapper);
+//		setObjectMapper(objectMapper);
 
 		redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 
 		return redisTemplate;
+	}
+
+	@Bean
+	public RedisTemplate<String, String> RefreshTokenRedisTemplate() {
+		// redisTemplate를 받아와서 set, get, delete를 사용
+		RedisTemplate<String, String> refreshRedisTemplate = new RedisTemplate<>();
+		// setKeySerializer, setValueSerializer 설정
+		// redis-cli을 통해 직접 데이터를 조회 시 알아볼 수 없는 형태로 출력되는 것을 방지
+		refreshRedisTemplate.setKeySerializer(new StringRedisSerializer());
+		refreshRedisTemplate.setValueSerializer(new StringRedisSerializer());
+		refreshRedisTemplate.setConnectionFactory(redisConnectionFactory());
+
+		return refreshRedisTemplate;
 	}
 
 }

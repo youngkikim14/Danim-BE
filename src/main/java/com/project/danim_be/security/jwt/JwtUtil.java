@@ -53,7 +53,7 @@ public class JwtUtil {
 
 	public TokenDto createAllToken(String userId) {
 
-		return new TokenDto(createToken(userId, "Access"), createToken(userId, "Refresh"));
+		return new TokenDto(createToken(userId, "Access"), createToken(userId, "Refresh"), ACCESS_TIME, REFRESH_TIME);
 
 	}
 
