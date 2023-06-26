@@ -143,6 +143,7 @@ public class ChatMessageService {
 				}
 			}
 		}
+	}
 	// // 10분마다 저장
 	// @Scheduled(fixedDelay = 600_000)
 	// public void saveMessages() {
