@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -60,7 +61,6 @@ public class ChatMessageService {
 		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 
-
 		//첫 연결시도이면
 		if(isFirstVisit(member.getId(),roomName)){
 			memberChatRoom = new MemberChatRoom(member, chatRoom);
@@ -86,7 +86,6 @@ public class ChatMessageService {
 			.message(isFirstVisit(member.getId(),roomName) ? chatDto.getSender() + "님이 입장하셨습니다." : "")
 			.build();
 
-
 		if (isFirstVisit(member.getId(),roomName)){
 			ChatMessage chatMessage = new ChatMessage(message, chatRoom);
 			chatMessageRepository.save(chatMessage);
@@ -100,45 +99,37 @@ public class ChatMessageService {
 	public void sendMessage(ChatDto chatDto) {
 
 		String roomName = chatDto.getRoomName();
-		//
+
 		ChatRoom chatRoom =chatRoomRepository.findByRoomName(roomName)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-		//
+
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		// if(!sendMember.getNickname().equals(chatDto.getSender())){
-		// 	throw new CustomException(ErrorCode.SENDER_MISMATCH);
-		// }
-
-		//강퇴당한사람인지 검사한다.
 
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
 			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
-// 		if ( memberChatRoom.getKickMember()) {
-// 			throw new CustomException(ErrorCode.USER_KICKED);
-// 		}
+		List<Long> memberIdList = memberChatRoomRepository.findByChatRoom(chatRoom).stream()
+			.map(MemberChatRoom::getMember)
+			.map(Member::getId)
+			.filter(id -> !id.equals(sendMember.getId()))
+			.toList();
+		increaseAlarm(memberIdList);
 
-
-
-		// 메세지를 보낸사람. 이 사람에겐 알람을 안보내기 위해
-		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findByChatRoom(chatRoom);
-		List<Member> members = new ArrayList<>();
-
-		for (MemberChatRoom memberChatroom : memberChatRoomList) {
-			members.add(memberChatroom.getMember());
-		}
-
-		List<Long> memberIdlist = new ArrayList<>();
-		for (Member member : members) {
-			memberIdlist.add(member.getId());
-		}
-		memberIdlist.remove(sendMember.getId());
-		ChatMessage chatMessage= new ChatMessage(chatDto,chatRoom);
-		notificationService.send(memberIdlist, chatMessage.getId(), memberChatRoom.getId());
+		ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
 
 		chatMessageRepository.save(chatMessage);
 		// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
+	}
+	@Transactional
+	public void increaseAlarm(List<Long> memberIdList) {
+		for (Long memberId : memberIdList) {
+			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMember_Id(memberId);
+			if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
+				memberChatRoom.increaseAlarm (memberChatRoom.getAlarm() + 1);
+				memberChatRoomRepository.save(memberChatRoom);
+			}
+		}
 	}
 	// // 10분마다 저장
 	// @Scheduled(fixedDelay = 600_000)
@@ -174,7 +165,7 @@ public class ChatMessageService {
 
 		memberChatRoomRepository.save(memberChatRoom);
 	}
-	//강퇴기능	KICK
+	//강퇴기능 KICK
 	@Transactional
 	public void kickMember(ChatDto chatDto) {
 
@@ -192,9 +183,6 @@ public class ChatMessageService {
 
 		Post post = postRepository.findById(chatRoom.getPost().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-		// Member member2 = memberRepository.findById(post.getMember().getId())
-		// 	.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-		// System.out.println(member2.getNickname());
 		//강퇴당하는 임포스터
 		Member imposter = memberRepository.findByNickname(chatDto.getImposter())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

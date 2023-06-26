@@ -182,8 +182,7 @@ class PostServiceTest {
 		void updateTest01() throws Exception{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-			Member member = new Member("userId", "남", "password", "nickname", "ageRange",  "provider",  true, true, true,
-					20D);
+			Member member = new Member("userId", "남", "password", "nickname", "ageRange",  "provider",  true, true, true,20D,"");
 			member.setId(1L);
 
 			Post post =new Post(1L, "기존 제목", member);
@@ -245,7 +244,8 @@ class PostServiceTest {
 				true,
 				true,
 				true,
-				20D);
+				20D,
+				"url");
 			member.setId(1L);
 
 			Post post =new Post(1L, "기존 제목", member);
