@@ -2,6 +2,7 @@ package com.project.danim_be.post.service;
 
 import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
+import com.project.danim_be.chat.service.ChatMessageService;
 import com.project.danim_be.common.CacheService;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
@@ -38,12 +39,14 @@ public class SearchService {
     private final JPAQueryFactory queryFactory;
     private final PostRepository postRepository;
     private final MemberChatRoomRepository memberChatRoomRepository;
+    private final ChatMessageService chatMessageService;
     @Autowired
     private CacheService cacheService;
 
     //전체 조회
     @Transactional(readOnly = true)
     public ResponseEntity<Message> allPosts(Pageable pageable) {
+
 
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
@@ -80,6 +83,7 @@ public class SearchService {
 
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "전체 데이터 조회 성공", cardPostResponseDtoList));
     }
+
 
     // 상세 검색
     @Transactional(readOnly = true)
