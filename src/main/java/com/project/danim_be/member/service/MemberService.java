@@ -205,7 +205,7 @@ public class MemberService {
 		accessTokenCookie.setHttpOnly(true);
 		response.addCookie(accessTokenCookie);
 
-		Cookie refreshTokenCookie = new Cookie("refresh_token", tokenDto.getRefreshToken());
+		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken());
 		refreshTokenCookie.setHttpOnly(true);
 		response.addCookie(refreshTokenCookie);
 
