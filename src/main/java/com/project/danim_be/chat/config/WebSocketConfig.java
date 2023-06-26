@@ -1,13 +1,15 @@
 package com.project.danim_be.chat.config;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-//import com.project.danim_be.chat.handler.StompHandler;
+
 
 @RequiredArgsConstructor
 @Configuration
@@ -21,6 +23,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	// public void configureClientInboundChannel(ChannelRegistration registration) {
 	// 	registration.interceptors(stompHandler);
 	// }
+	@Autowired
+	private SubscribeCheck subscribeCheck;
+
+	@Override
+	public void configureClientInboundChannel(ChannelRegistration registration) {
+		registration.interceptors(subscribeCheck);
+	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry){

@@ -179,4 +179,5 @@ public class ChatRoomService {
 
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "신청 취소 완료"));
 	}
+
 }

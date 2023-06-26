@@ -1,6 +1,7 @@
 package com.project.danim_be.chat.service;
 
 
+import com.project.danim_be.chat.config.SubscribeCheck;
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.entity.ChatMessage;
 import com.project.danim_be.chat.entity.ChatRoom;
@@ -19,8 +20,10 @@ import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +41,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatMessageService {
 
+	@EventListener
+	public void handleSubscriptionEvent(SubscribeCheck.SubscriptionEvent event) {
+		alarmList(event.getUserId());
+	}
 
 	@Autowired
 	private SimpMessageSendingOperations messagingTemplate;
+
+	@Autowired
+	private RedisTemplate<String, Object> chatRedisTemplate;
 
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
@@ -124,9 +134,26 @@ public class ChatMessageService {
 		increaseAlarm(memberIdList,chatRoom);
 
 		ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
-
 		chatMessageRepository.save(chatMessage);
+		// Change this line
+		// chatRedisTemplate.opsForList().rightPush(roomName, chatMessage);
+	}
+
+
 		// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
+	@Transactional
+	public void alarmList(Long memberId) {
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(memberId);
+
+		List<Map<Long,Integer>> alarm = new ArrayList<>();
+		for(MemberChatRoom memberChatRoom : memberChatRoomList){
+			Map<Long,Integer> result = new HashMap<>();
+			result.put(memberChatRoom.getChatRoom().getId(),memberChatRoom.getAlarm());
+			alarm.add(result);
+		}
+		log.info("alarm: {}",alarm);
+		messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
+
 	}
 	@Transactional
 	public void increaseAlarm(List<Long> memberIdList, ChatRoom chatRoom) {
@@ -134,23 +161,25 @@ public class ChatMessageService {
 			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberIdAndChatRoom(memberId, chatRoom)
 				.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 			if (memberChatRoom.getRecentDisConnect()!=null && memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
-				memberChatRoom.increaseAlarm ( 1);
+				memberChatRoom.increaseAlarm (1);
 				memberChatRoomRepository.save(memberChatRoom);
 				if(memberChatRoom.getAlarm()>0){
-					Map<Long,Integer>alarm=new HashMap<>();
-					alarm.put(memberId,memberChatRoom.getAlarm());
-					log.info("Alarm{}",memberChatRoom.getAlarm());
-					messagingTemplate.convertAndSendToUser(memberId.toString(), "/sub/alarm",alarm);
-
-				}
-				else{
-					return;
+					alarmList(memberId);
 				}
 			}
 		}
 	}
 
-	// // 10분마다 저장
+// 	Map<Long,Integer>alarm=new HashMap<>();
+// 					alarm.put(memberId,memberChatRoom.getAlarm());
+// 					log.info("Alarm{}",memberChatRoom.getAlarm());
+// 					log.info("memberId :{} ",memberId);
+// 					messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
+//
+// }
+// 				else{
+// 					return;
+	// 10분마다 저장
 	// @Scheduled(fixedDelay = 600_000)
 	// public void saveMessages() {
 	// 	List<Object> chatMessages = chatRedisTemplate.opsForList().range("chatMessages", 0, -1);
