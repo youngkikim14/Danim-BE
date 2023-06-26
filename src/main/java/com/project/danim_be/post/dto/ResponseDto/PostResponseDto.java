@@ -13,34 +13,53 @@ import java.util.List;
 @Setter
 public class PostResponseDto implements Serializable {
 
-	private Long 		  id;					      //게시글번호
-	private String		nickName;				  //닉네임
-	private String 		postTitle;				//게시글제목
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date recruitmentStartDate;	//모집 시작날짜
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date recruitmentEndDate;		//모집 마감날짜
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date tripStartDate;					//여행 시작날짜
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date tripEndDate;					  //여행 마감날짜
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createdAt;			        //게시글 작성시간
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date modifiedAt;			      //게시글 수정시간
-	private Long chatRoomId;					  //채팅방아이디
-	private String map;							    //지도 api 정보
-	private int groupSize;						  //인원수
-	private String keyword;						  //키워드
-	private String location;					  //지역
-	private List<String> ageRange;			//연령대
-	private List<String> gender;				//성별
-	private Integer numberOfParticipants ;			//현재모집인원수
-	private String myPageImageUrl;
-	private List<Long> participants;			//모임신청자들
-	private String content;						  //게시글
-	private Boolean isComplete;
+	private Long 		  id;
 
+	private String		nickName;
+
+	private String 		postTitle;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date recruitmentStartDate;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date recruitmentEndDate;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date tripStartDate;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date tripEndDate;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date createdAt;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date modifiedAt;
+
+	private Long chatRoomId;
+
+	private String map;
+
+	private int groupSize;
+
+	private String keyword;
+
+	private String location;
+
+	private List<String> ageRange;
+
+	private List<String> gender;
+
+	private Integer numberOfParticipants;
+
+	private String myPageImageUrl;
+
+	private List<Long> participants;
+
+	private String content;
+
+	private Boolean isComplete;
 
 	public PostResponseDto(Post post){
 		this.id = post.getId();
@@ -88,4 +107,5 @@ public class PostResponseDto implements Serializable {
 		this.participants = participants;
 		this.isComplete = post.getGroupSize().equals(post.getNumberOfParticipants());
 	}
+
 }

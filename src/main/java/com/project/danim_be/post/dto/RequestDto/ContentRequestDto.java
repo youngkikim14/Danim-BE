@@ -9,8 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class ContentRequestDto {
 
 	private String  type;
+
 	private String level;
+
 	private String text;
+
 	private MultipartFile src;
 
 	@Override
@@ -23,5 +26,4 @@ public class ContentRequestDto {
 			", imageFile=" + src +'\n'+
 			'}';
 	}
-
 }

@@ -47,15 +47,15 @@ public class PostService {
 	@Transactional
 	public ResponseEntity<Message> createPost(Member member, PostRequestDto requestDto) {
 
-		if(requestDto.getPostTitle()==null){
+		if(requestDto.getPostTitle() == null) {
 			throw new CustomException(ErrorCode.TITLE_IS_NULL);
-		}else if(requestDto.getGroupSize()==null){
+		} else if(requestDto.getGroupSize() == null) {
 			throw new CustomException(ErrorCode.GROUPSIZE_IS_NULL);
-		}else if(requestDto.getAgeRange()==null){
+		} else if(requestDto.getAgeRange() == null) {
 		 	throw new CustomException(ErrorCode.AGERANGE_IS_NULL);
-		}else if(requestDto.getGender()==null){
+		} else if(requestDto.getGender() == null) {
 			throw new CustomException(ErrorCode.GENDER_IS_NULL);
-		}else if(requestDto.getLocation()==null){
+		} else if(requestDto.getLocation() == null) {
 			throw new CustomException(ErrorCode.LOCATION_IS_NULL);
 		}
 
@@ -87,7 +87,7 @@ public class PostService {
 		}
 
 		String roomName = UUID.randomUUID().toString();
-		ChatRoom chatRoom =ChatRoom.builder()
+		ChatRoom chatRoom = ChatRoom.builder()
 			.roomName(roomName)
 			.post(post)
 			.adminMemberId(post.getMember().getId())
@@ -96,32 +96,32 @@ public class PostService {
 		chatRoomRepository.save(chatRoom);
 
 		postRepository.save(post);
-		//포스트 아이디 넘기기
 
 		Map<String,Long> postId = new HashMap<>();
-		postId.put("postId",post.getId());
+		postId.put("postId", post.getId());
 
-		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공",postId);
+		Message message = Message.setSuccess(StatusEnum.OK,"게시글 작성 성공", postId);
 		return new ResponseEntity<>(message, HttpStatus.OK);
-
 
 	}
 
 	//이미지 업로드
 	@Transactional
 	public ResponseEntity<Message> imageUpload(ImageRequestDto requestDto) {
+
 		MultipartFile imageFile = requestDto.getImage();
 		String contentType = imageFile.getContentType();
 
-		if (!Arrays.asList("image/jpeg", "image/png", "image/gif", "image/jpg").contains(contentType)) {
+		if(!Arrays.asList("image/jpeg", "image/png", "image/gif", "image/jpg").contains(contentType)) {
 			throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
 		}
 
 		String imageUrl = uploader(imageFile);
 		// Image image = new Image(imageUrl);
 		// imageRepository.save(image);
-		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공",imageUrl);
+		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공", imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);
+
 	}
 
 	//게시글 수정
@@ -150,6 +150,7 @@ public class PostService {
 
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 수정 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
+
 	}
 
 	//게시글 삭제
@@ -158,11 +159,10 @@ public class PostService {
 
 		List<Image> images = imageRepository.findAllByPostId(id);
 
-
 		Post post = postRepository.findById(id)
-			.orElseThrow(()	->new CustomException(ErrorCode.POST_NOT_FOUND));
+			.orElseThrow(()	-> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-		if (!post.getMember().getId().equals(member.getId())) {
+		if(!post.getMember().getId().equals(member.getId())) {
 			throw new CustomException(ErrorCode.NOT_DEL_AUTHORIZED_MEMBER);
 		}
 
@@ -171,9 +171,11 @@ public class PostService {
 
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 삭제 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
+
 	}
 
 	public String uploader(MultipartFile imageFile){
+
 		String file;
 		try {
 			file = s3Uploader.upload(imageFile);
@@ -181,6 +183,7 @@ public class PostService {
 			throw new CustomException(ErrorCode.FILE_CONVERT_FAIL);
 		}
 		return file;
+
 	}
 
 	// 크론표현식 사용
@@ -200,5 +203,6 @@ public class PostService {
 				}
 			}
 		}
+
 	}
 }
