@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MemberRequestDto {
+
     private String userId;
+
     private String userImage;
 
     @Builder
@@ -15,4 +17,5 @@ public class MemberRequestDto {
         this.userId = email;
         this.userImage = userImage;
     }
+
 }

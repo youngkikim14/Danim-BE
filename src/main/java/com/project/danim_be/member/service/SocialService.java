@@ -36,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
@@ -61,7 +60,6 @@ public class SocialService {
 
         JsonNode tokenData = getTokens(code, provider);
         String accessToken = tokenData.get("access_token").asText();
-        System.out.println("accessToken : " + accessToken);
 
         MemberRequestDto memberRequestDto = getUserInfo(accessToken, provider);
 
@@ -85,15 +83,14 @@ public class SocialService {
         Member member = saveMember(memberRequestDto, provider);
 
         forceLogin(member);
-        System.out.println("userId : " + member.getUserId());
-        System.out.println("userImage : " + member.getImageUrl());
 
         createToken(member, response);
 
-        SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
+//        SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
         LoginResponseDto loginResponseDto = new LoginResponseDto(member, isExistMember);
 
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
+
     }
 
     private JsonNode getTokens(String code, String provider) throws JsonProcessingException {
@@ -112,7 +109,7 @@ public class SocialService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", clientId);
 
-        if(!provider.equals("KAKAO")){
+        if(!provider.equals("KAKAO")) {
             body.add("client_secret", clientSecret);
         }
         body.add("redirect_uri", redirectUri);
@@ -134,6 +131,7 @@ public class SocialService {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
         return jsonNode;
+
     }
 
     // 회원정보 받는 메소드
@@ -160,7 +158,6 @@ public class SocialService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode userInfoData = objectMapper.readTree(responseBody);
-        System.out.println("userInfoData : " + userInfoData);
         String email = null;
         String userImage = null;
 
@@ -185,6 +182,7 @@ public class SocialService {
             }
         }
         return new MemberRequestDto(email, userImage);
+
     }
 
     private Member saveMember(MemberRequestDto memberRequestDto, String provider) {
@@ -207,23 +205,24 @@ public class SocialService {
             memberRepository.save(member);
             return member;
         } else {
-            // 재로그인시 프로필 정보가 바뀌었다면? 이메일은 바뀔리 없지만 사진은 바뀔수도 있지? 사진만 업데이트? ㅇㅋ
             socialMember.setImageUrl(memberRequestDto.getUserImage());
             memberRepository.save(socialMember);
         }
         return socialMember;
+
     }
 
     private void forceLogin(Member member) {
 
         UserDetails userDetails = new UserDetailsImpl(member, member.getUserId());
 
-        if (member.getIsDeleted().equals(true)) {
+        if(member.getIsDeleted().equals(true)) {
             throw new CustomException(ErrorCode.DELETED_USER);
         }
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
     }
 
     private void createToken(Member member, HttpServletResponse response) {
@@ -231,11 +230,10 @@ public class SocialService {
         String userId = member.getUserId();
         TokenDto tokenDto = jwtUtil.createAllToken(userId);
         int count = 0;
-            System.out.println("ACCESS_KEY : "+tokenDto.getAccessToken());
 
         List<RefreshToken> refreshTokenList = refreshTokenRepository.findAllByUserId(userId);
         for(RefreshToken refreshToken : refreshTokenList) {
-            if(refreshToken.getProvider().equals("DANIM")){
+            if(refreshToken.getProvider().equals("DANIM")) {
                 count++;
             }
         }
@@ -250,6 +248,7 @@ public class SocialService {
         }
 
         setHeader(response, tokenDto);
+
     }
 
     // 연결 해제
@@ -282,6 +281,7 @@ public class SocialService {
 
         refreshTokenRepository.delete(refreshToken.get());
         refreshTokenRepository.delete(refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "DANIM").get());
+
     }
 
     public JsonNode newTokenOrDelete(String token, String type, String provider) throws IOException {
@@ -293,7 +293,7 @@ public class SocialService {
         ResponseEntity<String> response = null;
 
         // params 전송
-        if (type.equals("newToken")) {
+        if(type.equals("newToken")) {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -374,7 +374,9 @@ public class SocialService {
     }
 
     private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
+
         response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
         response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
+
     }
 }

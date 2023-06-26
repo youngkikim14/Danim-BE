@@ -24,45 +24,58 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-	property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Post extends Timestamped implements Serializable {
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Name("postId")
 	private Long id;
+
 	@Column(nullable = false)
 	private String postTitle;            		//게시글 제목
+
 	@Column(nullable = false)
 	private Date recruitmentStartDate;    		//모집 등록날짜
+
 	@Column(nullable = false)
 	private Date recruitmentEndDate;    		//모집 마감날짜
+
 	@Column(nullable = false)
 	private Date tripStartDate;            		//여행 시작날짜
+
 	@Column(nullable = false)
 	private Date tripEndDate;            		//여행 종료날짜
+
 	@Column(nullable = false)
 	private String ageRange;            		//연령대
+
 	@Column(nullable = false)
 	private String gender;						//성별
+
 	@Column(nullable = false)
 	private String keyword;                		//키워드
+
 	@Column(nullable = false)
 	private String location;            		//지역
+
 	@Column(nullable = false)
 	private Integer groupSize;            		//인원수
+
 	private Boolean isRecruitmentEnd;			//모집 마감기한 지났는지 여부
+
 	@Column(nullable = false)
 	private Integer numberOfParticipants ;    	//현재참여자수
+
 	@Column(columnDefinition = "TEXT")
 	private String content;						// 내용
+
 	@Column(columnDefinition = "TEXT")
 	private String map;							// 지도 좌표
 
 	@OneToOne(mappedBy = "post",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private ChatRoom chatRoom;
+
 	@OneToMany(mappedBy = "post",cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
 	private List<Image> imageUrls;
 
@@ -77,16 +90,22 @@ public class Post extends Timestamped implements Serializable {
 		this.id = l;
 		this.postTitle = s;
 		this.member = member;
-
 	}
 
 	//연령대 복수선택가능
-	public void setAgeRange(List<String> ageRange) {this.ageRange = String.join(",", ageRange);}
+	public void setAgeRange(List<String> ageRange) {
+		this.ageRange = String.join(",", ageRange);
+	}
+
 	public List<String> getAgeRange() {
 		return new ArrayList<>(Arrays.asList(this.ageRange.split(",")));
 	}
+
 	//성별 복수선택 가능
-	public void setGender(List<String> gender) {this.gender = String.join(",", gender);}
+	public void setGender(List<String> gender) {
+		this.gender = String.join(",", gender);
+	}
+
 	public List<String> getGender() {
 		return new ArrayList<>(Arrays.asList(this.gender.split(",")));
 	}
@@ -105,6 +124,7 @@ public class Post extends Timestamped implements Serializable {
 		this.content = requestDto.getContent();
 		this.map = requestDto.getMapAPI();
 	}
+
 	public void delete() {
 		this.isDeleted = true;
 	}
@@ -124,4 +144,5 @@ public class Post extends Timestamped implements Serializable {
 	public void endRecruitmentDate() {
 		this.isRecruitmentEnd = true;
 	}
+
 }

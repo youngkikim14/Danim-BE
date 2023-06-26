@@ -9,6 +9,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long>, QuerydslPredicateExecutor<Review> {
 
     boolean existsByMember_IdAndPost_Id(Long id, Long postId);
-
     List<Review> findAllByPostId(Long postId);
+
 }

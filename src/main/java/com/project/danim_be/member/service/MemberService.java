@@ -67,10 +67,10 @@ public class MemberService {
 		Boolean agreeForGender = signupRequestDto.getAgreeForGender();
 		Boolean agreeForAge = signupRequestDto.getAgreeForAge();
 
-		if(memberRepository.findByUserId(userId).isPresent()){
+		if(memberRepository.findByUserId(userId).isPresent()) {
 			throw new CustomException(ErrorCode.DUPLICATE_IDENTIFIER);
 		}
-		if(memberRepository.findByNickname(nickname).isPresent()){
+		if(memberRepository.findByNickname(nickname).isPresent()) {
 			throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
 		}
 
@@ -92,6 +92,7 @@ public class MemberService {
 
 		Message message = Message.setSuccess(StatusEnum.OK,"회원 가입 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
+
 	}
 
 	//일반 회원가입 아이디 중복 검사
@@ -103,37 +104,43 @@ public class MemberService {
 			Message message = Message.setSuccess(StatusEnum.OK,"아이디 중복 검사 성공");
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		}
+
 	}
 
 	//일반 회원가입 닉네임 중복 검사
 	public ResponseEntity<Message> checkNickname(CheckNicknameRequestDto checkNicknameRequestDto) {
+
 		if(memberRepository.findByNickname(checkNicknameRequestDto.getNickname()).isPresent()) {
 			throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
 		} else {
 			Message message = Message.setSuccess(StatusEnum.OK,"닉네임 중복 검사 성공");
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		}
+
   }
 
 	//랜덤 닉네임 생성
 	@Transactional
 	public ResponseEntity<Message> nicknameCreate() {
+
 		String nickname = randomNickname.getRandomNickname();
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "랜덤 닉네임 생성완료", nickname));
+
 	}
 
 	//소셜 로그인 시 추가 회원 정보 작성
 	@Transactional
 	public ResponseEntity<Message> addUserInfo(UserInfoRequestDto userInfoRequestDto) {
+
 		Member member = memberRepository.findById(userInfoRequestDto.getUserId()).orElseThrow(
 				() -> new CustomException(ErrorCode.ID_NOT_FOUND)
 		);
 
 		member.update(userInfoRequestDto);
 
-		// SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
-		LoginResponseDto loginResponseDto =new LoginResponseDto(member);
+		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
+
 	}
 
 	// 로그인
@@ -142,6 +149,7 @@ public class MemberService {
 
 	@Transactional
 	public ResponseEntity<Message> login(LoginRequestDto requestDto, HttpServletResponse response) {
+
 		String userId = requestDto.getUserId();
 		String password = requestDto.getPassword();
 
@@ -150,9 +158,9 @@ public class MemberService {
 		synchronized (lock) {
 			loginQueue.add(requestDto);
 
-			if (loginQueue.peek() != requestDto) {
+			if(loginQueue.peek() != requestDto) {
 				// 대기 큐에 추가된 요청이 현재 요청이 아니라면 대기 상태로 진입
-				while (loginQueue.peek() != requestDto) {
+				while(loginQueue.peek() != requestDto) {
 					try {
 						lock.wait();
 					} catch (InterruptedException e) {
@@ -170,12 +178,12 @@ public class MemberService {
 
 		TokenDto tokenDto = jwtUtil.createAllToken(userId);
 
-		if (!passwordEncoder.matches(password, member.getPassword())) {
+		if(!passwordEncoder.matches(password, member.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
 
 		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
-		if (refreshToken.isPresent()) {
+		if(refreshToken.isPresent()) {
 			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
 		} else {
 			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
@@ -188,43 +196,43 @@ public class MemberService {
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
+
 	}
-
-
 
 	//로그아웃
 	@Transactional
 	public ResponseEntity<Message> logout(Member member, HttpServletRequest request) {
+
 		refreshTokenRepository.existsByUserId(member.getUserId());
 
 //		String accessToken = request.getHeader("ACCESS_KEY").substring(7);
-		if(refreshTokenRepository.existsByUserId(member.getUserId())){
+		if(refreshTokenRepository.existsByUserId(member.getUserId())) {
 //			Long tokenTime = jwtUtil.getExpirationTime(accessToken);
 			refreshTokenRepository.deleteByUserIdAndProvider(member.getUserId(), "DANIM");
 			Message message = Message.setSuccess(StatusEnum.OK,"로그아웃 성공", member.getUserId());
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		}
 		throw new CustomException(USER_NOT_FOUND);
+
 	}
 
 	//회원 탈퇴
 	@Transactional
 	public ResponseEntity<Message> signOut(Member member) {
-		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
+		member = memberRepository.findById(member.getId()).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
 		List<Post> posts = postRepository.findByMember_Id(member.getId());
 
 		//채팅방입장삭제
-		List<MemberChatRoom> memberChatRooms  =memberChatRoomRepository.findAllByMember_Id(member.getId());
+		List<MemberChatRoom> memberChatRooms = memberChatRoomRepository.findAllByMember_Id(member.getId());
 		memberChatRoomRepository.deleteAll(memberChatRooms);
-		//게시물삭제
 
-		for(Post post : posts){
+		//게시물삭제
+		for(Post post : posts) {
 			post.decNumberOfParticipants();
 			post.delete();
 		}
-
 
 		if(!member.getProvider().equals("DANIM")) {
 			try {
@@ -243,12 +251,15 @@ public class MemberService {
 
 		member.signOut();
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "탈퇴 성공"));
+
 	}
 
 	//헤더 셋팅
 	private void setHeader(HttpServletResponse response, TokenDto tokenDto) {
+
 		response.addHeader(JwtUtil.ACCESS_KEY, tokenDto.getAccessToken());
 		response.addHeader(JwtUtil.REFRESH_KEY, tokenDto.getRefreshToken());
+
 	}
 
 	@Transactional
@@ -256,7 +267,7 @@ public class MemberService {
 
 		String refresh_token = jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
 
-		if (!jwtUtil.refreshTokenValid(refresh_token)) {
+		if(!jwtUtil.refreshTokenValid(refresh_token)) {
 
 			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		}
@@ -277,8 +288,6 @@ public class MemberService {
 		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공");
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
+
 	}
-
-
-
 }

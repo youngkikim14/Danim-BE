@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class MypageRequestDto {
 
     private String nickname;
+
     private String content;
+
     private MultipartFile image;
 
 }

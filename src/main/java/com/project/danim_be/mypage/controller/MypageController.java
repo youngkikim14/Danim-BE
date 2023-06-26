@@ -50,4 +50,5 @@ public class MypageController {
     public ResponseEntity<Message> editMember(@PathVariable Long ownerId, @ModelAttribute MypageRequestDto mypageRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return mypageService.editMember(ownerId ,mypageRequestDto, userDetails.getMember());
     }
+
 }
