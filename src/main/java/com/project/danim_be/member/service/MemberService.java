@@ -32,9 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -139,7 +137,9 @@ public class MemberService {
 	}
 
 	// 로그인
-	private static final Object loginLock = new Object(); //동시성 제어를 위하여 동기처리를 위한 로직
+	private static final Queue<LoginRequestDto> loginQueue = new LinkedList<>();
+	private static final Object lock = new Object();
+
 	@Transactional
 	public ResponseEntity<Message> login(LoginRequestDto requestDto, HttpServletResponse response) {
 		String userId = requestDto.getUserId();
@@ -147,8 +147,25 @@ public class MemberService {
 
 		Member member;
 
-		synchronized (loginLock) {
-			 member = memberRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.ID_NOT_FOUND));
+		synchronized (lock) {
+			loginQueue.add(requestDto);
+
+			if (loginQueue.peek() != requestDto) {
+				// 대기 큐에 추가된 요청이 현재 요청이 아니라면 대기 상태로 진입
+				while (loginQueue.peek() != requestDto) {
+					try {
+						lock.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			// 현재 요청이 처리될 차례이므로 대기 큐에서 제거
+			loginQueue.remove();
+			lock.notifyAll();
+
+			member = memberRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.ID_NOT_FOUND));
 		}
 
 		TokenDto tokenDto = jwtUtil.createAllToken(userId);
@@ -172,6 +189,7 @@ public class MemberService {
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
 	}
+
 
 
 	//로그아웃
