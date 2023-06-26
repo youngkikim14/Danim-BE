@@ -14,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 public class RefreshToken {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -37,4 +38,5 @@ public class RefreshToken {
 		this.refreshToken = tokenDto;
 		return this;
 	}
+
 }

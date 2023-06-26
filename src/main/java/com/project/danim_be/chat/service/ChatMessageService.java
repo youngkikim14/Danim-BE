@@ -157,7 +157,9 @@ public class ChatMessageService {
 				memberChatRoom.increaseAlarm ( 1);
 				memberChatRoomRepository.save(memberChatRoom);
 				if(memberChatRoom.getAlarm()>0){
+
 					alarmList(memberId);
+
 				}
 			}
 		}

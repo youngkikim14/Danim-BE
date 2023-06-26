@@ -20,10 +20,10 @@ public class Review extends Timestamped {
 	private Long id;
 
 	@Column(nullable = false)
-	private Double point;		//점수
+	private Double point;
 
 	@Column(nullable = false)
-	private String comment;		//후기
+	private String comment;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Member member;
@@ -38,4 +38,5 @@ public class Review extends Timestamped {
 		this.post = post;
 		this.member = member;
 	}
+
 }

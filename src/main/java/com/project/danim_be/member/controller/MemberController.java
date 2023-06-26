@@ -126,5 +126,6 @@ public class MemberController {
 	public ResponseEntity<Message> refreshAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse response) {
 		return memberService.refreshAccessToken(httpServletRequest,response);
 	}
+
 }
 

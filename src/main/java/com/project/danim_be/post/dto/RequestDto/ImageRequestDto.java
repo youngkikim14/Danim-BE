@@ -13,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageRequestDto {
 
 	private String imageUrl;
+
 	private String imageName;
+
 	private MultipartFile image;
 
 }

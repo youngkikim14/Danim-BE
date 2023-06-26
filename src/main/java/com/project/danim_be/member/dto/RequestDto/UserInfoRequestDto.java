@@ -9,13 +9,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfoRequestDto {
+
     private Long userId;
+
     @NotBlank
     private String gender;
+
     @NotBlank
     private String ageRange;
+
 //    @JsonProperty("AgreeForGender")
     private boolean AgreeForGender;
+
 //    @JsonProperty("AgreeForAge")
     private boolean AgreeForAge;
+
 }

@@ -28,36 +28,44 @@ public class PostController {
 	@Operation(summary = "게시글 작성 API", description = "게시글 작성")
 	@PostMapping(value = "api/post",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@LogExecutionTime
-	public ResponseEntity<Message> createPost(@AuthenticationPrincipal final UserDetailsImpl userDetails,@Valid @ModelAttribute final PostRequestDto requestDto){
-			return	postService.createPost(userDetails.getMember(),requestDto);
+	public ResponseEntity<Message> createPost(@AuthenticationPrincipal final UserDetailsImpl userDetails, @Valid @ModelAttribute final PostRequestDto requestDto){
+
+		return	postService.createPost(userDetails.getMember(),requestDto);
 
 	}
+
 	@Operation(summary = "이미지 업로드 API", description = "이미지 업로드")
 	@PostMapping(value = "api/post/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Message> imageUpload(@ModelAttribute ImageRequestDto requestDto){
+
 		return	postService.imageUpload(requestDto);
 
 	}
+
 	@Operation(summary = "게시글 조회 API", description = "게시글 조회")
 	@GetMapping("api/post/{postId}")
 	@LogExecutionTime
 	public ResponseEntity<Message> readPost(@PathVariable("postId") Long id) throws JsonProcessingException {
+
 		return searchService.readPost(id);
+
 	}
 
 	@Operation(summary = "게시글 수정 API", description = "게시글 수정")
 	@PutMapping(value = "api/post/{postId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@LogExecutionTime
 	public ResponseEntity<Message> updatePost(@PathVariable("postId") Long id, @AuthenticationPrincipal final UserDetailsImpl userDetails, @ModelAttribute final PostRequestDto requestDto){
-		System.out.println(userDetails.getMember());
+
 		return postService.updatePost(id, userDetails.getMember(), requestDto);
+
 	}
+
 	@Operation(summary = "게시글 삭제 API", description = "게시글 삭제")
 	@DeleteMapping("api/post/{postId}")
 	@LogExecutionTime
 	public ResponseEntity<Message> deletePost(@PathVariable("postId") Long id, @AuthenticationPrincipal final UserDetailsImpl userDetails){
 
 		return postService.deletePost(id, userDetails.getMember());
-	}
 
+	}
 }

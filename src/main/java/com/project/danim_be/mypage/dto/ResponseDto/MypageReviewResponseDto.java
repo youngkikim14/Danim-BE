@@ -14,8 +14,11 @@ import java.util.Date;
 public class MypageReviewResponseDto {
 
     private String nickName;
+
     private Double point;
+
     private String comment;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
 
