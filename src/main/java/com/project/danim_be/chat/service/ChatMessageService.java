@@ -1,6 +1,7 @@
 package com.project.danim_be.chat.service;
 
 
+import com.project.danim_be.chat.config.SubscribeCheck;
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.entity.ChatMessage;
 import com.project.danim_be.chat.entity.ChatRoom;
@@ -19,6 +20,7 @@ import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -39,6 +41,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatMessageService {
 
+	@EventListener
+	public void handleSubscriptionEvent(SubscribeCheck.SubscriptionEvent event) {
+		alarmList(event.getUserId());
+	}
 
 	@Autowired
 	private SimpMessageSendingOperations messagingTemplate;
