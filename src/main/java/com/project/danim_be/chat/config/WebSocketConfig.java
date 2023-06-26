@@ -17,13 +17,13 @@ import com.project.danim_be.chat.handler.StompHandler;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-	private final StompHandler stompHandler; // jwt 인증
-
-
-	@Override
-	public void configureClientInboundChannel(ChannelRegistration registration) {
-		registration.interceptors(stompHandler);
-	}
+	// private final StompHandler stompHandler; // jwt 인증
+	//
+	//
+	// @Override
+	// public void configureClientInboundChannel(ChannelRegistration registration) {
+	// 	registration.interceptors(stompHandler);
+	// }
 
 
 
