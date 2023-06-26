@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -98,10 +99,10 @@ public class ChatController {
 			}
 		}
 	}
-	@MessageMapping("/sub/alarm/{memberId}")
-	public void alarmList(Long memberId){
-		chatMessageService.alarmList(memberId);
-		System.out.println(memberId);
+	@MessageMapping("/sub/alarm/{userId}")
+	public void alarmList(@DestinationVariable Long userId){
+		chatMessageService.alarmList(userId);
+		System.out.println(userId);
 	}
 
 
