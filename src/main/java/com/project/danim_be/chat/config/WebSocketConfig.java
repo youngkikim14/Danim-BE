@@ -8,9 +8,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import com.project.danim_be.chat.handler.StompHandler;
-
-// import com.project.danim_be.chat.handler.StompHandler;
 
 @RequiredArgsConstructor
 @Configuration
