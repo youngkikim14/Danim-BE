@@ -32,6 +32,7 @@ public class WebSecurityConfig {
 	private final JwtAuthenticationFilter jwtUtil;
 
 	private static final String[] PERMIT_URL_ARRAY={
+
 			"/api/user/kakao/**",
 			"/api/user/google/**",
 			"/api/user/naver/**",
@@ -59,6 +60,7 @@ public class WebSecurityConfig {
 			"/stomp",
 			"/info",
 			"/api/user/refreshToken"
+
 	};
 
 
@@ -66,14 +68,18 @@ public class WebSecurityConfig {
 	//정적자원은 인증인가를 하지않겠다.
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
+
 		return (web) -> web.ignoring()
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+
 	}
 
 	//비밀번호 암호화
 	@Bean
 	public PasswordEncoder passwordEncoder(){
+
 		return new BCryptPasswordEncoder();
+
 	}
 		// h2콘솔 접근허용
 		// @Bean
@@ -93,11 +99,8 @@ public class WebSecurityConfig {
 		// 시큐리티 최신문서 찾아보기(아직안찾아봄)
 		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-
 //		 http.csrf().disable();    //csrf 비활성화
 		http.csrf(csrf -> csrf.disable());
-
-
 
 		http.authorizeHttpRequests(request -> request
 				.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
@@ -115,15 +118,14 @@ public class WebSecurityConfig {
 
 		);
 
-
 //		 http.cors();
 		http
 			.cors(withDefaults());
 
-
 		http.addFilterBefore(jwtUtil, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
+
 	}
 
 	@Bean
@@ -143,22 +145,25 @@ public class WebSecurityConfig {
 		configuration.addAllowedOrigin("https://da-nim.com");
 		configuration.addAllowedOrigin("https://www.da-nim.com");
 
-
-
 		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
 		configuration.addExposedHeader(JwtUtil.REFRESH_KEY);
+
 		//어떤데이터
 		configuration.addAllowedHeader("*");
+
 		//모든 방식(GET, POST, PUT, DELETE 등)으로 데이터를 요청할 수 있게함
 		configuration.addAllowedMethod("*");
 
 		configuration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
 		//이 부분은 위에서 설정한 CORS 설정을 모든 경로에 적용
 		source.registerCorsConfiguration("/**", configuration);
+
 		return source;
 	}
+
 }
 
 

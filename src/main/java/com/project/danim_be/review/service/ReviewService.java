@@ -35,6 +35,7 @@ public class ReviewService {
     // 리뷰 작성
     @Transactional
     public ResponseEntity<Message> createReview(Long postId, ReviewRequestDto reviewRequestDto, Member member) {
+
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -42,8 +43,9 @@ public class ReviewService {
         if(member.getId().equals(post.getMember().getId())) {
             throw new CustomException(ErrorCode.ADMIN_USER_REVIEW);
         }
+
         // 작성 여부 체크
-        if(!reviewRepository.existsByMember_IdAndPost_Id(member.getId(), postId)){
+        if(!reviewRepository.existsByMember_IdAndPost_Id(member.getId(), postId)) {
 
             Date tripEndDate = post.getTripEndDate();
 
@@ -92,9 +94,11 @@ public class ReviewService {
         List<Review> reviewList = reviewRepository.findAllByPostId(postId);
         List<ReviewResponseDto> reviewResponseDtoList = new ArrayList<>();
 
-        for (Review review : reviewList) {
+        for(Review review : reviewList) {
             reviewResponseDtoList.add(new ReviewResponseDto(review));
         }
+
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewResponseDtoList));
     }
+
 }

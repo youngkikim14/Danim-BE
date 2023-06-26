@@ -98,6 +98,11 @@ public class ChatController {
 			}
 		}
 	}
+	@MessageMapping("/sub/alarm/{memberId}")
+	public void alarmList(Long memberId){
+		chatMessageService.alarmList(memberId);
+		System.out.println(memberId);
+	}
 
 
 	@PostMapping("/api/chat/room/{roomId}")

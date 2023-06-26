@@ -16,9 +16,9 @@ public class MailService {
     private JavaMailSender mailSender;
 
     public String mailCheck(String email) {
+
         Random random = new Random();
         int authNumber = random.nextInt(888888) + 111111;
-        System.out.println("인증번호 : " + authNumber);
 
         String sendMail = "teamdanim@gmail.com";
         String toMail = email;
@@ -40,6 +40,7 @@ public class MailService {
 
         mailSend(sendMail, toMail, title, content);
         return Integer.toString(authNumber);
+
     }
 
     public void mailSend(String sendMail, String toMAil, String title, String content) {
@@ -57,5 +58,6 @@ public class MailService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+
     }
 }

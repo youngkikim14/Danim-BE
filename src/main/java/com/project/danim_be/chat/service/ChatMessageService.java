@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,9 @@ public class ChatMessageService {
 
 	@Autowired
 	private SimpMessageSendingOperations messagingTemplate;
+
+	@Autowired
+	private RedisTemplate<String, Object> chatRedisTemplate;
 
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
@@ -125,8 +129,24 @@ public class ChatMessageService {
 
 		ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
 
-		chatMessageRepository.save(chatMessage);
+		// Change this line
+		chatRedisTemplate.opsForList().rightPush(roomName, chatMessage);
+	}
+
+		// chatMessageRepository.save(chatMessage);
 		// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
+	@Transactional
+	public void alarmList(Long memberId) {
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(memberId);
+
+		List<Map<Long,Integer>> alarm = new ArrayList<>();
+		for(MemberChatRoom memberChatRoom : memberChatRoomList){
+			Map<Long,Integer> result = new HashMap<>();
+			result.put(memberChatRoom.getChatRoom().getId(),memberChatRoom.getAlarm());
+			alarm.add(result);
+		}
+		messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
+
 	}
 	@Transactional
 	public void increaseAlarm(List<Long> memberIdList, ChatRoom chatRoom) {
@@ -137,35 +157,29 @@ public class ChatMessageService {
 				memberChatRoom.increaseAlarm ( 1);
 				memberChatRoomRepository.save(memberChatRoom);
 				if(memberChatRoom.getAlarm()>0){
-					Map<Long,Integer>alarm=new HashMap<>();
-					alarm.put(memberId,memberChatRoom.getAlarm());
-					log.info("Alarm{}",memberChatRoom.getAlarm());
-					log.info("memberId :{} ",memberId);
-					messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
 
-				}
-				else{
-					return;
+					alarmList(memberId);
+
 				}
 			}
 		}
 	}
 
-	// // 10분마다 저장
-	// @Scheduled(fixedDelay = 600_000)
-	// public void saveMessages() {
-	// 	List<Object> chatMessages = chatRedisTemplate.opsForList().range("chatMessages", 0, -1);
-	// 	System.out.println("저장");
-	// 	chatRedisTemplate.opsForList().trim("chatMessages", 1, 0);
-	// 	for (Object chatMessage : chatMessages) {
-	// 		ChatMessage cm = (ChatMessage) chatMessage;
-	// 		ChatRoom chatRoom = chatRoomRepository.findByRoomName(cm.getChatRoomName())
-	// 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-	// 		cm.setChatRoom(chatRoom);
-	//
-	// 		chatMessageRepository.save(cm);
-	// 	}
-	// }
+	// 10분마다 저장
+	@Scheduled(fixedDelay = 600_000)
+	public void saveMessages() {
+		List<Object> chatMessages = chatRedisTemplate.opsForList().range("chatMessages", 0, -1);
+		System.out.println("저장");
+		chatRedisTemplate.opsForList().trim("chatMessages", 1, 0);
+		for (Object chatMessage : chatMessages) {
+			ChatMessage cm = (ChatMessage) chatMessage;
+			ChatRoom chatRoom = chatRoomRepository.findByRoomName(cm.getChatRoomName())
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+			cm.setChatRoom(chatRoom);
+
+			chatMessageRepository.save(cm);
+		}
+	}
 	//방을 나갔는지확인해야함	LEAVE
 	@Transactional
 	public void leaveChatRoom(ChatDto chatDto) {

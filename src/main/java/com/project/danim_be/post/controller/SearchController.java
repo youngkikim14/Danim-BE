@@ -29,15 +29,19 @@ public class SearchController {
     @GetMapping("/")
     @LogExecutionTime
     public ResponseEntity<Message> allPosts(Pageable pageable) {
+
         return searchService.allPosts(pageable);
+
     }
 
     @Operation(summary = "게시글 상세 검색 API", description = "게시글 상세 검색")
     @PostMapping("/search")
     @LogExecutionTime
     public ResponseEntity<Message> searchPosts(@RequestBody SearchRequestDto searchRequestDto, Pageable pageable){
+
         List<CardPostResponseDto> searchResult = searchService.searchPost(searchRequestDto, pageable);
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "검색 결과", searchResult));
+
     }
 }
 

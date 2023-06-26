@@ -39,77 +39,93 @@ public class MypageService {
     private final S3Uploader s3Uploader;
     private final JPAQueryFactory queryFactory;
 
-
     //마이페이지 - 사용자 정보
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberInfo(Long ownerId, Long memberId) {
+
         Member owner = memberRepository.findById(ownerId).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND)
         );
+
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND)
         );
+
         MypageResponseDto mypageResponseDto;
-        if (ownerId.equals(memberId)){
+
+        if(ownerId.equals(memberId)) {
             mypageResponseDto = new MypageResponseDto(member, true);
         } else {
             mypageResponseDto = new MypageResponseDto(owner, false);
         }
+
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypageResponseDto));
+
     }
 
     //마이페이지 게시물 정보
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberPosts(Long ownerId, Long memberId) {
 
-        if (!findMember(ownerId) || !findMember(memberId)){
+        if(!findMember(ownerId) || !findMember(memberId)) {
             throw new CustomException(USER_NOT_FOUND);
         }
+
         List<MypagePostResponseDto> mypagePostResponseDtoList;
-        if (ownerId.equals(memberId)) {
+
+        if(ownerId.equals(memberId)) {
             mypagePostResponseDtoList = validMember(memberId, true);
         } else {
             mypagePostResponseDtoList = validMember(ownerId, false);
         }
+
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", mypagePostResponseDtoList));
+
     }
 
     //마이페이지 내가 받은 후기
     @Transactional(readOnly = true)
     public ResponseEntity<Message> memberReview(Long ownerId, Long memberId) {
 
-        if (!findMember(ownerId) || !findMember(memberId)){
+        if(!findMember(ownerId) || !findMember(memberId)) {
             throw new CustomException(USER_NOT_FOUND);
         }
+
         List<MypageReviewResponseDto> reviewList;
 
-        if (ownerId.equals(memberId)){
+        if(ownerId.equals(memberId)) {
             reviewList = getReview(memberId);
         } else {
             reviewList = getReview(ownerId);
         }
+
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "조회 성공", reviewList));
+
     }
 
     //마이페이지 회원정보 수정
-   @Transactional
+    @Transactional
     public ResponseEntity<Message> editMember(Long ownerId, MypageRequestDto mypageRequestDto, Member member) throws IOException {
-            if (ownerId.equals(member.getId())) {
-                if (!mypageRequestDto.getNickname().equals(member.getNickname()) && memberRepository.existsByNickname(mypageRequestDto.getNickname())){
+
+        if(ownerId.equals(member.getId())) {
+            if(!mypageRequestDto.getNickname().equals(member.getNickname()) && memberRepository.existsByNickname(mypageRequestDto.getNickname())) {
                 throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
             }
-                String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
-                member.editMember(mypageRequestDto, imageUrl);
 
-                memberRepository.save(member);
-            }
-         else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
+            String imageUrl = s3Uploader.upload(mypageRequestDto.getImage());
+            member.editMember(mypageRequestDto, imageUrl);
+
+            memberRepository.save(member);
+
+        } else throw new CustomException(ErrorCode.DO_NOT_HAVE_PERMISSION);
+
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "수정 완료"));
 
     }
 
     //마이페이지 게시물 공통 메서드
     private List<MypagePostResponseDto> validMember(Long memberId, Boolean owner) {
+
 //        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
@@ -118,6 +134,7 @@ public class MypageService {
 //        for (Post post : postList) {
 //            mypagePostResponseDtoList.add(new MypagePostResponseDto(post, owner));
 //        }
+
         return queryFactory.
                 select(Projections.constructor(MypagePostResponseDto.class,
                         qPost.id,
@@ -133,11 +150,14 @@ public class MypageService {
                 .where(qPost.member.id.eq(memberId), qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
                 .fetch();
+
     }
 
     //멤버 검증 공통 메서드
     private Boolean findMember(Long id) {
+
         return memberRepository.existsById(id);
+
     }
 
     //마이페이지 리뷰 공통 메서드
@@ -162,9 +182,12 @@ public class MypageService {
                 .fetch();
 
         List<MypageReviewResponseDto> mypageReviewResponseDtoList = new ArrayList<>();
+
         for (Review review : reviewList) {
             mypageReviewResponseDtoList.add(new MypageReviewResponseDto(review));
         }
+
         return mypageReviewResponseDtoList;
+
     }
 }

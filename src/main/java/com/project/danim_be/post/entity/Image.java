@@ -15,8 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-	property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Image implements Serializable {
 
 	@Id
@@ -31,9 +30,5 @@ public class Image implements Serializable {
 	public Image(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
-
-
-
-
 
 }

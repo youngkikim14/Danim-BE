@@ -32,4 +32,5 @@ public class ReviewController {
     public ResponseEntity<Message> readReview(@PathVariable Long postId) {
         return reviewService.readReview(postId);
     }
+
 }

@@ -34,14 +34,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String refresh_token = jwtUtil.resolveToken(request, JwtUtil.REFRESH_KEY);
 
 		// 토큰이 존재하면 유효성 검사를 수행하고, 유효하지 않은 경우 예외 처리
-		if(access_token == null){
+		if(access_token == null) {
 			// jwtExceptionHandler(response, "ACCESS_TOKEN Expired", HttpStatus.UNAUTHORIZED.value());
 			// return;
 			filterChain.doFilter(request, response);
 		} else {
-			if (jwtUtil.validateToken(access_token)) {
+			if(jwtUtil.validateToken(access_token)) {
 				setAuthentication(jwtUtil.getUserInfoFromToken(access_token));
-			} else if (refresh_token != null && jwtUtil.refreshTokenValid(refresh_token)) {
+			} else if(refresh_token != null && jwtUtil.refreshTokenValid(refresh_token)) {
 				//Refresh토큰으로 유저명 가져오기
 				String userId = jwtUtil.getUserInfoFromToken(refresh_token);
 				//유저명으로 유저 정보 가져오기
@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				//Header에 ACCESS TOKEN 추가
 				jwtUtil.setHeaderAccessToken(response, newAccessToken);
 				setAuthentication(userId);
-			} else if (refresh_token == null) {
+			} else if(refresh_token == null) {
 				jwtExceptionHandler(response, "AccessToken Expired.", HttpStatus.BAD_REQUEST.value());
 				return;
 			} else {
@@ -61,19 +61,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			// 다음 필터로 요청과 응답을 전달하여 필터 체인 계속 실행
 			filterChain.doFilter(request, response);
 		}
+
 	}
 
 	// 인증 객체를 생성하여 SecurityContext에 설정
 	public void setAuthentication(String userId) {
+
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
 		Authentication authentication = jwtUtil.createAuthentication(userId);
 		context.setAuthentication(authentication);
 
 		SecurityContextHolder.setContext(context);
+
 	}
 
 	// JWT 예외 처리를 위한 응답 설정
 	public void jwtExceptionHandler(HttpServletResponse response, String msg, int statusCode) {
+
 		response.setStatus(statusCode);
 		response.setContentType("application/json");
 		try {
@@ -84,5 +88,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			log.error(e.getMessage());
 		}
 	}
+
 }
 

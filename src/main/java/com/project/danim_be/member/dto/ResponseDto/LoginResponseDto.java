@@ -8,10 +8,15 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Getter
 @NoArgsConstructor
 public class LoginResponseDto {
+
 	private Long id;
+
 	// private SseEmitter sseEmitter;
+
 	private String nickName;
+
 	private String myPageImageUrl;
+
 	private Boolean isExistMember;
 
 	public LoginResponseDto(Member member, Boolean isExistMember) {

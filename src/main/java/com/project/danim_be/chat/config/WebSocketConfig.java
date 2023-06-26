@@ -22,8 +22,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	// 	registration.interceptors(stompHandler);
 	// }
 
-
-
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry){
     registry.addEndpoint("/ws-stomp")
@@ -39,13 +37,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 // 			.withSockJS();
 // 	}
 
-
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 
 		registry.enableSimpleBroker("/queue","/sub");	 //수신 메시지를 구독하는 요청 url => 즉 메시지 받을 때
 		registry.setApplicationDestinationPrefixes("/pub");	 //송신 메시지를 발행하는 요청 url => 즉 메시지 보낼 때
+
 	}
+
 }
 
 
