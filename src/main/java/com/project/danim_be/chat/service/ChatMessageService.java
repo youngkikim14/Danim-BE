@@ -132,14 +132,18 @@ public class ChatMessageService {
 		for (Long memberId : memberIdList) {
 			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberIdAndChatRoom(memberId, chatRoom)
 				.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
-			if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
+			if (memberChatRoom.getRecentDisConnect()!=null && memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
 				memberChatRoom.increaseAlarm ( 1);
 				memberChatRoomRepository.save(memberChatRoom);
 				if(memberChatRoom.getAlarm()>0){
 					Map<Long,Integer>alarm=new HashMap<>();
 					alarm.put(memberId,memberChatRoom.getAlarm());
+					log.info("Alarm{}",memberChatRoom.getAlarm());
 					messagingTemplate.convertAndSendToUser(memberId.toString(), "/sub/alarm",alarm);
 
+				}
+				else{
+					return;
 				}
 			}
 		}
