@@ -113,15 +113,14 @@ public class ChatMessageService {
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		// MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
-		// 	.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+
 
 		List<Long> memberIdList = memberChatRoomRepository.findByChatRoom(chatRoom).stream()
 			.map(MemberChatRoom::getMember)
 			.map(Member::getId)
 			.filter(id -> !id.equals(sendMember.getId()))
 			.toList();
-		increaseAlarm(memberIdList);
+		increaseAlarm(memberIdList,chatRoom);
 
 		ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
 
@@ -129,9 +128,9 @@ public class ChatMessageService {
 		// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
 	}
 	@Transactional
-	public void increaseAlarm(List<Long> memberIdList,Member sendMember, ChatRoom chatRoom) {
+	public void increaseAlarm(List<Long> memberIdList, ChatRoom chatRoom) {
 		for (Long memberId : memberIdList) {
-			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
+			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberIdAndChatRoom(memberId, chatRoom)
 				.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 			if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
 				memberChatRoom.increaseAlarm ( 1);
@@ -144,7 +143,6 @@ public class ChatMessageService {
 				}
 			}
 		}
-	}
 	// // 10분마다 저장
 	// @Scheduled(fixedDelay = 600_000)
 	// public void saveMessages() {
