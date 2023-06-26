@@ -22,6 +22,8 @@ public class QMemberChatRoom extends EntityPathBase<MemberChatRoom> {
 
     public static final QMemberChatRoom memberChatRoom = new QMemberChatRoom("memberChatRoom");
 
+    public final NumberPath<Integer> alarm = createNumber("alarm", Integer.class);
+
     public final QChatRoom chatRoom;
 
     public final DateTimePath<java.time.LocalDateTime> firstJoinRoom = createDateTime("firstJoinRoom", java.time.LocalDateTime.class);

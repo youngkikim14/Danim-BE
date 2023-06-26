@@ -35,6 +35,8 @@ public class MemberChatRoom implements Serializable {
 	private LocalDateTime recentConnect;	// 최근 접속한시간
 	private LocalDateTime recentDisConnect;	// 마지막으로 떠난시간 (채팅방 접속을끊은시간)(강퇴.신청취소아님)
 	private Boolean kickMember =false;		// 방에서 강퇴당한 이력이 있는지 true:강퇴당함 false:아직은..?
+	private int alarm;
+
 
 	//setter
 	public void setFirstJoinRoom(LocalDateTime now) {this.firstJoinRoom = now;}
@@ -51,5 +53,7 @@ public class MemberChatRoom implements Serializable {
 		this.kickMember = b;
 	}
 
-
+	public void increaseAlarm (int i) {
+		this.alarm += i;
+	}
 }

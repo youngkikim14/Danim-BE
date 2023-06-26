@@ -100,36 +100,36 @@ class MypageServiceTest {
 
     }
 
-//    @Test
-//    void memberReview() {
-//
-//        //given
-//        Long memberpk = 2L;
-//        String memberId = "user5555@gmail.com";
-//        String memberNickName = "우아한악어";
-//        String memberPassword = "test1410";
-//        Long ownerpk = 3L;
-//        String ownerId = "user4444@gmail.com";
-//        String ownerNickName = "우아한코끼리";
-//        String ownerPassword = "test1410";
-//        Member member = new Member(memberId, memberPassword, memberNickName);
-//        Member owner = new Member(ownerId, ownerPassword, ownerNickName);
-//        List<MypageReviewResponseDto> memberReviewList = new ArrayList<>();
-//        List<MypageReviewResponseDto> ownerReviewList = new ArrayList<>();
-//
-//        when(getReview(memberpk)).thenReturn(memberReviewList);
-//        when(getReview(ownerpk)).thenReturn(ownerReviewList);
-//        when(findMember(memberpk)).thenReturn(member);
-//        when(findMember(ownerpk)).thenReturn(owner);
-//
-//
-//        // when
-//        ResponseEntity<Message> result = mypageService.memberReview(ownerpk, memberpk);
-//
-//        //then
-//        assertEquals(result.getBody().getMessage(),"조회 성공");
-//        assertEquals(result.getBody().getData(), owner.getUserId());
-//    }
+   @Test
+   void memberReview() {
+
+       //given
+       Long memberpk = 2L;
+       String memberId = "user5555@gmail.com";
+       String memberNickName = "우아한악어";
+       String memberPassword = "test1410";
+       Long ownerpk = 3L;
+       String ownerId = "user4444@gmail.com";
+       String ownerNickName = "우아한코끼리";
+       String ownerPassword = "test1410";
+       Member member = new Member(memberId, memberPassword, memberNickName);
+       Member owner = new Member(ownerId, ownerPassword, ownerNickName);
+       List<MypageReviewResponseDto> memberReviewList = new ArrayList<>();
+       List<MypageReviewResponseDto> ownerReviewList = new ArrayList<>();
+
+       when(getReview(memberpk)).thenReturn(memberReviewList);
+       when(getReview(ownerpk)).thenReturn(ownerReviewList);
+       when(findMember(memberpk)).thenReturn(member);
+       when(findMember(ownerpk)).thenReturn(owner);
+
+
+       // when
+       ResponseEntity<Message> result = mypageService.memberReview(ownerpk, memberpk);
+
+       //then
+       assertEquals(result.getBody().getMessage(),"조회 성공");
+       assertEquals(result.getBody().getData(), owner.getUserId());
+   }
 
 
     @Test
@@ -156,7 +156,7 @@ class MypageServiceTest {
 
     //마이페이지 리뷰 공통 메서드
     private List<MypageReviewResponseDto> getReview(Long memberId) {
-        QReview qReview = QReview.review1;
+        QReview qReview = QReview.review;
         QPost qPost = QPost.post;
 
         List<Review> reviewList = queryFactory
