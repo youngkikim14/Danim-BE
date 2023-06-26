@@ -6,9 +6,7 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
-
 import com.project.danim_be.security.jwt.JwtUtil;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
