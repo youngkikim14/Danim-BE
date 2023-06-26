@@ -99,7 +99,7 @@ public class ChatMessageService {
 		}
 		memberChatRoomRepository.save(memberChatRoom);
 		//alarm 초기화
-		memberChatRoom.InitializationAlarm ( 0);
+		memberChatRoom.InitializationAlarm (0);
 		return message;
 
 	}
