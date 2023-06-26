@@ -145,6 +145,7 @@ public class ChatMessageService {
 			result.put(memberChatRoom.getChatRoom().getId(),memberChatRoom.getAlarm());
 			alarm.add(result);
 		}
+		log.info("alarm: {}",alarm);
 		messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
 
 	}
