@@ -145,13 +145,11 @@ public class ChatMessageService {
 	public void alarmList(Long memberId) {
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(memberId);
 
-		List<Map<String,Object>> alarm = new ArrayList<>();
+		List<Map<Long,Integer>> alarm = new ArrayList<>();
 		for(MemberChatRoom memberChatRoom : memberChatRoomList){
-			Map<String,Object> innerMap = new HashMap<>();
 			Map<Long,Integer> result = new HashMap<>();
 			result.put(memberChatRoom.getChatRoom().getId(),memberChatRoom.getAlarm());
-			innerMap.put("alram",result);
-			alarm.add(innerMap);
+			alarm.add(result);
 		}
 		log.info("alarm: {}",alarm);
 		messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
