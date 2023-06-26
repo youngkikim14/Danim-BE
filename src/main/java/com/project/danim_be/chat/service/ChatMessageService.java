@@ -20,19 +20,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ChatMessageService {
+
+
+	@Autowired
+	private SimpMessageSendingOperations messagingTemplate;
 
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
@@ -106,8 +113,8 @@ public class ChatMessageService {
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
-			.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		// MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
+		// 	.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 		List<Long> memberIdList = memberChatRoomRepository.findByChatRoom(chatRoom).stream()
 			.map(MemberChatRoom::getMember)
@@ -126,8 +133,14 @@ public class ChatMessageService {
 		for (Long memberId : memberIdList) {
 			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMember_Id(memberId);
 			if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
-				memberChatRoom.increaseAlarm (memberChatRoom.getAlarm() + 1);
+				memberChatRoom.increaseAlarm ( 1);
 				memberChatRoomRepository.save(memberChatRoom);
+				if(memberChatRoom.getAlarm()>0){
+					Map<Long,Integer>alarm=new HashMap<>();
+					alarm.put(memberId,memberChatRoom.getAlarm());
+					messagingTemplate.convertAndSendToUser(memberId.toString(), "/sub/alarm",alarm);
+
+				}
 			}
 		}
 	}
