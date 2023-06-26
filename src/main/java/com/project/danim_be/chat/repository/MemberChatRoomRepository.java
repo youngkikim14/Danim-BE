@@ -12,10 +12,9 @@ public interface MemberChatRoomRepository extends JpaRepository<MemberChatRoom,L
 	boolean existsByMember_IdAndChatRoom_RoomName(Long memberId, String roomName);
 	boolean existsByMember_IdAndChatRoom_Id(Long memberId, Long roomId);
 	Optional<MemberChatRoom> findByMemberAndChatRoom(Member member, ChatRoom chatRoom);
+	Optional<MemberChatRoom> findByMemberIdAndChatRoom(Long id, ChatRoom chatRoom);
 	List<MemberChatRoom> findByChatRoom(ChatRoom chatRoom);
-	Optional<MemberChatRoom> findByMember(Member member);
 	List<MemberChatRoom> findAllByChatRoom_Id(Long id);
 	List<MemberChatRoom> findAllByMember_Id(Long id);
 
-	MemberChatRoom findByMember_Id(Long Id);
 }
