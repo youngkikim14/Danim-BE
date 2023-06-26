@@ -6,6 +6,8 @@ import com.project.danim_be.chat.service.ChatRoomService;
 import com.project.danim_be.common.util.Message;
 import com.project.danim_be.security.auth.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,6 +26,7 @@ import java.time.ZoneId;
 
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 public class ChatController {
 
@@ -35,6 +38,7 @@ public class ChatController {
 	// 메시지가왔을때 실행
 	@MessageMapping("/chat/message")
 	public void message(@Payload ChatDto chatDto, Principal principal) throws Exception {
+		log.info("principal.getName{}",principal.getName());
 
 		switch (chatDto.getType()) {
 
