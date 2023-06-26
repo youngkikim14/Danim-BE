@@ -129,9 +129,10 @@ public class ChatMessageService {
 		// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
 	}
 	@Transactional
-	public void increaseAlarm(List<Long> memberIdList) {
+	public void increaseAlarm(List<Long> memberIdList,Member sendMember, ChatRoom chatRoom) {
 		for (Long memberId : memberIdList) {
-			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMember_Id(memberId);
+			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(sendMember, chatRoom)
+				.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 			if (memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
 				memberChatRoom.increaseAlarm ( 1);
 				memberChatRoomRepository.save(memberChatRoom);
