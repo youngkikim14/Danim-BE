@@ -26,10 +26,14 @@ public class SubscribeCheck implements ChannelInterceptor {
 
 		if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
 			String destination = accessor.getDestination();
-			// destination에서 userId를 파싱하고,
-			Long userId = parseUserIdFromDestination(destination);
-			// 이벤트 발행
-			eventPublisher.publishEvent(new SubscriptionEvent(userId));
+
+			// Check if the destination matches the desired pattern
+			if (destination != null && destination.startsWith("/sub/alarm/")) {
+				// destination에서 userId를 파싱하고,
+				Long userId = parseUserIdFromDestination(destination);
+				// 이벤트 발행
+				eventPublisher.publishEvent(new SubscriptionEvent(userId));
+			}
 		}
 		return message;
 	}
