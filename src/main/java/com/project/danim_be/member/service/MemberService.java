@@ -199,15 +199,17 @@ public class MemberService {
 //			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
 //			refreshTokenRepository.save(newToken);
 //		}
-//			setHeader(response, tokenDto);
+			setHeader(response, tokenDto);
 
-		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", tokenDto.getAccessToken());
-		accessTokenCookie.setHttpOnly(true);
-		response.addCookie(accessTokenCookie);
-
-		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken());
-		refreshTokenCookie.setHttpOnly(true);
-		response.addCookie(refreshTokenCookie);
+//		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", tokenDto.getAccessToken());
+//		accessTokenCookie.setHttpOnly(true);
+//		accessTokenCookie.setSecure(true);
+//		response.addCookie(accessTokenCookie);
+//
+//		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken());
+//		refreshTokenCookie.setHttpOnly(true);
+//		refreshTokenCookie.setSecure(true);
+//		response.addCookie(refreshTokenCookie);
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);

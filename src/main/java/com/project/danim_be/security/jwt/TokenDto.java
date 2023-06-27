@@ -9,11 +9,10 @@ public class TokenDto {
 
 	private String accessToken;
 	private String refreshToken;
-	private Long accessTokenExpiration;
-	private Long refreshTokenExpiration;
 
 
-	public TokenDto(String accessToken, String refreshToken, Long accessTokenExpiration, Long refreshTokenExpiration) {
+
+	public TokenDto(String accessToken, String refreshToken) {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 	}
