@@ -226,7 +226,8 @@ public class MemberService {
 //		String accessToken = request.getHeader("ACCESS_KEY").substring(7);
 		if(refreshTokenRepository.existsByUserId(member.getUserId())) {
 //			Long tokenTime = jwtUtil.getExpirationTime(accessToken);
-			refreshTokenRepository.deleteByUserIdAndProvider(member.getUserId(), "DANIM");
+			RefreshTokenRedisTemplate.delete(member.getUserId());
+//			refreshTokenRepository.deleteByUserIdAndProvider(member.getUserId(), "DANIM");
 			Message message = Message.setSuccess(StatusEnum.OK,"로그아웃 성공", member.getUserId());
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		}
@@ -260,7 +261,8 @@ public class MemberService {
 			}
 		} else {
 			try {
-				refreshTokenRepository.delete(refreshTokenRepository.findByUserId(member.getUserId()).get());
+//				refreshTokenRepository.delete(refreshTokenRepository.findByUserId(member.getUserId()).get());
+				RefreshTokenRedisTemplate.delete(member.getUserId());
 			} catch (IncorrectResultSizeDataAccessException e) {
 				throw new CustomException(FAIL_SIGNOUT);
 			}
