@@ -294,16 +294,24 @@ public class MemberService {
 
 		String userId = jwtUtil.getUserInfoFromToken(refresh_token);
 
-		String newAccessToken = jwtUtil.createToken(userId, "Access");
+		TokenDto allToken = jwtUtil.createAllToken(userId);
+		TokenDto tokenDto = new TokenDto(allToken.getAccessToken(), allToken.getRefreshToken());
 
-		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken("Bearer " + refresh_token).orElseThrow(
-			NoSuchElementException::new
-		);
+		RefreshTokenRedisTemplate.opsForValue().set(
+				userId,
+				tokenDto.getRefreshToken(),
+				14,
+				TimeUnit.DAYS);
 
-		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
-		refreshTokenRepository.save(updatedRefreshToken);
+//
+//		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken("Bearer " + refresh_token).orElseThrow(
+//			NoSuchElementException::new
+//		);
 
-		jwtUtil.setHeaderAccessToken(response, newAccessToken);
+//		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
+//		refreshTokenRepository.save(updatedRefreshToken);
+
+		setHeader(response, tokenDto);
 
 		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공");
 
