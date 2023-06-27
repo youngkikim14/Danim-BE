@@ -11,19 +11,15 @@ import com.project.danim_be.member.dto.RequestDto.*;
 import com.project.danim_be.member.dto.ResponseDto.LoginResponseDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
-import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
-import com.project.danim_be.security.refreshToken.RefreshToken;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -31,13 +27,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import static com.project.danim_be.common.exception.ErrorCode.FAIL_SIGNOUT;

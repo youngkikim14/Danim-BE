@@ -119,7 +119,6 @@ public class ChatRoomService {
 			throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		}
 
-
 		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
 			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
