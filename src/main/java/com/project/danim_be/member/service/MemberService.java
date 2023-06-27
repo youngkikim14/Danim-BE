@@ -192,14 +192,7 @@ public class MemberService {
 				14,
 				TimeUnit.DAYS);
 
-//		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
-//		if(refreshToken.isPresent()) {
-//			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-//		} else {
-//			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
-//			refreshTokenRepository.save(newToken);
-//		}
-			setHeader(response, tokenDto);
+		setHeader(response, tokenDto);
 
 //		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", tokenDto.getAccessToken());
 //		accessTokenCookie.setHttpOnly(true);
