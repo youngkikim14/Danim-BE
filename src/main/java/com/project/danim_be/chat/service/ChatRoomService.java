@@ -98,8 +98,7 @@ public class ChatRoomService {
 			if (!post.getGender().contains(member.getGender())) {
 				throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
 			}
-		} else {
-			throw new CustomException(ErrorCode.ADMIN_USER);
+
 		}
 		Date recruitmentEndDate = post.getRecruitmentEndDate();
 		// LocalDate 타입으로 변환
@@ -170,9 +169,9 @@ public class ChatRoomService {
 		if(member.getId().equals(leaveMember.getMember().getId())) {
 			post.decNumberOfParticipants();
 			postRepository.save(post);
-		} else {
-			throw new CustomException(ErrorCode.FAIL_LEAVE_CHATROOM);
-		}
+		} else if (member.getId().equals(chatRoom.getAdminMemberId())){
+			throw new CustomException(ErrorCode.ADMIN_USER_NO_CANCLE);
+		} else throw new CustomException(ErrorCode.FAIL_LEAVE_CHATROOM);
 
 		queryFactory.delete(qMemberChatRoom)
 				.where(qMemberChatRoom.chatRoom.id.eq(id), qMemberChatRoom.member.id.eq(member.getId()))
