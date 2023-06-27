@@ -288,7 +288,6 @@ public class MemberService {
 		String refresh_token = jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
 
 		if(!jwtUtil.refreshTokenValid(refresh_token)) {
-
 			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		}
 
