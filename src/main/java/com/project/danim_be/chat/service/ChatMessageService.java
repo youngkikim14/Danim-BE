@@ -138,17 +138,20 @@ public class ChatMessageService {
 	}
 
 
-		// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
 	@Transactional
 	public void alarmList(Long memberId) {
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(memberId);
+		List<Map<String,Integer>> alarm = new ArrayList<>();
 
-		List<Map<Long,Integer>> alarm = new ArrayList<>();
+		int sum=0;
 		for(MemberChatRoom memberChatRoom : memberChatRoomList){
-			Map<Long,Integer> result = new HashMap<>();
-			result.put(memberChatRoom.getChatRoom().getId(),memberChatRoom.getAlarm());
+			Map<String,Integer> result = new HashMap<>();
+			result.put(memberChatRoom.getChatRoom().getId().toString(),memberChatRoom.getAlarm());
+			sum += memberChatRoom.getAlarm();
 			alarm.add(result);
+			result.put("sum",sum);
 		}
+
 		log.info("alarm: {}",alarm);
 		messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
 	}
