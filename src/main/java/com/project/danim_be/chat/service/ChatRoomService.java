@@ -98,6 +98,8 @@ public class ChatRoomService {
 			if (!post.getGender().contains(member.getGender())) {
 				throw new CustomException(ErrorCode.NOT_CONTAIN_GENDER);
 			}
+		} else {
+			throw new CustomException(ErrorCode.ADMIN_USER);
 		}
 		Date recruitmentEndDate = post.getRecruitmentEndDate();
 		// LocalDate 타입으로 변환
@@ -116,7 +118,6 @@ public class ChatRoomService {
 		}else if(afterDate){
 			throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		}
-
 
 		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
 			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);

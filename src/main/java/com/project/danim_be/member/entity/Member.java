@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @Entity
@@ -63,9 +61,9 @@ public class Member extends Timestamped {
 	}
 
 	// 테스트용 생성자
-	public Member(String memberId, String memberPassword, String memberNickName) {
-		super();
-	}
+//	public Member(String memberId, String memberPassword, String memberNickName) {
+//		super();
+//	}
 
 	public void editMember (MypageRequestDto mypageRequestDto,String imageUrl) {
 		this.imageUrl = imageUrl;

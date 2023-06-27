@@ -6,7 +6,6 @@ import com.project.danim_be.common.util.Message;
 import com.project.danim_be.common.util.S3Uploader;
 import com.project.danim_be.common.util.StatusEnum;
 import com.project.danim_be.member.entity.Member;
-import com.project.danim_be.member.entity.QMember;
 import com.project.danim_be.member.repository.MemberRepository;
 import com.project.danim_be.mypage.dto.RequestDto.MypageRequestDto;
 import com.project.danim_be.mypage.dto.ResponseDto.MypagePostResponseDto;

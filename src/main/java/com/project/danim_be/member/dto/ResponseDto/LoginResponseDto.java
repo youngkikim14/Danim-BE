@@ -3,7 +3,6 @@ package com.project.danim_be.member.dto.ResponseDto;
 import com.project.danim_be.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Getter
 @NoArgsConstructor
