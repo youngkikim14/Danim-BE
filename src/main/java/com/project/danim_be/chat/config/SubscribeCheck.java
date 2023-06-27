@@ -24,17 +24,19 @@ public class SubscribeCheck implements ChannelInterceptor {
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-		if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+		if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+			System.out.println("STOMP 연결"+ accessor.getSessionId());
+		} else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+			System.out.println("STOMP 연결 종료" + accessor.getSessionId());
+		} else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
 			String destination = accessor.getDestination();
 
-			// Check if the destination matches the desired pattern
 			if (destination != null && destination.startsWith("/sub/alarm/")) {
-				// destination에서 userId를 파싱하고,
 				Long userId = parseUserIdFromDestination(destination);
-				// 이벤트 발행
 				eventPublisher.publishEvent(new SubscriptionEvent(userId));
 			}
 		}
+
 		return message;
 	}
 	public class SubscriptionEvent {
