@@ -151,9 +151,11 @@ public class ChatMessageService {
 			alarm.add(result);
 			result.put("sum",sum);
 		}
-
-		log.info("alarm: {}",alarm);
-		messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
+		Map<String, Integer> sumMap = new HashMap<>();
+		sumMap.put("sum", sum);
+		alarm.add(sumMap);
+		log.info("alarm: {}", alarm);
+		messagingTemplate.convertAndSend("/sub/alarm/" + memberId, alarm);
 	}
 	@Transactional
 	public void increaseAlarm(List<Long> memberIdList, ChatRoom chatRoom) {
