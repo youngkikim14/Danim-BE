@@ -68,7 +68,9 @@ public class ChatMessageService {
 		//roomId를 통해서 생성된 채팅룸을 찾고
 		ChatRoom chatRoom= chatRoomRepository.findByRoomName(roomName)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-		Post post = postRepository.findByChatRoom_Id(chatRoom.getId()).get();
+		Post post = postRepository.findByChatRoom_Id(chatRoom.getId()).orElseThrow(
+				()-> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
 
 		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
