@@ -18,12 +18,14 @@ import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshToken;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +38,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static com.project.danim_be.common.exception.ErrorCode.FAIL_SIGNOUT;
 import static com.project.danim_be.common.exception.ErrorCode.USER_NOT_FOUND;
@@ -53,6 +56,7 @@ public class MemberService {
 	private final JwtUtil jwtUtil;
 	private final SocialService socialService;
 	private final RandomNickname randomNickname;
+	private final RedisTemplate<String, String> RefreshTokenRedisTemplate;
 
 	//회원가입
 	@Transactional
@@ -176,27 +180,41 @@ public class MemberService {
 			member = memberRepository.findByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.ID_NOT_FOUND));
 		}
 
-		TokenDto tokenDto = jwtUtil.createAllToken(userId);
-
 		if(!passwordEncoder.matches(password, member.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
 
-		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
-		if(refreshToken.isPresent()) {
-			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-		} else {
-			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
-			refreshTokenRepository.save(newToken);
-		}
+		TokenDto tokenDto = jwtUtil.createAllToken(userId);
 
-		setHeader(response, tokenDto);
+		RefreshTokenRedisTemplate.opsForValue().set(
+				userId,
+				tokenDto.getRefreshToken(),
+				14,
+				TimeUnit.DAYS);
+
+//		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(member.getUserId());
+//		if(refreshToken.isPresent()) {
+//			refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+//		} else {
+//			RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), member.getUserId(), "DANIM");
+//			refreshTokenRepository.save(newToken);
+//		}
+			setHeader(response, tokenDto);
+
+//		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", tokenDto.getAccessToken());
+//		accessTokenCookie.setHttpOnly(true);
+//		accessTokenCookie.setSecure(true);
+//		response.addCookie(accessTokenCookie);
+//
+//		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken());
+//		refreshTokenCookie.setHttpOnly(true);
+//		refreshTokenCookie.setSecure(true);
+//		response.addCookie(refreshTokenCookie);
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
-
 	}
 
 	//로그아웃
@@ -208,7 +226,8 @@ public class MemberService {
 //		String accessToken = request.getHeader("ACCESS_KEY").substring(7);
 		if(refreshTokenRepository.existsByUserId(member.getUserId())) {
 //			Long tokenTime = jwtUtil.getExpirationTime(accessToken);
-			refreshTokenRepository.deleteByUserIdAndProvider(member.getUserId(), "DANIM");
+			RefreshTokenRedisTemplate.delete(member.getUserId());
+//			refreshTokenRepository.deleteByUserIdAndProvider(member.getUserId(), "DANIM");
 			Message message = Message.setSuccess(StatusEnum.OK,"로그아웃 성공", member.getUserId());
 			return new ResponseEntity<>(message, HttpStatus.OK);
 		}
@@ -242,7 +261,8 @@ public class MemberService {
 			}
 		} else {
 			try {
-				refreshTokenRepository.delete(refreshTokenRepository.findByUserId(member.getUserId()).get());
+//				refreshTokenRepository.delete(refreshTokenRepository.findByUserId(member.getUserId()).get());
+				RefreshTokenRedisTemplate.delete(member.getUserId());
 			} catch (IncorrectResultSizeDataAccessException e) {
 				throw new CustomException(FAIL_SIGNOUT);
 			}
@@ -268,22 +288,29 @@ public class MemberService {
 		String refresh_token = jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
 
 		if(!jwtUtil.refreshTokenValid(refresh_token)) {
-
 			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		}
 
 		String userId = jwtUtil.getUserInfoFromToken(refresh_token);
 
-		String newAccessToken = jwtUtil.createToken(userId, "Access");
+		TokenDto allToken = jwtUtil.createAllToken(userId);
+		TokenDto tokenDto = new TokenDto(allToken.getAccessToken(), allToken.getRefreshToken());
 
-		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken("Bearer " + refresh_token).orElseThrow(
-			NoSuchElementException::new
-		);
+		RefreshTokenRedisTemplate.opsForValue().set(
+				userId,
+				tokenDto.getRefreshToken(),
+				14,
+				TimeUnit.DAYS);
 
-		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
-		refreshTokenRepository.save(updatedRefreshToken);
+//
+//		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken("Bearer " + refresh_token).orElseThrow(
+//			NoSuchElementException::new
+//		);
 
-		jwtUtil.setHeaderAccessToken(response, newAccessToken);
+//		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
+//		refreshTokenRepository.save(updatedRefreshToken);
+
+		setHeader(response, tokenDto);
 
 		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공");
 

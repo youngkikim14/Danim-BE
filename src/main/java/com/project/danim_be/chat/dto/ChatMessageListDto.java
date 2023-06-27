@@ -18,5 +18,4 @@ public class ChatMessageListDto {
 
     private LocalDateTime createdTime;
 
-
 }

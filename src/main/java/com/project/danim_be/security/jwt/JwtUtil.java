@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,6 +44,7 @@ public class JwtUtil {
 	private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 	private final UserDetailsServiceImpl userDetailsService;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final RedisTemplate<String, String> RefreshTokenRedisTemplate;
 
 	@PostConstruct
 	public void init() {
@@ -122,8 +125,9 @@ public class JwtUtil {
 	public boolean refreshTokenValid(String token) {
 
 		if (!validateToken(token)) return false;
-		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(getUserInfoFromToken(token));
-		return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
+//		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(getUserInfoFromToken(token));
+		String refreshToken = RefreshTokenRedisTemplate.opsForValue().get(getUserInfoFromToken(token));
+		return refreshToken != null && token.equals(refreshToken.substring(7));
 
 	}
 
@@ -144,8 +148,7 @@ public class JwtUtil {
 		// 현재 시간과 만료 시간의 차이를 계산하여 반환
 		Date expirationDate = claims.getExpiration();
 		Date now = new Date();
-		long diff = (expirationDate.getTime() - now.getTime()) / 1000;
-		return diff;
+		return (expirationDate.getTime() - now.getTime()) / 1000;
 
 	}
 

@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final MemberRepository memberRepository;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException,	IOException,ServletException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException,ServletException {
 
 		// JWT 토큰을 해석하여 추출
 		String access_token  = jwtUtil.resolveToken(request, JwtUtil.ACCESS_KEY);
