@@ -149,7 +149,7 @@ public class ChatMessageService {
 			result.put(memberChatRoom.getChatRoom().getId().toString(),memberChatRoom.getAlarm());
 			sum += memberChatRoom.getAlarm();
 			alarm.add(result);
-			result.put("sum",sum);
+			
 		}
 		Map<String, Integer> sumMap = new HashMap<>();
 		sumMap.put("sum", sum);
