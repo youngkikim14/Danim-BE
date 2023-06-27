@@ -166,12 +166,10 @@ public class ChatRoomService {
 		MemberChatRoom leaveMember = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom)
 				.orElseThrow(() -> new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM));
 
-		if(member.getId().equals(leaveMember.getMember().getId())) {
+		if(member.getId().equals(leaveMember.getMember().getId()) && member.getId().equals(chatRoom.getAdminMemberId())) {
 			post.decNumberOfParticipants();
 			postRepository.save(post);
-		} else if (member.getId().equals(chatRoom.getAdminMemberId())){
-			throw new CustomException(ErrorCode.ADMIN_USER_NO_CANCLE);
-		} else throw new CustomException(ErrorCode.FAIL_LEAVE_CHATROOM);
+		} else throw new CustomException(ErrorCode.ADMIN_USER_NO_CANCLE);
 
 		queryFactory.delete(qMemberChatRoom)
 				.where(qMemberChatRoom.chatRoom.id.eq(id), qMemberChatRoom.member.id.eq(member.getId()))
