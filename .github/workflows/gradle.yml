@@ -57,7 +57,7 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
         
       # EC2 인스턴스 접속 및 애플리케이션 실행
-      - name: Application Run
+      - name: 메인서버 배포
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.SERVER1_HOST  }}
@@ -70,13 +70,12 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
             --name ${{ secrets.PROJECT_NAME }} \
-            --network my-network \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             
       - name: 무중단 배포를 위한 30초 delay
         run: sleep 30
 
-      - name: Deploy to Server2
+      - name: 서브서버1 배포
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.SERVER2_HOST }}
@@ -89,10 +88,9 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
             --name ${{ secrets.PROJECT_NAME }} \
-            --network my-network \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
 
-      - name: Deploy to Server3
+      - name: 서브서버2 배포
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.SERVER3_HOST }}
@@ -105,6 +103,5 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
             --name ${{ secrets.PROJECT_NAME }} \
-            --network my-network \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             
