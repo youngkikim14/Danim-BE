@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -36,11 +37,20 @@ public class RedisCacheConfig {
 	private ObjectMapper objectMapper;
 
 	//레디스 서버에 연결하는 메서드
+
+//	@Bean
+//	public RedisConnectionFactory redisConnectionFactory() {
+//		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host,port);
+//		redisStandaloneConfiguration.setHostName(host);
+//		redisStandaloneConfiguration.setPort(port);
+//		return new LettuceConnectionFactory(redisStandaloneConfiguration);
+//	}
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
 		RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
 		return new LettuceConnectionFactory(redisClusterConfiguration);
 	}
+
 
 	@Bean
 	public Jackson2JsonRedisSerializer jackson2JsonRedisSerializer() {
