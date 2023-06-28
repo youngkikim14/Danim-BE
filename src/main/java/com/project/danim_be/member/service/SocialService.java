@@ -255,7 +255,7 @@ public class SocialService {
     }
 
     // 연결 해제
-    public void naverSignout(Member member) throws IOException {
+    public void socailSignout(Member member) throws IOException {
 
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), member.getProvider());
 
@@ -283,7 +283,7 @@ public class SocialService {
         }
 
         refreshTokenRepository.delete(refreshToken.get());
-        refreshTokenRepository.delete(refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "DANIM").get());
+//        refreshTokenRepository.delete(refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "DANIM").get());
 
     }
 
