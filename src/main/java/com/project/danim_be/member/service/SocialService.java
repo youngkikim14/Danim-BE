@@ -12,7 +12,6 @@ import com.project.danim_be.member.dto.RequestDto.MemberRequestDto;
 import com.project.danim_be.member.dto.ResponseDto.LoginResponseDto;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
-import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.security.auth.UserDetailsImpl;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
@@ -22,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -53,7 +54,7 @@ public class SocialService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RandomNickname randomNickname;
-    private final NotificationService notificationService;
+    private final RedisTemplate<String, String> RefreshTokenRedisTemplate;
 
     @Transactional
     public ResponseEntity<Message> socialLogin(String provider, String code, HttpServletResponse response) throws JsonProcessingException {
@@ -229,26 +230,28 @@ public class SocialService {
 
         String userId = member.getUserId();
         TokenDto tokenDto = jwtUtil.createAllToken(userId);
-        int count = 0;
+//        int count = 0;
 
-        List<RefreshToken> refreshTokenList = refreshTokenRepository.findAllByUserId(userId);
-        for(RefreshToken refreshToken : refreshTokenList) {
-            if(refreshToken.getProvider().equals("DANIM")) {
-                count++;
-            }
-        }
-
-        for(RefreshToken refreshToken : refreshTokenList) {
-            if(!refreshToken.getProvider().equals("DANIM") && count == 0) {
-                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), userId, "DANIM");
-                refreshTokenRepository.save(newToken);
-            } else if(refreshToken.getProvider().equals("DANIM")) {
-                refreshTokenRepository.save(refreshToken.updateToken(tokenDto.getRefreshToken()));
-            }
-        }
-
+//        List<RefreshToken> refreshTokenList = refreshTokenRepository.findAllByUserId(userId);
+//        for(RefreshToken refreshToken : refreshTokenList) {
+//            if(refreshToken.getProvider().equals("DANIM")) {
+//                count++;
+//            }
+//        }
+        RefreshTokenRedisTemplate.opsForValue().set(
+                userId,
+                tokenDto.getRefreshToken(),
+                14,
+                TimeUnit.DAYS);
+//        for(RefreshToken refreshToken : refreshTokenList) {
+//            if(!refreshToken.getProvider().equals("DANIM") && count == 0) {
+//                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), userId, "DANIM");
+//                refreshTokenRepository.save(newToken);
+//            } else if(refreshToken.getProvider().equals("DANIM")) {
+//                refreshTokenRepository.save(refreshToken.updateToken(tokenDto.getRefreshToken()));
+//            }
+//        }
         setHeader(response, tokenDto);
-
     }
 
     // 연결 해제
