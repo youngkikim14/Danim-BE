@@ -166,7 +166,7 @@ public class ChatRoomService {
 		MemberChatRoom leaveMember = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom)
 				.orElseThrow(() -> new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM));
 
-		if(member.getId().equals(leaveMember.getMember().getId()) && member.getId().equals(chatRoom.getAdminMemberId())) {
+		if(member.getId().equals(leaveMember.getMember().getId()) && !member.getId().equals(chatRoom.getAdminMemberId())) {
 			post.decNumberOfParticipants();
 			postRepository.save(post);
 		} else throw new CustomException(ErrorCode.ADMIN_USER_NO_CANCLE);
