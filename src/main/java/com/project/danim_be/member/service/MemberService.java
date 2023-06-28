@@ -242,7 +242,8 @@ public class MemberService {
 
 		if(!member.getProvider().equals("DANIM")) {
 			try {
-				socialService.naverSignout(member);
+				socialService.socailSignout(member);
+				RefreshTokenRedisTemplate.delete(member.getUserId());
 			} catch (IOException e) {
 				throw new CustomException(FAIL_SIGNOUT);
 			}
