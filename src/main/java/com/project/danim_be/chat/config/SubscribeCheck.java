@@ -19,6 +19,8 @@ import com.project.danim_be.chat.service.ChatMessageService;
 public class SubscribeCheck implements ChannelInterceptor {
 	private ApplicationEventPublisher eventPublisher;
 	private Map<String, Long> sessionUserMap = new HashMap<>();
+	private ChatMessageService chatMessageService;
+
 
 	public SubscribeCheck(ApplicationEventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
@@ -40,7 +42,9 @@ public class SubscribeCheck implements ChannelInterceptor {
 			}
 		}else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
 			Long userId = sessionUserMap.get(accessor.getSessionId());
+			chatMessageService.allLeave(userId);
 			System.out.println("User " + userId + " disconnected.");
+
 		}
 
 		return message;
