@@ -16,8 +16,6 @@ import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -45,14 +43,8 @@ public class SearchService {
     @Transactional(readOnly = true)
     public ResponseEntity<Message> allPosts(Pageable pageable) {
 
-
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
-
-        NumberExpression<Integer> specialPostFirst = new CaseBuilder()
-                .when(qPost.id.eq(55L))
-                .then(0)
-                .otherwise(1);
 
         List<CardPostResponseDto> cardPostResponseDtoList = queryFactory
                 .select(Projections.constructor(CardPostResponseDto.class,
@@ -74,7 +66,7 @@ public class SearchService {
                         qPost.member.imageUrl))
                 .from(qPost)
                 .where(qPost.isDeleted.eq(false))
-                .orderBy(specialPostFirst.asc(), qPost.createdAt.desc())
+                .orderBy(qPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
