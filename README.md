@@ -79,6 +79,11 @@
 </details>
 
 
+## 트러블슈팅
+> #### [구경가기](https://hungry-eyeliner-5ed.notion.site/Da-nim-eaca74544f304378ba3487df7e383616?pvs=4)
+>
+
+
 
 ## 서비스 아키텍처
 
@@ -86,19 +91,4 @@
 
 
 
-## 트러블슈팅
-#### [구경가기](https://hungry-eyeliner-5ed.notion.site/Da-nim-eaca74544f304378ba3487df7e383616?pvs=4)
 
-## 기술스택
-
-> Platforms & Languages
-
-<img src="https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-badge&logo=spring-boot" height="30"/>
-
-<img src="https://img.shields.io/badge/HTTPS-EF9421?style=flat-square&logo=HTTPS&logoColor=white" height="30"/> <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white" height="30"/> <img src="https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white" height="30"/> <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" height="30"/> <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" height="30"/> <img src="	https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white" height="30"/> <img src="https://img.shields.io/badge/Github%20Actions-282a2e?style=for-the-badge&logo=githubactions&logoColor=367cfe" height="30"/> <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=Spring-Security&logoColor=white" height="30"/> 
-
-<img src="https://img.shields.io/badge/WEBSOCKET-000000?style=flat-square&logo=WEBSOCKET&logoColor=white" height="30"/> <img src="https://img.shields.io/badge/STOMP-000000?style=flat-square&logo=STOMP&logoColor=white" height="30"/>
-
-> Tools
-
-<img src="https://img.shields.io/badge/GITHUB-181717?style=flat-square&logo=GitHub&logoColor=white" height="30" /> <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white" height="30" />
