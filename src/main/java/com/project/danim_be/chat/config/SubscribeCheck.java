@@ -75,6 +75,7 @@ public class SubscribeCheck implements ChannelInterceptor {
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(userId);
 		log.info(" memberChatRoomList :  {}",memberChatRoomList);
 		for(MemberChatRoom memberChatRoom : memberChatRoomList){
+			log.info(" getMemberId :  {}",memberChatRoom.getMemberId);	
 			memberChatRoom.setRecentDisConnect(LocalDateTime.now());
 		}
 	}
