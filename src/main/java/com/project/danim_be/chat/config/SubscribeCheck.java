@@ -70,7 +70,7 @@ public class SubscribeCheck implements ChannelInterceptor {
 	}
 
 	//올리브?
-
+	@Transactional
 	public void allLeave(Long userId){
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(userId);
 		log.info(" memberChatRoomList :  {}",memberChatRoomList);
