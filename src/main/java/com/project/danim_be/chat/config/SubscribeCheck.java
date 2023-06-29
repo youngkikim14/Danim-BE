@@ -3,7 +3,7 @@ package com.project.danim_be.chat.config;
 
 import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
