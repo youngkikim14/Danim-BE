@@ -10,11 +10,13 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
+import com.project.danim_be.chat.service.ChatMessageService;
 
 @Component
 public class SubscribeCheck implements ChannelInterceptor {
 
 	private ApplicationEventPublisher eventPublisher;
+
 
 	public SubscribeCheck(ApplicationEventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
@@ -24,13 +26,27 @@ public class SubscribeCheck implements ChannelInterceptor {
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-		if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+		if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+			System.out.println("STOMP 연결"+ accessor.getSessionId());
+		} else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+			System.out.println("STOMP 연결 종료" + accessor.getDestination());
 			String destination = accessor.getDestination();
-			// destination에서 userId를 파싱하고,
-			Long userId = parseUserIdFromDestination(destination);
-			// 이벤트 발행
-			eventPublisher.publishEvent(new SubscriptionEvent(userId));
+			if (destination != null) {
+				System.out.println("STOMP 연결 종료" + destination);
+				System.out.println(parseUserIdFromDestination(destination));
+			}
+
+
+
+		} else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+			String destination = accessor.getDestination();
+
+			if (destination != null && destination.startsWith("/sub/alarm/")) {
+				Long userId = parseUserIdFromDestination(destination);
+				eventPublisher.publishEvent(new SubscriptionEvent(userId));
+			}
 		}
+
 		return message;
 	}
 	public class SubscriptionEvent {
