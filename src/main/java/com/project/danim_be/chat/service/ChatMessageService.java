@@ -79,6 +79,8 @@ public class ChatMessageService {
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 
 
+
+
 		//첫 연결시도이면
 		if(isFirstVisit(member.getId(),roomName)){
 			memberChatRoom = new MemberChatRoom(member, chatRoom);
@@ -112,9 +114,30 @@ public class ChatMessageService {
 		//alarm 초기화
 		memberChatRoom.InitializationAlarm (0);
 		alarmList(member.getId());
+
+		//킥멤버리스트보내주기
+		imposters(chatDto,chatRoom);
+
+
+
 		return message;
 
 	}
+	public void imposters(ChatDto chatDto,ChatRoom chatRoom){
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(chatRoom.getId());
+		Map<String,List<Long>>imposters =new HashMap<>();
+		List<Long>imposter=new ArrayList<>();
+		for(MemberChatRoom memberChatRoom : memberChatRoomList){
+			if(memberChatRoom.getKickMember()){
+				imposter.add(memberChatRoom.getMember().getId());
+			}
+			imposters.put("imposters",imposter);
+		}
+
+		messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposters);
+
+	}
+
 	//메시지저장  TALK
 	@Transactional
 	public void sendMessage(ChatDto chatDto) {
@@ -233,7 +256,7 @@ public class ChatMessageService {
 		Member superMember = memberRepository.findByNickname(chatDto.getSender())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		Member imposter = memberRepository.findByNickname(chatDto.getImposter())
+		Member kickedMember = memberRepository.findByNickname(chatDto.getImposter())
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		Post post = postRepository.findById(chatRoom.getPost().getId())
@@ -241,7 +264,7 @@ public class ChatMessageService {
 
 
 		if (superMember.getId().equals(chatRoom.getAdminMemberId())) {
-			MemberChatRoom  memberChatRoomImposter = memberChatRoomRepository.findByMemberAndChatRoom(imposter, chatRoom)
+			MemberChatRoom  memberChatRoomImposter = memberChatRoomRepository.findByMemberAndChatRoom(kickedMember, chatRoom)
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 			post.decNumberOfParticipants();
@@ -249,7 +272,13 @@ public class ChatMessageService {
 			memberChatRoomRepository.save(memberChatRoomImposter);
 
 			ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
+			chatMessage.setMessage(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.");
 			chatMessageRepository.save(chatMessage);
+			Map<String,String> imposter=new HashMap<>();
+			imposter.put("imposter",chatDto.getImposter());
+			messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposter);
+
+
 
 		} else {
 			throw new CustomException(ErrorCode.NOT_ADMIN_ACCESS);
