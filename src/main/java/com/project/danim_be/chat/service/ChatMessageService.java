@@ -241,15 +241,7 @@ public class ChatMessageService {
 		memberChatRoomRepository.save(memberChatRoom);
 	}
 
-	//올리브?
-	@Transactional
-	public void allLeave(Long userId){
-		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(userId);
-		log.info(" memberChatRoomList :  {}",memberChatRoomList);
-		for(MemberChatRoom memberChatRoom : memberChatRoomList){
-			memberChatRoom.setRecentDisConnect(LocalDateTime.now());
-		}
-	}
+
 	//강퇴기능 KICK
 	@Transactional
 	public void kickMember(ChatDto chatDto) {
