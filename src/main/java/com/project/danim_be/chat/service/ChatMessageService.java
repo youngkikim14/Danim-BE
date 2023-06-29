@@ -182,8 +182,6 @@ public class ChatMessageService {
 		messagingTemplate.convertAndSend("/sub/alarm/" + memberId, alarm);
 
 	}
-
-
 	@Transactional
 	public void increaseAlarm(List<Long> memberIdList, ChatRoom chatRoom) {
 		for (Long memberId : memberIdList) {
@@ -198,7 +196,6 @@ public class ChatMessageService {
 			}
 		}
 	}
-
 	// 	Map<Long,Integer>alarm=new HashMap<>();
 // 					alarm.put(memberId,memberChatRoom.getAlarm());
 // 					log.info("Alarm{}",memberChatRoom.getAlarm());
@@ -223,6 +220,7 @@ public class ChatMessageService {
 	// 		chatMessageRepository.save(cm);
 	// 	}
 	// }
+
 	//방을 나갔는지확인해야함	LEAVE
 	@Transactional
 	public void leaveChatRoom(ChatDto chatDto) {
@@ -241,6 +239,16 @@ public class ChatMessageService {
 		memberChatRoom.setRecentDisConnect(LocalDateTime.now());
 
 		memberChatRoomRepository.save(memberChatRoom);
+	}
+
+	//올리브?
+	@Transactional
+	public void allLeave(Long userId){
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(userId);
+		log.info(" memberChatRoomList :  {}",memberChatRoomList);
+		for(MemberChatRoom memberChatRoom : memberChatRoomList){
+			memberChatRoom.setRecentDisConnect(LocalDateTime.now());
+		}
 	}
 	//강퇴기능 KICK
 	@Transactional
