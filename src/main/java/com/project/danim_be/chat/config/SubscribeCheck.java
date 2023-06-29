@@ -19,6 +19,7 @@ import com.project.danim_be.chat.service.ChatMessageService;
 public class SubscribeCheck implements ChannelInterceptor {
 	private ApplicationEventPublisher eventPublisher;
 	private Map<String, Long> sessionUserMap = new HashMap<>();
+	@Autowired
 	private ChatMessageService chatMessageService;
 
 
