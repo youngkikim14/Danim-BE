@@ -213,10 +213,8 @@ public class MemberService {
 	@Transactional
 	public ResponseEntity<Message> logout(Member member, HttpServletRequest request) {
 
-		refreshTokenRepository.existsByUserId(member.getUserId());
-
 //		String accessToken = request.getHeader("ACCESS_KEY").substring(7);
-		if(refreshTokenRepository.existsByUserId(member.getUserId())) {
+		if(RefreshTokenRedisTemplate.opsForValue().get(member.getUserId()) != null ) {
 //			Long tokenTime = jwtUtil.getExpirationTime(accessToken);
 			RefreshTokenRedisTemplate.delete(member.getUserId());
 //			refreshTokenRepository.deleteByUserIdAndProvider(member.getUserId(), "DANIM");
