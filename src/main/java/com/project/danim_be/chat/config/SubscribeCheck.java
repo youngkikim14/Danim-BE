@@ -1,9 +1,12 @@
 package com.project.danim_be.chat.config;
 
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -12,16 +15,19 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.project.danim_be.chat.service.ChatMessageService;
+
+import com.project.danim_be.chat.entity.MemberChatRoom;
+import com.project.danim_be.chat.repository.MemberChatRoomRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class SubscribeCheck implements ChannelInterceptor {
 	private ApplicationEventPublisher eventPublisher;
 	private Map<String, Long> sessionUserMap = new HashMap<>();
 	@Autowired
-	private ChatMessageService chatMessageService;
-
+	private MemberChatRoomRepository memberChatRoomRepository;
 
 	public SubscribeCheck(ApplicationEventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
@@ -43,7 +49,7 @@ public class SubscribeCheck implements ChannelInterceptor {
 			}
 		}else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
 			Long userId = sessionUserMap.get(accessor.getSessionId());
-			chatMessageService.allLeave(userId);
+			allLeave(userId);
 			System.out.println("User " + userId + " disconnected.");
 
 		}
@@ -60,6 +66,16 @@ public class SubscribeCheck implements ChannelInterceptor {
 
 		public Long getUserId() {
 			return userId;
+		}
+	}
+
+	//올리브?
+
+	public void allLeave(Long userId){
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(userId);
+		log.info(" memberChatRoomList :  {}",memberChatRoomList);
+		for(MemberChatRoom memberChatRoom : memberChatRoomList){
+			memberChatRoom.setRecentDisConnect(LocalDateTime.now());
 		}
 	}
 	private Long parseUserIdFromDestination(String destination) {
