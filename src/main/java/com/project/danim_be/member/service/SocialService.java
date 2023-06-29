@@ -170,10 +170,14 @@ public class SocialService {
             case "KAKAO" -> {
                 email = userInfoData.get("kakao_account").get("email").asText();
                 JsonNode userProfile = userInfoData.get("kakao_account").get("profile");
-                if(userProfile != null && userInfoData.get("kakao_account").get("profile_image_needs_agreement").asText().equals("false")){
-                    userImage = userProfile.get("profile_image_url").asText();
+                if(!memberRepository.existsByUserId(email)) {
+                    if(userProfile != null && userInfoData.get("kakao_account").get("profile_image_needs_agreement").asText().equals("false")){
+                        userImage = userProfile.get("profile_image_url").asText();
+                    } else {
+                        userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
+                    }
                 } else {
-                    userImage = "https://danimdata.s3.ap-northeast-2.amazonaws.com/avatar.png";
+                    userImage = memberRepository.findByUserId(email).get().getImageUrl();
                 }
                 break;
             }
