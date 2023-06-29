@@ -9,12 +9,10 @@ import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.repository.ChatMessageRepository;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
 import com.project.danim_be.chat.repository.MemberChatRoomRepository;
-import com.project.danim_be.common.CacheService;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.member.entity.Member;
 import com.project.danim_be.member.repository.MemberRepository;
-import com.project.danim_be.notification.service.NotificationService;
 import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -68,12 +63,14 @@ public class ChatMessageService {
 
 		//sender(nickName)을 통해서 멤버를찾고
 		Member member = memberRepository.findByNickname(sender)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		//roomId를 통해서 생성된 채팅룸을 찾고
 		ChatRoom chatRoom= chatRoomRepository.findByRoomName(roomName)
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
-		Post post = postRepository.findByChatRoom_Id(chatRoom.getId()).get();
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+		Post post = postRepository.findByChatRoom_Id(chatRoom.getId()).orElseThrow(
+				()-> new CustomException(ErrorCode.POST_NOT_FOUND)
+		);
 
 		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
@@ -88,7 +85,7 @@ public class ChatMessageService {
 			if(!chatRoom.getAdminMemberId().equals(member.getId())&&!post.getId().equals(55L)) {
 				post.incNumberOfParticipants();
 			}
-				postRepository.save(post);
+			postRepository.save(post);
 
 		}else{
 			if(memberChatRoom==null){
@@ -96,15 +93,15 @@ public class ChatMessageService {
 			}
 		}
 		memberChatRoom.setRecentConnect(LocalDateTime.now());  //최근 접속한 시간
-		
+
 
 		ChatDto message = ChatDto.builder()
-			.type(ChatDto.MessageType.ENTER)
-			.roomName(chatDto.getRoomName())
-			.sender(chatDto.getSender())
-			.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-			.message(isFirstVisit(member.getId(),roomName) ? chatDto.getSender() + "님이 입장하셨습니다." : "")
-			.build();
+				.type(ChatDto.MessageType.ENTER)
+				.roomName(chatDto.getRoomName())
+				.sender(chatDto.getSender())
+				.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+				.message(isFirstVisit(member.getId(),roomName) ? chatDto.getSender() + "님이 입장하셨습니다." : "")
+				.build();
 
 		if (isFirstVisit(member.getId(),roomName)){
 			ChatMessage chatMessage = new ChatMessage(message, chatRoom);
@@ -123,17 +120,17 @@ public class ChatMessageService {
 		return message;
 
 	}
+	@Transactional
 	public void imposters(ChatDto chatDto,ChatRoom chatRoom){
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(chatRoom.getId());
-		Map<String,List<Long>>imposters =new HashMap<>();
-		List<Long>imposter=new ArrayList<>();
+		Map<String,List<String>>imposters =new HashMap<>();
+		List<String>imposter=new ArrayList<>();
 		for(MemberChatRoom memberChatRoom : memberChatRoomList){
 			if(memberChatRoom.getKickMember()){
-				imposter.add(memberChatRoom.getMember().getId());
+				imposter.add(memberChatRoom.getMember().getNickname());
 			}
 			imposters.put("imposters",imposter);
 		}
-
 		messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposters);
 
 	}
@@ -145,16 +142,16 @@ public class ChatMessageService {
 		String roomName = chatDto.getRoomName();
 
 		ChatRoom chatRoom =chatRoomRepository.findByRoomName(roomName)
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 		Member sendMember = memberRepository.findByNickname(chatDto.getSender())
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		List<Long> memberIdList = memberChatRoomRepository.findByChatRoom(chatRoom).stream()
-			.map(MemberChatRoom::getMember)
-			.map(Member::getId)
-			.filter(id -> !id.equals(sendMember.getId()))
-			.toList();
+				.map(MemberChatRoom::getMember)
+				.map(Member::getId)
+				.filter(id -> !id.equals(sendMember.getId()))
+				.toList();
 		increaseAlarm(memberIdList,chatRoom);
 
 		ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
@@ -164,34 +161,34 @@ public class ChatMessageService {
 	}
 
 
-		// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
-		@Transactional
-		public void alarmList(Long memberId) {
-			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(memberId);
-			List<Map<String,Integer>> alarm = new ArrayList<>();
+	// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
+	@Transactional
+	public void alarmList(Long memberId) {
+		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(memberId);
+		List<Map<String,Integer>> alarm = new ArrayList<>();
 
-			int sum=0;
-			for(MemberChatRoom memberChatRoom : memberChatRoomList) {
-				Map<String, Integer> result = new HashMap<>();
-				result.put(memberChatRoom.getChatRoom().getId().toString(), memberChatRoom.getAlarm());
-				sum += memberChatRoom.getAlarm();
-				alarm.add(result);
-			}
+		int sum=0;
+		for(MemberChatRoom memberChatRoom : memberChatRoomList) {
+			Map<String, Integer> result = new HashMap<>();
+			result.put(memberChatRoom.getChatRoom().getId().toString(), memberChatRoom.getAlarm());
+			sum += memberChatRoom.getAlarm();
+			alarm.add(result);
+		}
 
-			Map<String, Integer> sumMap = new HashMap<>();
-				sumMap.put("sum", sum);
-				alarm.add(sumMap);
-				log.info("alarm: {}", alarm);
-				messagingTemplate.convertAndSend("/sub/alarm/" + memberId, alarm);
+		Map<String, Integer> sumMap = new HashMap<>();
+		sumMap.put("sum", sum);
+		alarm.add(sumMap);
+		log.info("alarm: {}", alarm);
+		messagingTemplate.convertAndSend("/sub/alarm/" + memberId, alarm);
 
-}
+	}
 
 
 	@Transactional
 	public void increaseAlarm(List<Long> memberIdList, ChatRoom chatRoom) {
 		for (Long memberId : memberIdList) {
 			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberIdAndChatRoom(memberId, chatRoom)
-				.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+					.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
 			if (memberChatRoom.getRecentDisConnect()!=null && memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
 				memberChatRoom.increaseAlarm (1);
 				memberChatRoomRepository.save(memberChatRoom);
@@ -202,7 +199,7 @@ public class ChatMessageService {
 		}
 	}
 
-// 	Map<Long,Integer>alarm=new HashMap<>();
+	// 	Map<Long,Integer>alarm=new HashMap<>();
 // 					alarm.put(memberId,memberChatRoom.getAlarm());
 // 					log.info("Alarm{}",memberChatRoom.getAlarm());
 // 					log.info("memberId :{} ",memberId);
@@ -233,13 +230,13 @@ public class ChatMessageService {
 		String sender = chatDto.getSender();
 
 		Member member = memberRepository.findByNickname(sender)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		ChatRoom chatRoom= chatRoomRepository.findByRoomName(roomName)
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom)
-			.orElseThrow(() -> new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM));
+				.orElseThrow(() -> new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM));
 
 		memberChatRoom.setRecentDisConnect(LocalDateTime.now());
 
@@ -250,22 +247,22 @@ public class ChatMessageService {
 	public void kickMember(ChatDto chatDto) {
 
 		ChatRoom chatRoom = chatRoomRepository.findByRoomName(chatDto.getRoomName())
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 		// chatRoom.getAdminMemberId() == chatDto.getSender()
 		Member superMember = memberRepository.findByNickname(chatDto.getSender())
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		Member kickedMember = memberRepository.findByNickname(chatDto.getImposter())
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 		Post post = postRepository.findById(chatRoom.getPost().getId())
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 
 		if (superMember.getId().equals(chatRoom.getAdminMemberId())) {
 			MemberChatRoom  memberChatRoomImposter = memberChatRoomRepository.findByMemberAndChatRoom(kickedMember, chatRoom)
-				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+					.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 			post.decNumberOfParticipants();
 			memberChatRoomImposter.setKickMember(true);
