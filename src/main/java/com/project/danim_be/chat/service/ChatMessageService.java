@@ -120,17 +120,17 @@ public class ChatMessageService {
 		return message;
 
 	}
+	@Transactional
 	public void imposters(ChatDto chatDto,ChatRoom chatRoom){
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(chatRoom.getId());
-		Map<String,List<Long>>imposters =new HashMap<>();
-		List<Long>imposter=new ArrayList<>();
+		Map<String,List<String>>imposters =new HashMap<>();
+		List<String>imposter=new ArrayList<>();
 		for(MemberChatRoom memberChatRoom : memberChatRoomList){
 			if(memberChatRoom.getKickMember()){
-				imposter.add(memberChatRoom.getMember().getId());
+				imposter.add(memberChatRoom.getMember().getNickname());
 			}
 			imposters.put("imposters",imposter);
 		}
-
 		messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposters);
 
 	}
