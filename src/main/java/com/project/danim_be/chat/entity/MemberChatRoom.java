@@ -8,12 +8,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -41,7 +43,11 @@ public class MemberChatRoom implements Serializable {
 	//setter
 	public void setFirstJoinRoom(LocalDateTime now) {this.firstJoinRoom = now;}
 	public void setRecentConnect(LocalDateTime now) {this.recentConnect = now;}
-	public void setRecentDisConnect(LocalDateTime now) {this.recentDisConnect = now;}
+	public void setRecentDisConnect(LocalDateTime now) {
+		log.info("why");
+		this.recentDisConnect = now;
+		log.info("not?");
+	}
 
 	public MemberChatRoom(Member member, ChatRoom chatRoom) {
 		this.member = member;
