@@ -15,12 +15,36 @@
 
 ### GitHub
 
-https://github.com/project-danim/Danim-FE
-https://github.com/project-danim/Danim-BE
+>https://github.com/project-danim/Danim-FE
+>
+>https://github.com/project-danim/Danim-BE
 
-> 주요 기능
+## 주요 기능
 <details>
-<summary></summary>
+<summary>계획 없는 당신, 함께하고 싶은 당신</summary>
+
+- 알차게 짠 여행계획 혼자가기 아쉽다면 공유하세요! 누군가와 함께 쌓을 새로운 추억이 기다리고 있습니다
+
+- 다른 사람들의 일정을 확인하고 참가하세요. 알차게 일정을 계획한 host와 더 풍부한 여행을 함께 하세요.
+
+![image](https://github.com/project-danim/Danim-BE/assets/127404498/706e05b3-2ab2-4786-84fd-2c3d605ae658)
+
+</details>
+
+<details>
+<summary>여행 계획과 함께할 사람들을 미리 만나볼 수 있는 채팅기능</summary>
+
+- 구체적인 여행 일정이 궁금하다면 채팅을 통해 알아갈 수 있다
+
+- 동행자들과 미리 계획을 잡고 일정을 공유하세요요.
+
+![image](https://github.com/project-danim/Danim-BE/assets/127404498/cb8ebd9b-792a-48f0-970a-332206d44145)
+
+
+</details>
+
+<details>
+<summary>원하는 지역, 원하는 사람을 찾을 수 있는 검색기능</summary>
 
 - 다양한 조건의 필터링 기능으로 원하는 지역, 혹은 특정 동행자를 찾을 수 있습니다.
 
