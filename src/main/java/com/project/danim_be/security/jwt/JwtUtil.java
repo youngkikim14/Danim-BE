@@ -118,7 +118,6 @@ public class JwtUtil {
 	}
 
 	public boolean refreshTokenValid(String token) {
-		log.info("여기는 refreshTokenValid");
 		if (!validateToken(token)) return false;
 //		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(getUserInfoFromToken(token));
 		String refreshToken = RefreshTokenRedisTemplate.opsForValue().get(getUserInfoFromToken(token));
