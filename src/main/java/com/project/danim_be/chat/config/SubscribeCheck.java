@@ -10,11 +10,13 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
+import com.project.danim_be.chat.service.ChatMessageService;
 
 @Component
 public class SubscribeCheck implements ChannelInterceptor {
 
 	private ApplicationEventPublisher eventPublisher;
+
 
 	public SubscribeCheck(ApplicationEventPublisher eventPublisher) {
 		this.eventPublisher = eventPublisher;
@@ -27,7 +29,15 @@ public class SubscribeCheck implements ChannelInterceptor {
 		if (StompCommand.CONNECT.equals(accessor.getCommand())) {
 			System.out.println("STOMP 연결"+ accessor.getSessionId());
 		} else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
-			System.out.println("STOMP 연결 종료" + accessor.getSessionId());
+			System.out.println("STOMP 연결 종료" + accessor.getDestination());
+			String destination = accessor.getDestination();
+			if (destination != null) {
+				System.out.println("STOMP 연결 종료" + destination);
+				System.out.println(parseUserIdFromDestination(destination));
+			}
+
+
+
 		} else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
 			String destination = accessor.getDestination();
 
