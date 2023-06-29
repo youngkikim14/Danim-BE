@@ -1,7 +1,6 @@
 package com.project.danim_be.security.jwt;
 
 import com.project.danim_be.security.auth.UserDetailsServiceImpl;
-import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
@@ -31,8 +30,8 @@ public class JwtUtil {
 	private static final String BEARER_PREFIX = "Bearer ";
 	public static final String ACCESS_KEY = "ACCESS_KEY";
 	public static final String REFRESH_KEY = "REFRESH_KEY";
-	// private static final long ACCESS_TIME = Duration.ofMinutes(60).toMillis();	//60분
-	private static final long ACCESS_TIME = Duration.ofDays(1).toMillis();	//1일
+	private static final long ACCESS_TIME = Duration.ofMinutes(60).toMillis();	//60분
+//	private static final long ACCESS_TIME = Duration.ofDays(1).toMillis();	//1일
 	private static final long REFRESH_TIME = Duration.ofDays(14).toMillis();	//14일
 
 	@Value("${jwt.secret.key}")
@@ -40,7 +39,6 @@ public class JwtUtil {
 	private Key key;
 	private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 	private final UserDetailsServiceImpl userDetailsService;
-	private final RefreshTokenRepository refreshTokenRepository;
 	private final RedisTemplate<String, String> RefreshTokenRedisTemplate;
 
 	@PostConstruct
