@@ -150,9 +150,10 @@
 
 ## 🛠 ERD
 
+![Danim_erdDiagram](https://github.com/project-danim/Danim-BE/assets/97998858/c8d8d7f2-3a08-4016-8372-9fb65b9be53b)
 <br>
 
-## 기술스택
+## ⚙ 기술스택
 
 > Platforms & Languages
 
