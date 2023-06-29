@@ -18,7 +18,7 @@ public class MypagePostResponseDto {
     private String postTitle;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date tripEndDate;
+    private Date createdAt;
 
     private String content;
 
@@ -29,7 +29,7 @@ public class MypagePostResponseDto {
     public MypagePostResponseDto(Post post, Boolean owner) {
         this.id = post.getId();
         this.postTitle = post.getPostTitle();
-        this.tripEndDate = post.getTripEndDate();
+        this.createdAt = post.getCreatedAt();
         this.content = post.getContent();
         if(!post.getImageUrls().isEmpty()) {
             this.imageUrl = post.getImageUrls().get(0).getImageUrl();
