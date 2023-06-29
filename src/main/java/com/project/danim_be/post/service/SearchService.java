@@ -46,6 +46,11 @@ public class SearchService {
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
 
+        NumberExpression<Integer> specialPostFirst = new CaseBuilder()
+                .when(qPost.id.eq(55L))
+                .then(0)
+                .otherwise(1);
+
         List<CardPostResponseDto> cardPostResponseDtoList = queryFactory
                 .select(Projections.constructor(CardPostResponseDto.class,
                         qPost.id,
@@ -66,7 +71,7 @@ public class SearchService {
                         qPost.member.imageUrl))
                 .from(qPost)
                 .where(qPost.isDeleted.eq(false))
-                .orderBy(qPost.createdAt.desc())
+                .orderBy(specialPostFirst.asc(),qPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
