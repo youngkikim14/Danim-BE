@@ -188,15 +188,20 @@ public class MemberService {
 
 		setHeader(response, tokenDto);
 
-//		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", tokenDto.getAccessToken());
-//		accessTokenCookie.setHttpOnly(true);
-//		accessTokenCookie.setSecure(true);
-//		response.addCookie(accessTokenCookie);
-//
-//		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken());
-//		refreshTokenCookie.setHttpOnly(true);
-//		refreshTokenCookie.setSecure(true);
-//		response.addCookie(refreshTokenCookie);
+/*
+
+		[For HttpOnly]
+		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", tokenDto.getAccessToken());
+		accessTokenCookie.setHttpOnly(true);
+		accessTokenCookie.setSecure(true);
+		response.addCookie(accessTokenCookie);
+
+		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken());
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
+		response.addCookie(refreshTokenCookie);
+
+ */
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
