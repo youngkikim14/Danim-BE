@@ -275,8 +275,6 @@ public class ChatMessageService {
 			imposter.put("imposter",chatDto.getImposter());
 			messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposter);
 
-
-
 		} else {
 			throw new CustomException(ErrorCode.NOT_ADMIN_ACCESS);
 		}
