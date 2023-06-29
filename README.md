@@ -87,7 +87,7 @@
 
 
 ## 트러블슈팅
-> [보러가기]([https://github.com/moment-project/BE_MOMENT/wiki](https://hungry-eyeliner-5ed.notion.site/Da-nim-eaca74544f304378ba3487df7e383616?pvs=4))
+#### [구경가기](https://hungry-eyeliner-5ed.notion.site/Da-nim-eaca74544f304378ba3487df7e383616?pvs=4)
 
 ## 기술스택
 
