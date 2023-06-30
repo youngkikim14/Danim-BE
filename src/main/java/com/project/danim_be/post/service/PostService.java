@@ -2,7 +2,9 @@ package com.project.danim_be.post.service;
 
 
 import com.project.danim_be.chat.entity.ChatRoom;
+import com.project.danim_be.chat.entity.MemberChatRoom;
 import com.project.danim_be.chat.repository.ChatRoomRepository;
+import com.project.danim_be.chat.repository.MemberChatRoomRepository;
 import com.project.danim_be.common.exception.CustomException;
 import com.project.danim_be.common.exception.ErrorCode;
 import com.project.danim_be.common.util.Message;
@@ -40,6 +42,7 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final ImageRepository imageRepository;
 	private final ChatRoomRepository chatRoomRepository;
+	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final S3Uploader s3Uploader;
 
 	//게시글작성
@@ -167,6 +170,13 @@ public class PostService {
 
 		imageRepository.deleteAll(images);
 		post.delete();
+
+		ChatRoom chatRoom = chatRoomRepository.findByPostId(post.getId());
+		List<MemberChatRoom> memberChatRoomList =  memberChatRoomRepository.findAllByChatRoom_Id(chatRoom.getId());
+		for(MemberChatRoom memberChatRoom : memberChatRoomList){
+			memberChatRoom.InitializationAlarm(0);
+		}
+
 
 		Message message = Message.setSuccess(StatusEnum.OK, "게시글 삭제 성공");
 		return new ResponseEntity<>(message, HttpStatus.OK);
