@@ -27,14 +27,14 @@ public class QReview extends EntityPathBase<Review> {
     public final StringPath comment = createString("comment");
 
     //inherited
-    public final DateTimePath<java.util.Date> createdAt = _super.createdAt;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.project.danim_be.member.entity.QMember member;
 
     //inherited
-    public final DateTimePath<java.util.Date> modifiedAt = _super.modifiedAt;
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final NumberPath<Double> point = createNumber("point", Double.class);
 

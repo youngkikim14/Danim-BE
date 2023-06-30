@@ -14,9 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -36,16 +36,16 @@ public class Post extends Timestamped implements Serializable {
 	private String postTitle;            		//게시글 제목
 
 	@Column(nullable = false)
-	private Date recruitmentStartDate;    		//모집 등록날짜
+	private LocalDate recruitmentStartDate;    		//모집 등록날짜
 
 	@Column(nullable = false)
-	private Date recruitmentEndDate;    		//모집 마감날짜
+	private LocalDate recruitmentEndDate;    		//모집 마감날짜
 
 	@Column(nullable = false)
-	private Date tripStartDate;            		//여행 시작날짜
+	private LocalDate tripStartDate;            		//여행 시작날짜
 
 	@Column(nullable = false)
-	private Date tripEndDate;            		//여행 종료날짜
+	private LocalDate tripEndDate;            		//여행 종료날짜
 
 	@Column(nullable = false)
 	private String ageRange;            		//연령대

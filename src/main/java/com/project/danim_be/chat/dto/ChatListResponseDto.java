@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ChatListResponseDto {
 	private Long roomId;
 	private String postTitle;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createAtTime;
+	private LocalDateTime createAtTime;
 	private String roomName;
 	private ChatMessage lastMessage;
 //	private Stirng imageUrl;

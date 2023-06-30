@@ -29,14 +29,14 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
     public final StringPath chatRoomName = createString("chatRoomName");
 
     //inherited
-    public final DateTimePath<java.util.Date> createdAt = _super.createdAt;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath message = createString("message");
 
     //inherited
-    public final DateTimePath<java.util.Date> modifiedAt = _super.modifiedAt;
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final StringPath sender = createString("sender");
 

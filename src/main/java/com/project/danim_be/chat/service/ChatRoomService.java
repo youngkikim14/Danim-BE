@@ -21,8 +21,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;@Slf4j
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 
@@ -97,13 +103,11 @@ public class ChatRoomService {
 			}
 
 		}
-		Date recruitmentEndDate = post.getRecruitmentEndDate();
-		// LocalDate 타입으로 변환
-		LocalDate localDate = new java.sql.Date(recruitmentEndDate.getTime()).toLocalDate();
+		LocalDate recruitmentEndDate = post.getRecruitmentEndDate();
 		LocalDate today = LocalDate.now();
 
 		// 현재 날짜가 모집 종료일보다 늦다면 true
-		boolean afterDate = today.isAfter(localDate);
+		boolean afterDate = today.isAfter(recruitmentEndDate);
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 
 		// 채팅방에 이미 입장했을 때
@@ -133,11 +137,11 @@ public class ChatRoomService {
 			}
 
 			if(memberChatRooms != null) {
-				Date from = Date.from(memberChatRooms.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
+				LocalDateTime from = memberChatRooms.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toLocalDateTime();
 				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(chatRoomId);
 				List<ChatMessage> filteredChatMessages = new ArrayList<>();
 				for (ChatMessage message : chatMessages) {
-					if (message.getCreatedAt().after(from) ) {
+					if (message.getCreatedAt().isAfter(from) ) {
 						filteredChatMessages.add(message);
 					}
 				}
