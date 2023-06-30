@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -15,7 +15,7 @@ public class CardPostResponseDto {
     private String postTitle;
 
     @JsonFormat(pattern="yyyy-MM-dd", timezone = "Asia/Seoul")
-    private Date recruitmentEndDate;
+    private LocalDate recruitmentEndDate;
 
     private String nickname;
 

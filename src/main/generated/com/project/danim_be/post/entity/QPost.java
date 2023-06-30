@@ -31,7 +31,7 @@ public class QPost extends EntityPathBase<Post> {
     public final StringPath content = createString("content");
 
     //inherited
-    public final DateTimePath<java.util.Date> createdAt = _super.createdAt;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath gender = createString("gender");
 
@@ -54,19 +54,19 @@ public class QPost extends EntityPathBase<Post> {
     public final com.project.danim_be.member.entity.QMember member;
 
     //inherited
-    public final DateTimePath<java.util.Date> modifiedAt = _super.modifiedAt;
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final NumberPath<Integer> numberOfParticipants = createNumber("numberOfParticipants", Integer.class);
 
     public final StringPath postTitle = createString("postTitle");
 
-    public final DateTimePath<java.util.Date> recruitmentEndDate = createDateTime("recruitmentEndDate", java.util.Date.class);
+    public final DatePath<java.time.LocalDate> recruitmentEndDate = createDate("recruitmentEndDate", java.time.LocalDate.class);
 
-    public final DateTimePath<java.util.Date> recruitmentStartDate = createDateTime("recruitmentStartDate", java.util.Date.class);
+    public final DatePath<java.time.LocalDate> recruitmentStartDate = createDate("recruitmentStartDate", java.time.LocalDate.class);
 
-    public final DateTimePath<java.util.Date> tripEndDate = createDateTime("tripEndDate", java.util.Date.class);
+    public final DatePath<java.time.LocalDate> tripEndDate = createDate("tripEndDate", java.time.LocalDate.class);
 
-    public final DateTimePath<java.util.Date> tripStartDate = createDateTime("tripStartDate", java.util.Date.class);
+    public final DatePath<java.time.LocalDate> tripStartDate = createDate("tripStartDate", java.time.LocalDate.class);
 
     public QPost(String variable) {
         this(Post.class, forVariable(variable), INITS);

@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -203,12 +204,12 @@ public class PostService {
 	public void endRecruitmentDate() {
 
 		List<Post> postList = postRepository.findAll();
-		Date today = new Date();
-		for(int i = 0; i < postList.size(); i++) {
-			if(postList.get(i).getIsRecruitmentEnd().equals(false)){
-				if(today.after(postList.get(i).getRecruitmentEndDate())){
-					postList.get(i).endRecruitmentDate();
-					postRepository.save(postList.get(i));
+		LocalDate today = LocalDate.now().minusDays(1);
+		for (Post post : postList) {
+			if (post.getIsRecruitmentEnd().equals(false)) {
+				if (today.isAfter(post.getRecruitmentEndDate())) {
+					post.endRecruitmentDate();
+					postRepository.save(post);
 				}
 			}
 		}

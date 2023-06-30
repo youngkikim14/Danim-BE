@@ -30,7 +30,7 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath content = createString("content");
 
     //inherited
-    public final DateTimePath<java.util.Date> createdAt = _super.createdAt;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath gender = createString("gender");
 
@@ -41,7 +41,7 @@ public class QMember extends EntityPathBase<Member> {
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     //inherited
-    public final DateTimePath<java.util.Date> modifiedAt = _super.modifiedAt;
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final StringPath nickname = createString("nickname");
 
