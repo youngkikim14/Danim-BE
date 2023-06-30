@@ -167,7 +167,7 @@ public class SearchService {
                         qPost.gender,
                         qPost.isRecruitmentEnd,
                         qPost.member.imageUrl,
-                        qPost.member.userId))
+                        qPost.member.id))
                 .from(qPost)
                 .where(predicate)
                 .orderBy(qPost.createdAt.desc())
