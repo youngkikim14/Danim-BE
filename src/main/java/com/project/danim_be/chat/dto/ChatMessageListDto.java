@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class ChatMessageListDto {
+
     private Long id;
 
     private String message;

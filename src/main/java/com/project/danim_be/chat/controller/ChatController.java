@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-
 @Controller
 @Slf4j
 @RequiredArgsConstructor
@@ -61,13 +60,14 @@ public class ChatController {
 						.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 						.build();
 
-
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), message);
 			}
 
 			case LEAVE -> {
 				System.out.println("TYPE : LEAVE");
+
 				chatMessageService.leaveChatRoom(chatDto);
+
 				//SSE요청시작!
 				ChatDto leaveMessage = ChatDto.builder()
 						.type(ChatDto.MessageType.LEAVE)
@@ -80,7 +80,9 @@ public class ChatController {
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), leaveMessage);
 			}
 			case KICK -> {
+
 				System.out.println("TYPE : KICK");
+
 				chatMessageService.kickMember(chatDto);
 
 				ChatDto kickMessage = ChatDto.builder()
@@ -91,16 +93,19 @@ public class ChatController {
 						.time(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 						.message(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.")
 						.build();
+
 				messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), kickMessage);
 			}
 		}
 	}
+
 	@MessageMapping("/sub/alarm/{userId}")
 	public void alarmList(@DestinationVariable Long userId){
+
 		chatMessageService.alarmList(userId);
 		System.out.println(userId);
-	}
 
+	}
 
 	@PostMapping("/api/chat/room/{roomId}")
 	public ResponseEntity<Message> joinChatRoom(@PathVariable Long roomId,	@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -113,7 +118,6 @@ public class ChatController {
 		return chatRoomService.myChatRoom(userDetails.getMember().getId());
 	}
 
-
 	//신청취소(나가기)
 	@DeleteMapping("/api/chat/room/{roomId}")
 	public ResponseEntity<Message> leaveChatRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -124,5 +128,6 @@ public class ChatController {
 	public ResponseEntity<Message> myJoinChatroom(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return chatRoomService.myJoinChatroom(userDetails.getMember().getId());
 	}
+
 }
 

@@ -18,8 +18,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-	property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class MemberChatRoom implements Serializable {
 
 	@Id
@@ -36,13 +35,18 @@ public class MemberChatRoom implements Serializable {
 	private LocalDateTime firstJoinRoom;	// 맨처음 채팅방에 들어온시간
 	private LocalDateTime recentConnect;	// 최근 접속한시간
 	private LocalDateTime recentDisConnect;	// 마지막으로 떠난시간 (채팅방 접속을끊은시간)(강퇴.신청취소아님)
-	private Boolean kickMember =false;		// 방에서 강퇴당한 이력이 있는지 true:강퇴당함 false:아직은..?
+	private Boolean kickMember = false;		// 방에서 강퇴당한 이력이 있는지 true:강퇴당함
 	private int alarm;
 
-
 	//setter
-	public void setFirstJoinRoom(LocalDateTime now) {this.firstJoinRoom = now;}
-	public void setRecentConnect(LocalDateTime now) {this.recentConnect = now;}
+	public void setFirstJoinRoom(LocalDateTime now) {
+		this.firstJoinRoom = now;
+	}
+
+	public void setRecentConnect(LocalDateTime now) {
+		this.recentConnect = now;
+	}
+
 	public void setRecentDisConnect(LocalDateTime now) {
 		this.recentDisConnect = now;
 	}
@@ -52,7 +56,7 @@ public class MemberChatRoom implements Serializable {
 		this.chatRoom = chatRoom;
 	}
 
-	//강퇴~
+	//강퇴
 	public void setKickMember(boolean b) {
 		this.kickMember = b;
 	}
@@ -61,8 +65,10 @@ public class MemberChatRoom implements Serializable {
 	public void increaseAlarm (int i) {
 		this.alarm += i;
 	}
+
 	//알람초기화
 	public void InitializationAlarm(int i) {
 		this.alarm = i;
 	}
+
 }

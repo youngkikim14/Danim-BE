@@ -10,8 +10,6 @@ public class LoginResponseDto {
 
 	private Long id;
 
-	// private SseEmitter sseEmitter;
-
 	private String nickName;
 
 	private String myPageImageUrl;
@@ -22,7 +20,6 @@ public class LoginResponseDto {
 		this.id = member.getId();
 		this.nickName = member.getNickname();
 		this.myPageImageUrl = member.getImageUrl();
-		// this.sseEmitter = sseEmitter;
 		this.isExistMember = isExistMember;
 	}
 
@@ -30,7 +27,6 @@ public class LoginResponseDto {
 		this.id = member.getId();
 		this.nickName = member.getNickname();
 		this.myPageImageUrl = member.getImageUrl();
-		// this.sseEmitter = sseEmitter;
 	}
 
 }

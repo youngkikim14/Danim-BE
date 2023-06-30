@@ -9,6 +9,9 @@ import java.util.Map;
 @Getter
 @Setter
 public class ChatRoomDto {
+
 	private String roomName;
+
 	private List<Map<String, Object>> userInfo;
+
 }
