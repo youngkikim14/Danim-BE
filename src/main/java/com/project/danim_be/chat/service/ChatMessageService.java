@@ -159,9 +159,6 @@ public class ChatMessageService {
 		// 레디스저장(아직미사용..)
 		// chatRedisTemplate.opsForList().rightPush(roomName, chatMessage);
 	}
-
-
-	// chatRedisTemplate.opsForList().rightPush("chatMessages", chatMessage);
 	@Transactional
 	public void alarmList(Long memberId) {
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(memberId);
@@ -178,7 +175,6 @@ public class ChatMessageService {
 		Map<String, Integer> sumMap = new HashMap<>();
 		sumMap.put("sum", sum);
 		alarm.add(sumMap);
-		log.info("alarm: {}", alarm);
 		messagingTemplate.convertAndSend("/sub/alarm/" + memberId, alarm);
 
 	}

@@ -70,7 +70,8 @@ public class SearchService {
                                 .orderBy(qImage.id.asc()),
                         qPost.gender,
                         qPost.isRecruitmentEnd,
-                        qPost.member.imageUrl))
+                        qPost.member.imageUrl,
+                        qPost.member.id))
                 .from(qPost)
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(specialPostFirst.asc(),qPost.createdAt.desc())
@@ -165,7 +166,8 @@ public class SearchService {
                                 .orderBy(qImage.id.asc()),
                         qPost.gender,
                         qPost.isRecruitmentEnd,
-                        qPost.member.imageUrl))
+                        qPost.member.imageUrl,
+                        qPost.member.userId))
                 .from(qPost)
                 .where(predicate)
                 .orderBy(qPost.createdAt.desc())
@@ -181,6 +183,9 @@ public class SearchService {
 
         Post post = postRepository.findById(id)
             .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
+        if(post.getIsDeleted()){
+            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        }
 
         List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(post.getChatRoom().getId());
         List<Long> participants = new ArrayList<>();

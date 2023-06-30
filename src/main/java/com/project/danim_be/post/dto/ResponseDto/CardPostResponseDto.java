@@ -37,6 +37,8 @@ public class CardPostResponseDto {
 
     private String userImage;
 
+    private Long userId;
+
 //    public CardPostResponseDto(Post post) {
 //        this.id = post.getId();
 //        this.postTitle = post.getPostTitle();
