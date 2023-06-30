@@ -74,7 +74,7 @@ public class SearchService {
                         qPost.member.id))
                 .from(qPost)
                 .where(qPost.isDeleted.eq(false))
-                .orderBy(qPost.createdAt.desc())
+                .orderBy(specialPostFirst.asc(),qPost.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

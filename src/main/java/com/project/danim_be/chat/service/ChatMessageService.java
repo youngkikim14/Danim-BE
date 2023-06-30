@@ -263,7 +263,7 @@ public class ChatMessageService {
 			chatMessageRepository.save(chatMessage);
 			Map<String,String> imposter = new HashMap<>();
 			imposter.put("imposter",chatDto.getImposter());
-			messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposter);
+			// messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposter);
 
 		} else {
 			throw new CustomException(ErrorCode.NOT_ADMIN_ACCESS);
