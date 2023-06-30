@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -20,22 +21,22 @@ public class PostResponseDto implements Serializable {
 	private String 		postTitle;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date recruitmentStartDate;
+	private LocalDate recruitmentStartDate;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date recruitmentEndDate;
+	private LocalDate recruitmentEndDate;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date tripStartDate;
+	private LocalDate tripStartDate;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date tripEndDate;
+	private LocalDate tripEndDate;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createdAt;
+	private LocalDateTime createdAt;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date modifiedAt;
+	private LocalDateTime modifiedAt;
 
 	private Long chatRoomId;
 

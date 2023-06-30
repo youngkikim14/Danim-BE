@@ -13,6 +13,4 @@ public class ChatRoomConnectSuccessDto {
 
 	List<String> nickName;
 
-
-
 }

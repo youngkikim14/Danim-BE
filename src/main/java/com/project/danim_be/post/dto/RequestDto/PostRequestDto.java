@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -21,16 +21,16 @@ public class PostRequestDto {
 	private String postTitle;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date recruitmentStartDate;
+	private LocalDate recruitmentStartDate;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date recruitmentEndDate;
+	private LocalDate recruitmentEndDate;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date tripStartDate;
+	private LocalDate tripStartDate;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date tripEndDate;
+	private LocalDate tripEndDate;
 
 	@Max(value = 10)
 	private Integer groupSize;

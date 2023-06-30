@@ -44,15 +44,18 @@ public class RedisCacheConfig {
 //		redisStandaloneConfiguration.setPort(port);
 //		return new LettuceConnectionFactory(redisStandaloneConfiguration);
 //	}
+
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
+
 		RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
 		return new LettuceConnectionFactory(redisClusterConfiguration);
-	}
 
+	}
 
 	@Bean
 	public Jackson2JsonRedisSerializer jackson2JsonRedisSerializer() {
+
 		Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer<>(Object.class);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
@@ -62,15 +65,17 @@ public class RedisCacheConfig {
 //		serializer.setObjectMapper(mapper);
 		serializer.serialize(mapper);
 		return serializer;
+
 	}
+
 	@Bean
 	public RedisTemplate<String, PostResponseDto> postResponseDtoRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+
 		RedisTemplate<String, PostResponseDto> template = new RedisTemplate<>();
 		template.setConnectionFactory(redisConnectionFactory);
 
 		// Redis에 저장되는 데이터를 Json형식으로 ,Json형식을 다시 Java형식으로바꾼다
 		Jackson2JsonRedisSerializer<PostResponseDto> serializer = new Jackson2JsonRedisSerializer<>(PostResponseDto.class);
-
 
 		ObjectMapper mapper = new ObjectMapper();
 		//모든필드에 대해서 getter,setter메서드를 필요로 하지않고, private필드에 직접접근하도록 설정
@@ -95,10 +100,13 @@ public class RedisCacheConfig {
 
 		//이로써 PostResponseDto 객체를 Json형태로 저장하거나 꺼내올때 PostResponseDto객체로변환이가능하게함
 		return template;
+
 	}
+
 	//ChatCache
 	@Bean
 	public RedisTemplate<?, ?> chatRedisTemplate() {
+
 		RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 
@@ -118,10 +126,12 @@ public class RedisCacheConfig {
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 
 		return redisTemplate;
+
 	}
 
 	@Bean
 	public RedisTemplate<String, String> RefreshTokenRedisTemplate() {
+
 		// redisTemplate를 받아와서 set, get, delete를 사용
 		RedisTemplate<String, String> refreshRedisTemplate = new RedisTemplate<>();
 		refreshRedisTemplate.setConnectionFactory(redisConnectionFactory());
@@ -131,6 +141,7 @@ public class RedisCacheConfig {
 		refreshRedisTemplate.setValueSerializer(new StringRedisSerializer());
 
 		return refreshRedisTemplate;
+
 	}
 
 }

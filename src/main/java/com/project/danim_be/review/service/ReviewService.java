@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -47,14 +46,11 @@ public class ReviewService {
         // 작성 여부 체크
         if(!reviewRepository.existsByMember_IdAndPost_Id(member.getId(), postId)) {
 
-            Date tripEndDate = post.getTripEndDate();
-
-            // LocalDate 타입으로 변환
-            LocalDate localDate = new java.sql.Date(tripEndDate.getTime()).toLocalDate();
+            LocalDate tripEndDate = post.getTripEndDate();
             LocalDate today = LocalDate.now();
 
             // 현재 날짜가 여행 종료일보다 늦다면 true
-            boolean afterDate = today.isAfter(localDate);
+            boolean afterDate = today.isAfter(tripEndDate);
 
             // 여행에 참여한 사람만 작성 가능
             if(memberChatRoomRepository.existsByMember_IdAndChatRoom_Id(member.getId(),post.getChatRoom().getId())) {
@@ -71,9 +67,13 @@ public class ReviewService {
                 planner.setScore(score);
 
                 // 여행이 종료된 후에 작성 가능 (테스트기간 작동 X)
+//                if(afterDate){
                     Review review = new Review(reviewRequestDto, post, member);
                     reviewRepository.save(review);
                     return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "리뷰 작성 완료"));
+//                } else {
+//                    throw new CustomException(ErrorCode.CANNOT_WRITE_REVIEW);
+//                }
             } else {
                 throw new CustomException(ErrorCode.NOT_WRITE_MEMBER);
             }

@@ -10,4 +10,5 @@ public enum StatusEnum {
 	OK(HttpStatus.OK, "OK");
 	private final HttpStatus status;
 	private final String message;
+
 }

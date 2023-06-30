@@ -5,7 +5,7 @@ import com.project.danim_be.review.entity.Review;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,7 +22,7 @@ public class ReviewResponseDto {
     private Double score;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();

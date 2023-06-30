@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -21,25 +21,30 @@ import java.util.List;
 public class ChatListResponseDto {
 
 	private Long roomId;
-	private String postTitle;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date createAtTime;
-	private String roomName;
-	private ChatMessage lastMessage;
-//	private Stirng imageUrl;
 
+	private String postTitle;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime createAtTime;
+
+	private String roomName;
+
+	private ChatMessage lastMessage;
 
 	public ChatListResponseDto(ChatRoom chatRoom) {
+
 		this.roomId = chatRoom.getId();
 		this.postTitle = chatRoom.getPost().getPostTitle();
 		this.createAtTime = chatRoom.getPost().getCreatedAt();
 		this.roomName = chatRoom.getRoomName();
 		List<ChatMessage> chatMessages = chatRoom.getChatMessages();
+
 		if (!chatMessages.isEmpty()) {
 			chatMessages.sort(Comparator.comparing(ChatMessage::getCreatedAt).reversed());
 			this.lastMessage = chatMessages.get(0);
 		} else {
 			this.lastMessage = null;
 		}
+
 	}
 }

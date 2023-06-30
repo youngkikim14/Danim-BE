@@ -1,6 +1,5 @@
 package com.project.danim_be.security.config;
 
-
 import com.project.danim_be.security.jwt.JwtAuthenticationFilter;
 import com.project.danim_be.security.jwt.JwtUtil;
 import jakarta.servlet.DispatcherType;
@@ -38,14 +37,13 @@ public class WebSecurityConfig {
 			"/api/user/login",
 			"/api/user/checkId",
 			"/api/user/checkNickname",
-			// "/api/user/logout",
 			"/api/user/delete",
 			"/api/user/{ownerId}/info",
 			"/api/user/{ownerId}/posts",
 			"/api/user/{ownerId}/review",
 			"/api/user/randomNickname",
 			"/api/user/userInfo",
-		    // "/swagger v3/",
+
 			"/v3/api-docs/**",
 			"/swagger-ui/**",
 			"/api/posts/**",
@@ -60,8 +58,6 @@ public class WebSecurityConfig {
 			"/api/user/refreshToken"
 
 	};
-
-
 
 	//정적자원은 인증인가를 하지않겠다.
 	@Bean
@@ -79,25 +75,10 @@ public class WebSecurityConfig {
 		return new BCryptPasswordEncoder();
 
 	}
-		// h2콘솔 접근허용
-		// @Bean
-		// @Order(Ordered.HIGHEST_PRECEDENCE)	// 이 필터체인이 다른필터체인보다 우선순위가 높음을 표시.
-		// SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
-		// 	http.securityMatcher(PathRequest.toH2Console());	//h2콘솔에 대한 요청만 체인을 사용한다.
-		// 	http.csrf((csrf) -> csrf.disable());				//csrf에대한 보호를 비활성한다.
-		// 	http.headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin()));
-		// 	// http.authorizeRequests().dispatcherTypeMatchers(HttpMethod.valueOf("/h2-console/**")).permitAll();
-		// 	return http.build();
-		// }
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		// 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
-		// 시큐리티 최신문서 찾아보기(아직안찾아봄)
-		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-//		 http.csrf().disable();    //csrf 비활성화
 		http.csrf(csrf -> csrf.disable());
 
 		http.authorizeHttpRequests(request -> request
@@ -116,7 +97,6 @@ public class WebSecurityConfig {
 
 		);
 
-//		 http.cors();
 		http
 			.cors(withDefaults());
 

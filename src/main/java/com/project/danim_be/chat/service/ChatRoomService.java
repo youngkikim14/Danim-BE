@@ -21,12 +21,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;@Slf4j
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
-
-
 public class ChatRoomService {
 
 	private final MemberChatRoomRepository memberChatRoomRepository;
@@ -37,8 +41,10 @@ public class ChatRoomService {
 
 	//내가 쓴글의 채팅방 목록조회
 	public ResponseEntity<Message> myChatRoom(Long id) {
+
 		QChatRoom qChatRoom = QChatRoom.chatRoom;
 		QChatMessage qChatMessage = QChatMessage.chatMessage;
+
 		List<ChatRoom> chatRoomList = queryFactory
 				.selectFrom(qChatRoom)
 				.from(qChatRoom)
@@ -46,17 +52,23 @@ public class ChatRoomService {
 				.where(qChatRoom.adminMemberId.eq(id), qChatRoom.post.isDeleted.eq(false))
 				.orderBy(qChatMessage.createdAt.desc())
 				.fetch();
+
 		List<ChatListResponseDto> chatListResponseDtoList = new ArrayList<>();
+
 		for (ChatRoom chatRoom : chatRoomList) {
 			ChatListResponseDto chatListResponseDto = new ChatListResponseDto(chatRoom);
 			chatListResponseDtoList.add(chatListResponseDto);
 		}
+
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 만든 채팅방", chatListResponseDtoList));
 	}
+
 	// 내가 신청한 채팅방 목록조회
-	public ResponseEntity<Message> myJoinChatroom(Long id) {   // 수정필요.... ㅠㅠㅠ 하지만 넘 힘들음...
+	public ResponseEntity<Message> myJoinChatroom(Long id) {
+
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
 		QChatMessage qChatMessage = QChatMessage.chatMessage;
+
 		List<ChatRoom> chatRoomList = queryFactory
 				.select(qMemberChatRoom.chatRoom)
 				.from(qMemberChatRoom)
@@ -64,14 +76,18 @@ public class ChatRoomService {
 				.where(qMemberChatRoom.member.id.eq(id), qMemberChatRoom.chatRoom.post.isDeleted.eq(false), qMemberChatRoom.kickMember.eq(false))
 				.orderBy(qChatMessage.createdAt.desc())
 				.fetch();
+
 		List<ChatListResponseDto> chatListResponseDtoList = new ArrayList<>();
+
 		for (ChatRoom chatroom : chatRoomList) {
 			if (!chatroom.getPost().getMember().getId().equals(id)) {
 				chatListResponseDtoList.add(new ChatListResponseDto(chatroom));
 			}
 		}
+
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "내가 참여한 채팅방", chatListResponseDtoList)); // 쿼리문 짜기
 	}
+
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	@Transactional
 	public ResponseEntity<Message> joinChatRoom(Long chatRoomId, Member member) {
@@ -97,35 +113,36 @@ public class ChatRoomService {
 			}
 
 		}
-		Date recruitmentEndDate = post.getRecruitmentEndDate();
-		// LocalDate 타입으로 변환
-		LocalDate localDate = new java.sql.Date(recruitmentEndDate.getTime()).toLocalDate();
+
+		LocalDate recruitmentEndDate = post.getRecruitmentEndDate();
 		LocalDate today = LocalDate.now();
 
 		// 현재 날짜가 모집 종료일보다 늦다면 true
-		boolean afterDate = today.isAfter(localDate);
+		boolean afterDate = today.isAfter(recruitmentEndDate);
 		MemberChatRoom memberChatRooms = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 
 		// 채팅방에 이미 입장했을 때
-		if(memberChatRooms!=null || post.getMember().getId().equals(chatRoom.getAdminMemberId())){
-			if (memberChatRooms!=null && memberChatRooms.getKickMember()) {
+		if(memberChatRooms!=null || post.getMember().getId().equals(chatRoom.getAdminMemberId())) {
+			if(memberChatRooms!=null && memberChatRooms.getKickMember()) {
 				throw new CustomException(ErrorCode.USER_KICKED);
 			}
-		}else if(afterDate){
+		} else if(afterDate) {
 			throw new CustomException(ErrorCode.EXPIRED_RECRUIT);
 		}
 
-		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
+		if(post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
+
 			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(chatRoomId);
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
 			List<Object> chatRecord =new ArrayList<>();
-			for (MemberChatRoom memberChatRoom : memberChatRoomList) {
+
+			for(MemberChatRoom memberChatRoom : memberChatRoomList) {
 				Map<String, Object> userInfo = new HashMap<>();
 				userInfo.put("nickname", memberChatRoom.getMember().getNickname());
 				userInfo.put("memberId", memberChatRoom.getMember().getId());
 				userInfo.put("imageUrl", memberChatRoom.getMember().getImageUrl());
 
-				if (memberChatRoom.getMember().getId().equals(chatRoom.getAdminMemberId())) {
+				if(memberChatRoom.getMember().getId().equals(chatRoom.getAdminMemberId())) {
 					userInfoList.add(0, userInfo); // 리스트의 맨 앞에 추가
 				} else {
 					userInfoList.add(userInfo); // 리스트의 맨 뒤에 추가
@@ -133,11 +150,11 @@ public class ChatRoomService {
 			}
 
 			if(memberChatRooms != null) {
-				Date from = Date.from(memberChatRooms.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
+				LocalDateTime from = memberChatRooms.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toLocalDateTime();
 				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(chatRoomId);
 				List<ChatMessage> filteredChatMessages = new ArrayList<>();
-				for (ChatMessage message : chatMessages) {
-					if (message.getCreatedAt().after(from) ) {
+				for(ChatMessage message : chatMessages) {
+					if(message.getCreatedAt().isAfter(from)) {
 						filteredChatMessages.add(message);
 					}
 				}
@@ -147,20 +164,24 @@ public class ChatRoomService {
 			ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomName(),userInfoList,chatRecord);
 
 			return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "모임 신청 완료", chatRoomResponseDto));
-		}else {
+		} else {
 			throw new CustomException(ErrorCode.COMPLETE_MATCHING);
 		}
 
-}
+	}
+
 	//신청취소(나가기)
 	@Transactional
 	public ResponseEntity<Message> leaveChatRoom(Long id, Member member) {
+
 		QMemberChatRoom qMemberChatRoom = QMemberChatRoom.memberChatRoom;
 
 		ChatRoom chatRoom = chatRoomRepository.findById(id)
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
+
 		Post post = postRepository.findByChatRoom_Id(id)
 				.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
 		MemberChatRoom leaveMember = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom)
 				.orElseThrow(() -> new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM));
 

@@ -132,7 +132,7 @@ public class MypageService {
                 select(Projections.constructor(MypagePostResponseDto.class,
                         qPost.id,
                         qPost.postTitle,
-                        qPost.tripEndDate,
+                        qPost.createdAt,
                         qPost.content,
                         JPAExpressions.select(qImage.imageUrl.min().coalesce("https://danimdata.s3.ap-northeast-2.amazonaws.com/Frame+2448+(2).png"))
                                 .from(qImage)

@@ -44,13 +44,3 @@ public class SearchController {
 
     }
 }
-
-
-
-// 만약 파람을 써야한다면 이걸로
-//Pageable pageable,
-//    @RequestParam(value = "ageRange", required = false) String ageRange,
-//    @RequestParam(value = "typeOfMeeting", required = false) Boolean typeOfMeeting,
-//    @RequestParam(value = "location", required = false) String location,
-//    @RequestParam(value = "keyword", required = false) String keyword,
-//    @RequestParam(value = "searchKeyword", required = false) String searchKeyword

@@ -1,6 +1,5 @@
 package com.project.danim_be.security.jwt;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

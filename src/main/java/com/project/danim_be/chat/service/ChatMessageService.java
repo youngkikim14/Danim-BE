@@ -1,6 +1,5 @@
 package com.project.danim_be.chat.service;
 
-
 import com.project.danim_be.chat.config.SubscribeCheck;
 import com.project.danim_be.chat.dto.ChatDto;
 import com.project.danim_be.chat.entity.ChatMessage;
@@ -53,8 +52,7 @@ public class ChatMessageService {
 	private final MemberRepository memberRepository;
 	private final PostRepository postRepository;
 
-
-	//채팅방 입장멤버 저장메서드	ENTER
+	//채팅방 입장멤버 저장메서드 ENTER
 	@Transactional
 	public ChatDto visitMember(ChatDto chatDto) {
 
@@ -69,31 +67,28 @@ public class ChatMessageService {
 		ChatRoom chatRoom= chatRoomRepository.findByRoomName(roomName)
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		Post post = postRepository.findByChatRoom_Id(chatRoom.getId()).orElseThrow(
-				()-> new CustomException(ErrorCode.POST_NOT_FOUND)
+				() -> new CustomException(ErrorCode.POST_NOT_FOUND)
 		);
 
 		//MemberChatRoom 에 멤버와 챗룸 연결되어있는지 찾는다
 		MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberAndChatRoom(member, chatRoom).orElse(null);
 
-
-
-
 		//첫 연결시도이면
-		if(isFirstVisit(member.getId(),roomName)){
+		if(isFirstVisit(member.getId(),roomName)) {
 			memberChatRoom = new MemberChatRoom(member, chatRoom);
-			memberChatRoom.setFirstJoinRoom(LocalDateTime.now());	//맨처음 연결한시간과
+			memberChatRoom.setFirstJoinRoom(LocalDateTime.now());
 			if(!chatRoom.getAdminMemberId().equals(member.getId())&&!post.getId().equals(55L)) {
 				post.incNumberOfParticipants();
 			}
 			postRepository.save(post);
 
-		}else{
-			if(memberChatRoom==null){
+		} else {
+			if(memberChatRoom==null) {
 				throw new CustomException(ErrorCode.FAIL_FIND_MEMBER_CHAT_ROOM);
 			}
 		}
-		memberChatRoom.setRecentConnect(LocalDateTime.now());  //최근 접속한 시간
 
+		memberChatRoom.setRecentConnect(LocalDateTime.now());
 
 		ChatDto message = ChatDto.builder()
 				.type(ChatDto.MessageType.ENTER)
@@ -107,7 +102,9 @@ public class ChatMessageService {
 			ChatMessage chatMessage = new ChatMessage(message, chatRoom);
 			chatMessageRepository.save(chatMessage);
 		}
+
 		memberChatRoomRepository.save(memberChatRoom);
+
 		//alarm 초기화
 		memberChatRoom.InitializationAlarm (0);
 		alarmList(member.getId());
@@ -115,22 +112,24 @@ public class ChatMessageService {
 		//킥멤버리스트보내주기
 		imposters(chatDto,chatRoom);
 
-
-
 		return message;
 
 	}
+
 	@Transactional
 	public void imposters(ChatDto chatDto,ChatRoom chatRoom){
+
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(chatRoom.getId());
 		Map<String,List<String>>imposters =new HashMap<>();
 		List<String>imposter=new ArrayList<>();
-		for(MemberChatRoom memberChatRoom : memberChatRoomList){
-			if(memberChatRoom.getKickMember()){
+
+		for(MemberChatRoom memberChatRoom : memberChatRoomList) {
+			if(memberChatRoom.getKickMember()) {
 				imposter.add(memberChatRoom.getMember().getNickname());
 			}
 			imposters.put("imposters",imposter);
 		}
+
 		messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposters);
 
 	}
@@ -152,19 +151,23 @@ public class ChatMessageService {
 				.map(Member::getId)
 				.filter(id -> !id.equals(sendMember.getId()))
 				.toList();
+
 		increaseAlarm(memberIdList,chatRoom);
 
 		ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
 		chatMessageRepository.save(chatMessage);
-		// 레디스저장(아직미사용..)
+		// 레디스저장
 		// chatRedisTemplate.opsForList().rightPush(roomName, chatMessage);
 	}
+
 	@Transactional
 	public void alarmList(Long memberId) {
+
 		List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByMember_Id(memberId);
 		List<Map<String,Integer>> alarm = new ArrayList<>();
 
 		int sum=0;
+
 		for(MemberChatRoom memberChatRoom : memberChatRoomList) {
 			Map<String, Integer> result = new HashMap<>();
 			result.put(memberChatRoom.getChatRoom().getId().toString(), memberChatRoom.getAlarm());
@@ -178,15 +181,17 @@ public class ChatMessageService {
 		messagingTemplate.convertAndSend("/sub/alarm/" + memberId, alarm);
 
 	}
+
 	@Transactional
 	public void increaseAlarm(List<Long> memberIdList, ChatRoom chatRoom) {
+
 		for (Long memberId : memberIdList) {
 			MemberChatRoom memberChatRoom = memberChatRoomRepository.findByMemberIdAndChatRoom(memberId, chatRoom)
-					.orElseThrow(()->new CustomException(ErrorCode.ROOM_NOT_FOUND));
+					.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 			if (memberChatRoom.getRecentDisConnect()!=null && memberChatRoom.getRecentDisConnect().isAfter(memberChatRoom.getRecentConnect())) {
 				memberChatRoom.increaseAlarm (1);
 				memberChatRoomRepository.save(memberChatRoom);
-				if(memberChatRoom.getAlarm()>0){
+				if(memberChatRoom.getAlarm()>0) {
 					alarmList(memberId);
 				}
 			}
@@ -228,7 +233,6 @@ public class ChatMessageService {
 		memberChatRoomRepository.save(memberChatRoom);
 	}
 
-
 	//강퇴기능 KICK
 	@Transactional
 	public void kickMember(ChatDto chatDto) {
@@ -246,7 +250,6 @@ public class ChatMessageService {
 		Post post = postRepository.findById(chatRoom.getPost().getId())
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
-
 		if (superMember.getId().equals(chatRoom.getAdminMemberId())) {
 			MemberChatRoom  memberChatRoomImposter = memberChatRoomRepository.findByMemberAndChatRoom(kickedMember, chatRoom)
 					.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
@@ -258,7 +261,7 @@ public class ChatMessageService {
 			ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
 			chatMessage.setMessage(chatDto.getSender() + "님이 " + chatDto.getImposter() + "을(를) 강퇴하였습니다.");
 			chatMessageRepository.save(chatMessage);
-			Map<String,String> imposter=new HashMap<>();
+			Map<String,String> imposter = new HashMap<>();
 			imposter.put("imposter",chatDto.getImposter());
 			// messagingTemplate.convertAndSend("/sub/chat/room/" + chatDto.getRoomName(), imposter);
 
@@ -270,10 +273,9 @@ public class ChatMessageService {
 
 	//첫방문 확인
 	private boolean isFirstVisit(Long memberId, String roomName){
-		return !memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomName(memberId, roomName);
-		//existsBy 메소드는 특정 조건을 만족하는 데이터가 존재하는지를 검사하고
-		//그 결과를 boolean으로 반환
-	}
 
+		return !memberChatRoomRepository.existsByMember_IdAndChatRoom_RoomName(memberId, roomName);
+
+	}
 
 }

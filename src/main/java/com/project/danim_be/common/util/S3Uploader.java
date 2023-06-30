@@ -24,6 +24,7 @@ public class S3Uploader {
 
 	// 멀티파트 파일을 받아와서 s3에 파일을 업로드 합니다. 업로드된 파일의 url을 반환합니다.
 	public String upload(MultipartFile multipartFile) throws IOException {
+
 		String fileName = UUID.randomUUID().toString() + "_" + multipartFile.getOriginalFilename();
 
 		ObjectMetadata objMeta = new ObjectMetadata();
@@ -33,10 +34,12 @@ public class S3Uploader {
 			.withCannedAcl(CannedAccessControlList.PublicRead));
 
 		return amazonS3Client.getUrl(bucket, fileName).toString();
+
 	}
 
 	// 해당 파일의 url을 받아와서 해당 파일을 s3에서 삭제합니다, 성공 여부를 반환합니다.
 	public boolean delete(String fileUrl) {
+
 		try {
 			String[] temp = fileUrl.split("/");
 			String fileKey = temp[temp.length-1];
@@ -45,6 +48,7 @@ public class S3Uploader {
 		} catch (Exception e) {
 			return false;
 		}
+
 	}
 
 }

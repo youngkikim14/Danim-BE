@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -119,8 +120,7 @@ public class PostService {
 		}
 
 		String imageUrl = uploader(imageFile);
-		// Image image = new Image(imageUrl);
-		// imageRepository.save(image);
+
 		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공", imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 
@@ -195,20 +195,17 @@ public class PostService {
 
 	}
 
-	// 크론표현식 사용
-	// second	//minute	//hour	//day of month	//month	//day of week
-	// !!리턴타입, 매개변수 줄 수 없음!!
 	@Transactional
 	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")    // 매일 00:00:00 실행
 	public void endRecruitmentDate() {
 
 		List<Post> postList = postRepository.findAll();
-		Date today = new Date();
-		for(int i = 0; i < postList.size(); i++) {
-			if(postList.get(i).getIsRecruitmentEnd().equals(false)){
-				if(today.after(postList.get(i).getRecruitmentEndDate())){
-					postList.get(i).endRecruitmentDate();
-					postRepository.save(postList.get(i));
+		LocalDate today = LocalDate.now().minusDays(1);
+		for (Post post : postList) {
+			if (post.getIsRecruitmentEnd().equals(false)) {
+				if (today.isAfter(post.getRecruitmentEndDate())) {
+					post.endRecruitmentDate();
+					postRepository.save(post);
 				}
 			}
 		}

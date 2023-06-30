@@ -35,11 +35,12 @@ public class CacheService {
 
 	@Cacheable(key = "#id", value="PostResponseDto")
 	public PostResponseDto postRes(Long id) throws JsonProcessingException {
+
 		System.out.println("====post====");
 		// 레디스에서 PostResponseDto 형태로 데이터를 가져옵니다.
 		PostResponseDto value = postResponseDtoRedisTemplate.opsForValue().get(String.valueOf(id));
 
-		if (value == null) {
+		if(value == null) {
 			System.out.println("==== No data ====");
 			// 레디스에 데이터가 없는 경우 DB에서 데이터를 가져옵니다.
 			Post post = postRepository.findById(id)

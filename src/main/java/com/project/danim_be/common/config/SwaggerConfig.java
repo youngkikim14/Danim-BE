@@ -16,6 +16,7 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
+
         Info info = new Info()
                 .title("Danim API")
                 .version("v1.0.0")
@@ -41,5 +42,7 @@ public class SwaggerConfig {
                 // API 마다 Security 인증 컴포넌트 설정
                 .addSecurityItem(addSecurityItem)
                 .info(info);
+
     }
+
 }
