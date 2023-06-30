@@ -10,6 +10,7 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public class Message {
+
 	private int statusCode;
 	private String message;
 	private Object data;

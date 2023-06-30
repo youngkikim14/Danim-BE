@@ -13,9 +13,11 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 public class ChatRoomResponseDto {
+
 	private String roomName;
+
 	private List<Map<String, Object>> userInfo;
-	// private List<Map<String,Object>> chatRecord;
+
 	private List<Object> chatRecord;
 
 	public ChatRoomResponseDto(String roomName, List<Map<String, Object>> userInfo, List<Object> chatRecord) {
@@ -23,4 +25,5 @@ public class ChatRoomResponseDto {
 		this.userInfo = userInfo;
 		this.chatRecord =  chatRecord;
 	}
+
 }

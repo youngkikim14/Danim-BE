@@ -18,12 +18,14 @@ public class RandomNickname {
 			"개미", "코브라", "사슴", "코끼리", "개구리", "카멜레온", "기러기", "우주인", "청춘"};
 
 	public String getRandomNickname() {
+
 		Random rand = new Random();
 		String nickname = adjectives[rand.nextInt(adjectives.length)] + nouns[rand.nextInt(nouns.length)];
 
 		while (memberRepository.findByNickname(nickname).isPresent()){
 			nickname = adjectives[rand.nextInt(adjectives.length)] + nouns[rand.nextInt(nouns.length)];
 		}
+
 		return nickname;
 	}
 }

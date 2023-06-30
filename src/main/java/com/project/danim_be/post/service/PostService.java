@@ -120,8 +120,7 @@ public class PostService {
 		}
 
 		String imageUrl = uploader(imageFile);
-		// Image image = new Image(imageUrl);
-		// imageRepository.save(image);
+
 		Message message = Message.setSuccess(StatusEnum.OK, "이미지 업로드 성공", imageUrl);
 		return new ResponseEntity<>(message, HttpStatus.OK);
 
@@ -196,9 +195,6 @@ public class PostService {
 
 	}
 
-	// 크론표현식 사용
-	// second	//minute	//hour	//day of month	//month	//day of week
-	// !!리턴타입, 매개변수 줄 수 없음!!
 	@Transactional
 	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")    // 매일 00:00:00 실행
 	public void endRecruitmentDate() {

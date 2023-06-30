@@ -81,13 +81,13 @@ public class SocialService {
                 }
             }
         }
+
         Member member = saveMember(memberRequestDto, provider);
 
         forceLogin(member);
 
         createToken(member, response);
 
-//        SseEmitter sseEmitter = notificationService.connectNotification(member.getId());
         LoginResponseDto loginResponseDto = new LoginResponseDto(member, isExistMember);
 
         return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
@@ -234,27 +234,13 @@ public class SocialService {
 
         String userId = member.getUserId();
         TokenDto tokenDto = jwtUtil.createAllToken(userId);
-//        int count = 0;
 
-//        List<RefreshToken> refreshTokenList = refreshTokenRepository.findAllByUserId(userId);
-//        for(RefreshToken refreshToken : refreshTokenList) {
-//            if(refreshToken.getProvider().equals("DANIM")) {
-//                count++;
-//            }
-//        }
         RefreshTokenRedisTemplate.opsForValue().set(
                 userId,
                 tokenDto.getRefreshToken(),
                 14,
                 TimeUnit.DAYS);
-//        for(RefreshToken refreshToken : refreshTokenList) {
-//            if(!refreshToken.getProvider().equals("DANIM") && count == 0) {
-//                RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), userId, "DANIM");
-//                refreshTokenRepository.save(newToken);
-//            } else if(refreshToken.getProvider().equals("DANIM")) {
-//                refreshTokenRepository.save(refreshToken.updateToken(tokenDto.getRefreshToken()));
-//            }
-//        }
+
         setHeader(response, tokenDto);
     }
 
@@ -287,7 +273,6 @@ public class SocialService {
         }
 
         refreshTokenRepository.delete(refreshToken.get());
-//        refreshTokenRepository.delete(refreshTokenRepository.findByUserIdAndProvider(member.getUserId(), "DANIM").get());
 
     }
 

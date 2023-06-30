@@ -16,6 +16,7 @@ public class LogAspect {
 
 	@Around("@annotation(LogExecutionTime)")
 	public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable{
+
 		StopWatch stopWatch = new StopWatch();
 		String methodName = joinPoint.getSignature().getName();
 

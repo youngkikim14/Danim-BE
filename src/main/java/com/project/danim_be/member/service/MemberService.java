@@ -189,7 +189,6 @@ public class MemberService {
 		setHeader(response, tokenDto);
 
 /*
-
 		[For HttpOnly]
 		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", tokenDto.getAccessToken());
 		accessTokenCookie.setHttpOnly(true);
@@ -200,7 +199,6 @@ public class MemberService {
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setSecure(true);
 		response.addCookie(refreshTokenCookie);
-
  */
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
@@ -252,12 +250,10 @@ public class MemberService {
 			}
 		} else {
 			try {
-//				refreshTokenRepository.delete(refreshTokenRepository.findByUserId(member.getUserId()).get());
 				RefreshTokenRedisTemplate.delete(member.getUserId());
 			} catch (IncorrectResultSizeDataAccessException e) {
 				throw new CustomException(FAIL_SIGNOUT);
 			}
-
 		}
 
 		member.signOut();
@@ -292,14 +288,6 @@ public class MemberService {
 				tokenDto.getRefreshToken(),
 				14,
 				TimeUnit.DAYS);
-
-//
-//		RefreshToken foundRefreshToken = refreshTokenRepository.findByRefreshToken("Bearer " + refresh_token).orElseThrow(
-//			NoSuchElementException::new
-//		);
-
-//		RefreshToken updatedRefreshToken = foundRefreshToken.updateToken(newAccessToken);
-//		refreshTokenRepository.save(updatedRefreshToken);
 
 		setHeader(response, tokenDto);
 

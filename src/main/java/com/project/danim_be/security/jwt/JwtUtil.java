@@ -30,8 +30,8 @@ public class JwtUtil {
 	private static final String BEARER_PREFIX = "Bearer ";
 	public static final String ACCESS_KEY = "ACCESS_KEY";
 	public static final String REFRESH_KEY = "REFRESH_KEY";
-	private static final long ACCESS_TIME = Duration.ofMinutes(60).toMillis();	//60분
-	private static final long REFRESH_TIME = Duration.ofDays(14).toMillis();	//14일
+	private static final long ACCESS_TIME = Duration.ofMinutes(60).toMillis();
+	private static final long REFRESH_TIME = Duration.ofDays(14).toMillis();
 
 	@Value("${jwt.secret.key}")
 	private String secretKey;
@@ -43,8 +43,8 @@ public class JwtUtil {
 	@PostConstruct
 	public void init() {
 
-		byte[] bytes = Base64.getDecoder().decode(secretKey); //Base64로 인코딩되어 있는 것을, 값을 가져와서(getDecoder()) 디코드하고(decode(secretKey)), byte 배열로 반환
-		key = Keys.hmacShaKeyFor(bytes); //반환된 bytes 를 hmacShaKeyFor() 메서드를 사용해서 Key 객체에 넣기
+		byte[] bytes = Base64.getDecoder().decode(secretKey);
+		key = Keys.hmacShaKeyFor(bytes);
 
 	}
 
@@ -61,13 +61,14 @@ public class JwtUtil {
 
 		return BEARER_PREFIX +
 			Jwts.builder()
-				.setSubject(userId) // 정보 저장
+				.setSubject(userId)
 				.setExpiration(new Date(date.getTime() + tokenType))
-				.setIssuedAt(date) // 토큰 발행 시간 정보
-				.signWith(key, signatureAlgorithm) // 사용할 암호화 알고리즘과
+				.setIssuedAt(date)
+				.signWith(key, signatureAlgorithm)
 				.compact();
 
 	}
+
 	// 토큰 검증
 	public boolean validateToken(String token) {
 
@@ -118,7 +119,6 @@ public class JwtUtil {
 
 	public boolean refreshTokenValid(String token) {
 		if (!validateToken(token)) return false;
-//		Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(getUserInfoFromToken(token));
 		String refreshToken = RefreshTokenRedisTemplate.opsForValue().get(getUserInfoFromToken(token));
 		return refreshToken != null && token.equals(refreshToken.substring(7));
 

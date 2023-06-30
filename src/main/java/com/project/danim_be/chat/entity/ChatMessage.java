@@ -26,14 +26,17 @@ public class ChatMessage extends Timestamped implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	private ChatDto.MessageType type;
+
 	private String chatRoomName;
+
 	private String sender;
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
 	private ChatRoom chatRoom;
 
 	public ChatMessage(ChatDto chatDto, ChatRoom chatRoom) {
+
 		this.message = chatDto.getMessage();
 		this.type = chatDto.getType();
 		this.sender = chatDto.getSender();
@@ -48,6 +51,5 @@ public class ChatMessage extends Timestamped implements Serializable {
 
 	public void setMessage(String message) {
 		this.message=message;
-
 	}
 }
