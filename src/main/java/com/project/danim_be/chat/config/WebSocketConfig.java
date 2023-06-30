@@ -15,13 +15,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-	// private final StompHandler stompHandler; // jwt 인증
-	//
-	//
-	// @Override
-	// public void configureClientInboundChannel(ChannelRegistration registration) {
-	// 	registration.interceptors(stompHandler);
-	// }
+
 	@Autowired
 	private SubscribeCheck subscribeCheck;
 
@@ -36,14 +30,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .setAllowedOriginPatterns("http://localhost:8080", "http://jxy.me","http://localhost:3000","http://127.0.0.1:3000",
 				      "http://project-danim.s3-website.ap-northeast-2.amazonaws.com","https://www.da-nim.com","https://da-nim.com")
             .withSockJS();
-}
-
-// 	public void registerStompEndpoints(StompEndpointRegistry registry ){
-// 		// stomp 접속 주소 url => /ws-stomp
-// 		registry.addEndpoint("/ws-stomp") // 연결될 엔드포인트
-// 			.setAllowedOrigins("http://localhost:8080","http://localhost:63342")
-// 			.withSockJS();
-// 	}
+	}
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {

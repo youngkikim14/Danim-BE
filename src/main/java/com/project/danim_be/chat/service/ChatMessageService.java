@@ -156,7 +156,7 @@ public class ChatMessageService {
 
 		ChatMessage chatMessage = new ChatMessage(chatDto, chatRoom);
 		chatMessageRepository.save(chatMessage);
-		// Change this line
+		// 레디스저장(아직미사용..)
 		// chatRedisTemplate.opsForList().rightPush(roomName, chatMessage);
 	}
 
@@ -196,15 +196,6 @@ public class ChatMessageService {
 			}
 		}
 	}
-	// 	Map<Long,Integer>alarm=new HashMap<>();
-// 					alarm.put(memberId,memberChatRoom.getAlarm());
-// 					log.info("Alarm{}",memberChatRoom.getAlarm());
-// 					log.info("memberId :{} ",memberId);
-// 					messagingTemplate.convertAndSend("/sub/alarm/"+memberId, alarm);
-//
-// }
-// 				else{
-// 					return;
 	// 10분마다 저장
 	// @Scheduled(fixedDelay = 600_000)
 	// public void saveMessages() {
