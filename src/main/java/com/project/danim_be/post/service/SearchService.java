@@ -174,6 +174,9 @@ public class SearchService {
 
         Post post = postRepository.findById(id)
             .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
+        if(post.getIsDeleted()){
+            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        }
 
         List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(post.getChatRoom().getId());
         List<Long> participants = new ArrayList<>();

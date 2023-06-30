@@ -125,14 +125,8 @@ public class MypageService {
     //마이페이지 게시물 공통 메서드
     private List<MypagePostResponseDto> validMember(Long memberId, Boolean owner) {
 
-//        List<Post> postList = postRepository.findAllByMemberOrderByCreatedAtDesc(member);
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
-
-//        List<MypagePostResponseDto> mypagePostResponseDtoList = new ArrayList<>();
-//        for (Post post : postList) {
-//            mypagePostResponseDtoList.add(new MypagePostResponseDto(post, owner));
-//        }
 
         return queryFactory.
                 select(Projections.constructor(MypagePostResponseDto.class,

@@ -20,7 +20,7 @@ public class SignupRequestDto {
 	   @Pattern(regexp = "^(?=.*[a-z])(?=.*\\d)[a-z\\d!@#$%^&*()_-]{5,12}$", message = "비밀번호는 5~12자 이내 영어(소문자),숫자,특수기호(선택) 범위에서 입력해야합니다.")
 	 private String password;
 
-	   @Pattern(regexp ="^(?=.*[가-힣a-zA-Z])[가-힣a-zA-Z0-9]{3,8}$", message = "닉네임은 3~8자 이내 한글or영어(대소문자),숫자(선택) 범위에서 입력해주세요. 특수문자는 포함할 수 없습니다.")
+	   @Pattern(regexp ="^(?=.*[가-힣a-zA-Z])[가-힣a-zA-Z0-9]{3,9}$", message = "닉네임은 3~8자 이내 한글or영어(대소문자),숫자(선택) 범위에서 입력해주세요. 특수문자는 포함할 수 없습니다.")
 	 private String nickname;
 
 
