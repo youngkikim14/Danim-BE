@@ -16,6 +16,8 @@ import com.project.danim_be.post.entity.QPost;
 import com.project.danim_be.post.repository.PostRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,11 @@ public class SearchService {
         QPost qPost = QPost.post;
         QImage qImage = QImage.image;
 
+        NumberExpression<Integer> specialPostFirst = new CaseBuilder()
+                .when(qPost.id.eq(55L))
+                .then(0)
+                .otherwise(1);
+
         List<CardPostResponseDto> cardPostResponseDtoList = queryFactory
                 .select(Projections.constructor(CardPostResponseDto.class,
                         qPost.id,
@@ -63,7 +70,8 @@ public class SearchService {
                                 .orderBy(qImage.id.asc()),
                         qPost.gender,
                         qPost.isRecruitmentEnd,
-                        qPost.member.imageUrl))
+                        qPost.member.imageUrl,
+                        qPost.member.id))
                 .from(qPost)
                 .where(qPost.isDeleted.eq(false))
                 .orderBy(qPost.createdAt.desc())
@@ -158,7 +166,8 @@ public class SearchService {
                                 .orderBy(qImage.id.asc()),
                         qPost.gender,
                         qPost.isRecruitmentEnd,
-                        qPost.member.imageUrl))
+                        qPost.member.imageUrl,
+                        qPost.member.userId))
                 .from(qPost)
                 .where(predicate)
                 .orderBy(qPost.createdAt.desc())
