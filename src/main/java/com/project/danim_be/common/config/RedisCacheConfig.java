@@ -32,6 +32,9 @@ public class RedisCacheConfig {
 	@Value("${spring.redis.port}")
 	private int port;
 
+	@Value("${spring.redis.host}")
+	private String host;
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
