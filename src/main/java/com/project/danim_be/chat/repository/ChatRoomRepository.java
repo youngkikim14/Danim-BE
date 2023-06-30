@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long>, QuerydslPredicateExecutor<ChatRoom> {
 	Optional<ChatRoom> findByRoomName(String roomName);
 
+	ChatRoom findByPostId(Long id);
 }
