@@ -74,21 +74,18 @@ public class ChatRoomService {
 	}
 	//채팅방 참여(웹소켓연결/방입장) == 매칭 신청 버튼
 	@Transactional
-	public ResponseEntity<Message> joinChatRoom(Long id, Member member) {
+	public ResponseEntity<Message> joinChatRoom(Long chatRoomId, Member member) {
 
-		ChatRoom chatRoom = chatRoomRepository.findById(id)
+		ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 		//방을찾고
-		Post post = postRepository.findByChatRoom_Id(id)
+		Post post = postRepository.findByChatRoom_Id(chatRoomId)
 				.orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 		//삭제된 게시글
 		if(post.getIsDeleted().equals(true)) {
 			throw new CustomException(ErrorCode.POST_NOT_FOUND);
 		}
-		//방장(작성자) 체크
-		// if(member.getId().equals(post.getMember().getId())) {
-		// 	throw new CustomException(ErrorCode.ADMIN_USER);
-		// }
+
 		//연령대 조건 비교하고
 		if(!member.getId().equals(chatRoom.getAdminMemberId())) {
 			if (!post.getAgeRange().contains(member.getAgeRange())) {
@@ -119,12 +116,13 @@ public class ChatRoomService {
 		}
 
 		if (post.getNumberOfParticipants() < post.getGroupSize() || memberChatRooms!=null ) {
-			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(id);
+			List<MemberChatRoom> memberChatRoomList = memberChatRoomRepository.findAllByChatRoom_Id(chatRoomId);
 			List<Map<String, Object>> userInfoList = new ArrayList<>();
 			List<Object> chatRecord =new ArrayList<>();
 			for (MemberChatRoom memberChatRoom : memberChatRoomList) {
 				Map<String, Object> userInfo = new HashMap<>();
 				userInfo.put("nickname", memberChatRoom.getMember().getNickname());
+				userInfo.put("memberId", memberChatRoom.getMember().getId());
 				userInfo.put("imageUrl", memberChatRoom.getMember().getImageUrl());
 
 				if (memberChatRoom.getMember().getId().equals(chatRoom.getAdminMemberId())) {
@@ -136,7 +134,7 @@ public class ChatRoomService {
 
 			if(memberChatRooms != null) {
 				Date from = Date.from(memberChatRooms.getFirstJoinRoom().atZone(ZoneId.systemDefault()).toInstant());
-				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(id);
+				List<ChatMessage> chatMessages =chatMessageRepository.findByChatRoomId(chatRoomId);
 				List<ChatMessage> filteredChatMessages = new ArrayList<>();
 				for (ChatMessage message : chatMessages) {
 					if (message.getCreatedAt().after(from) ) {

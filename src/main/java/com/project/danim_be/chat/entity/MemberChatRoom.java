@@ -44,9 +44,7 @@ public class MemberChatRoom implements Serializable {
 	public void setFirstJoinRoom(LocalDateTime now) {this.firstJoinRoom = now;}
 	public void setRecentConnect(LocalDateTime now) {this.recentConnect = now;}
 	public void setRecentDisConnect(LocalDateTime now) {
-		log.info("why");
 		this.recentDisConnect = now;
-		log.info("not?");
 	}
 
 	public MemberChatRoom(Member member, ChatRoom chatRoom) {

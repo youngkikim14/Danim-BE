@@ -37,8 +37,6 @@ public class ChatController {
 	// 메시지가왔을때 실행
 	@MessageMapping("/chat/message")
 	public void message(@Payload ChatDto chatDto) throws Exception {
-		// String nickName = userDetails.getMember().getNickname();
-		// log.info("nickName : {}",nickName);
 
 		switch (chatDto.getType()) {
 
