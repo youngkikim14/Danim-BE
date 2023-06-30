@@ -26,32 +26,32 @@ import java.util.List;
 @Configuration
 public class RedisCacheConfig {
 
-	@Value("${spring.redis.cluster.nodes}")
-	private List<String> clusterNodes;
+	// @Value("${spring.redis.cluster.nodes}")
+	// private List<String> clusterNodes;
 
-//	@Value("${spring.redis.port}")
-//	private int port;
+	@Value("${spring.redis.port}")
+	private int port;
 
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	//레디스 서버에 연결하는 메서드
 
-//	@Bean
-//	public RedisConnectionFactory redisConnectionFactory() {
-//		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host,port);
-//		redisStandaloneConfiguration.setHostName(host);
-//		redisStandaloneConfiguration.setPort(port);
-//		return new LettuceConnectionFactory(redisStandaloneConfiguration);
-//	}
-
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-
-		RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
-		return new LettuceConnectionFactory(redisClusterConfiguration);
-
+		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host,port);
+		redisStandaloneConfiguration.setHostName(host);
+		redisStandaloneConfiguration.setPort(port);
+		return new LettuceConnectionFactory(redisStandaloneConfiguration);
 	}
+
+	// @Bean
+	// public RedisConnectionFactory redisConnectionFactory() {
+
+	// 	RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
+	// 	return new LettuceConnectionFactory(redisClusterConfiguration);
+
+	// }
 
 	@Bean
 	public Jackson2JsonRedisSerializer jackson2JsonRedisSerializer() {
