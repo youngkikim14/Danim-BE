@@ -43,6 +43,7 @@ public enum ErrorCode {
 	DO_NOT_HAVE_PERMISSION(HttpStatus.FORBIDDEN, "자신만 수정할 수 있습니다.", "권한이 없는 사용자입니다"),
 	NOT_MOD_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN, "글작성자만 수정할 수 있습니다.", "권한이 없는 사용자입니다"),
 	NOT_DEL_AUTHORIZED_MEMBER(HttpStatus.FORBIDDEN, "글작성자만 삭제할 수 있습니다.", "권한이 없는 사용자입니다"),
+	CANNOT_KICK(HttpStatus.NOT_ACCEPTABLE,"자기 자신을 강퇴할 수 없습니다", "강퇴가 불가능합니다"),
 
 	//404
 	ID_NOT_FOUND(HttpStatus.NOT_FOUND, "등록되지 않은 아이디 입니다.", "사용자 등록 오류입니다."),
