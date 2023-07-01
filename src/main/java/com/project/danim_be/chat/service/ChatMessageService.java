@@ -250,6 +250,10 @@ public class ChatMessageService {
 		Post post = postRepository.findById(chatRoom.getPost().getId())
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
+		if(chatDto.getSender().equals(chatDto.getImposter())){
+			throw new CustomException(ErrorCode.CANNOT_KICK);
+		}
+
 		if (superMember.getId().equals(chatRoom.getAdminMemberId())) {
 			MemberChatRoom  memberChatRoomImposter = memberChatRoomRepository.findByMemberAndChatRoom(kickedMember, chatRoom)
 					.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
