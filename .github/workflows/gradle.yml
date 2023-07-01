@@ -70,38 +70,40 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
             --name ${{ secrets.PROJECT_NAME }} \
+            --network my-network \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             
-      - name: 무중단 배포를 위한 30초 delay
-        run: sleep 30
+            
+#       - name: 무중단 배포를 위한 30초 delay
+#         run: sleep 30
 
-      - name: 서브서버1 배포
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SERVER2_HOST }}
-          username: ${{ secrets.SERVER2_USERNAME }}
-          key: ${{ secrets.SERVER2_KEY }}
-          script: |
-            sudo docker kill ${{ secrets.PROJECT_NAME }}
-            sudo docker rm -f ${{ secrets.PROJECT_NAME }}
-            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
-            sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
-            --name ${{ secrets.PROJECT_NAME }} \
-            -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+#       - name: 서브서버1 배포
+#         uses: appleboy/ssh-action@v0.1.10
+#         with:
+#           host: ${{ secrets.SERVER2_HOST }}
+#           username: ${{ secrets.SERVER2_USERNAME }}
+#           key: ${{ secrets.SERVER2_KEY }}
+#           script: |
+#             sudo docker kill ${{ secrets.PROJECT_NAME }}
+#             sudo docker rm -f ${{ secrets.PROJECT_NAME }}
+#             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+#             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+#             sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
+#             --name ${{ secrets.PROJECT_NAME }} \
+#            -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
 
-      - name: 서브서버2 배포
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SERVER3_HOST }}
-          username: ${{ secrets.SERVER3_USERNAME }}
-          key: ${{ secrets.SERVER3_KEY }}
-          script: |
-            sudo docker kill ${{ secrets.PROJECT_NAME }}
-            sudo docker rm -f ${{ secrets.PROJECT_NAME }}
-            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
-            sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
-            --name ${{ secrets.PROJECT_NAME }} \
-            -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+#      - name: 서브서버2 배포
+#         uses: appleboy/ssh-action@v0.1.10
+#         with:
+#           host: ${{ secrets.SERVER3_HOST }}
+#           username: ${{ secrets.SERVER3_USERNAME }}
+#           key: ${{ secrets.SERVER3_KEY }}
+#           script: |
+#             sudo docker kill ${{ secrets.PROJECT_NAME }}
+#             sudo docker rm -f ${{ secrets.PROJECT_NAME }}
+#             sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+#             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
+#             sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
+#             --name ${{ secrets.PROJECT_NAME }} \
+#             -d ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROJECT_NAME }}
             
