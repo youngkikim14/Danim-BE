@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -127,9 +128,13 @@ public class JwtUtil {
 
 	}
 
-	public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+	public void setCookieAccessToken(HttpServletResponse response, String accessToken) {
 
-		response.setHeader(ACCESS_KEY, accessToken);
+		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", accessToken);
+		accessTokenCookie.setHttpOnly(true);
+		accessTokenCookie.setSecure(true);
+		response.addCookie(accessTokenCookie);
+//		response.setHeader(ACCESS_KEY, accessToken);
 
 	}
 

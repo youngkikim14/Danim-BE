@@ -39,9 +39,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				setAuthentication(jwtUtil.getUserInfoFromToken(access_token));
 			} else if(refresh_token != null && jwtUtil.refreshTokenValid(refresh_token)) {
 				String userId = jwtUtil.getUserInfoFromToken(refresh_token);
-				Member member = memberRepository.findByUserId(userId).get();
+				Member member = memberRepository.findByUserId(userId).orElseThrow();
 				String newAccessToken = jwtUtil.createToken(userId, "Access");
-				jwtUtil.setHeaderAccessToken(response, newAccessToken);
+				jwtUtil.setCookieAccessToken(response, newAccessToken);
 				setAuthentication(userId);
 			} else if(refresh_token == null) {
 				jwtExceptionHandler(response, "AccessToken Expired.", HttpStatus.BAD_REQUEST.value());
