@@ -101,12 +101,20 @@ public class JwtUtil {
 	public String resolveToken(HttpServletRequest request, String token) {
 
 		String tokenName = token.equals("ACCESS_KEY") ? ACCESS_KEY : REFRESH_KEY;
-		String bearerToken = request.getHeader(tokenName);
-
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-			return bearerToken;
-//					.substring(7);
+//		String bearerToken = request.getHeader(tokenName);
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals(tokenName)) {
+					return cookie.getValue();
+				}
+			}
 		}
+
+//		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+//			return bearerToken;
+////					.substring(7);
+//		}
 
 		return null;
 
