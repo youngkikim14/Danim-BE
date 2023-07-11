@@ -122,7 +122,7 @@ public class JwtUtil {
 	public boolean refreshTokenValid(String token) {
 		if (!validateToken(token)) return false;
 		String refreshToken = RefreshTokenRedisTemplate.opsForValue().get(getUserInfoFromToken(token));
-		return refreshToken != null && token.equals(refreshToken);
+		return token.equals(refreshToken);
 //				.substring(7));
 
 	}
