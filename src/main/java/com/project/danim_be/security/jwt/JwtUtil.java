@@ -59,7 +59,8 @@ public class JwtUtil {
 		Date date = new Date();
 		long tokenType = token.equals("Access") ? ACCESS_TIME : REFRESH_TIME;
 
-		return BEARER_PREFIX +
+		return
+//				BEARER_PREFIX +
 			Jwts.builder()
 				.setSubject(userId)
 				.setExpiration(new Date(date.getTime() + tokenType))
@@ -102,7 +103,8 @@ public class JwtUtil {
 		String bearerToken = request.getHeader(tokenName);
 
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-			return bearerToken.substring(7);
+			return bearerToken;
+//					.substring(7);
 		}
 
 		return null;
@@ -120,7 +122,8 @@ public class JwtUtil {
 	public boolean refreshTokenValid(String token) {
 		if (!validateToken(token)) return false;
 		String refreshToken = RefreshTokenRedisTemplate.opsForValue().get(getUserInfoFromToken(token));
-		return refreshToken != null && token.equals(refreshToken.substring(7));
+		return refreshToken != null && token.equals(refreshToken);
+//				.substring(7));
 
 	}
 
