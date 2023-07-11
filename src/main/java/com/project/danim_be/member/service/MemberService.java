@@ -16,6 +16,7 @@ import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
 import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -186,10 +187,10 @@ public class MemberService {
 				14,
 				TimeUnit.DAYS);
 
-		setHeader(response, tokenDto);
+//		setHeader(response, tokenDto);
 
-/*
-		[For HttpOnly]
+
+//		[For HttpOnly]
 		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", tokenDto.getAccessToken());
 		accessTokenCookie.setHttpOnly(true);
 		accessTokenCookie.setSecure(true);
@@ -199,7 +200,7 @@ public class MemberService {
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setSecure(true);
 		response.addCookie(refreshTokenCookie);
- */
+
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member);
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
