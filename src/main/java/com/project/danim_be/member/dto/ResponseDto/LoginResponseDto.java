@@ -16,6 +16,8 @@ public class LoginResponseDto {
 
 	private Boolean isExistMember;
 
+	private String accessToken;
+
 	public LoginResponseDto(Member member, Boolean isExistMember) {
 		this.id = member.getId();
 		this.nickName = member.getNickname();
@@ -23,10 +25,11 @@ public class LoginResponseDto {
 		this.isExistMember = isExistMember;
 	}
 
-	public LoginResponseDto(Member member) {
+	public LoginResponseDto(Member member, String accessToken) {
 		this.id = member.getId();
 		this.nickName = member.getNickname();
 		this.myPageImageUrl = member.getImageUrl();
+		this.accessToken = accessToken;
 	}
 
 }
