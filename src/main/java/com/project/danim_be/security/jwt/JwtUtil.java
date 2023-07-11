@@ -100,21 +100,23 @@ public class JwtUtil {
 	// header 토큰을 가져오기
 	public String resolveToken(HttpServletRequest request, String token) {
 
-		String tokenName = token.equals("ACCESS_KEY") ? ACCESS_KEY : REFRESH_KEY;
-//		String bearerToken = request.getHeader(tokenName);
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals(tokenName)) {
-					return cookie.getValue();
+		if (token.equals("REFRESH_KEY")){
+//			String tokenName = token.equals("REFRESH_KEY") ? ACCESS_KEY : REFRESH_KEY;
+			Cookie[] cookies = request.getCookies();
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals("REFRESH_KEY")) {
+						return cookie.getValue();
+					}
 				}
 			}
+		} else {
+			String bearerToken = request.getHeader("ACCESS_KEY");
+			if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+				return bearerToken;
+//					.substring(7);
+			}
 		}
-
-//		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-//			return bearerToken;
-////					.substring(7);
-//		}
 
 		return null;
 
