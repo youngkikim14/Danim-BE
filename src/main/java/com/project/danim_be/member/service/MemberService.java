@@ -282,18 +282,18 @@ public class MemberService {
 
 		String userId = jwtUtil.getUserInfoFromToken(refresh_token);
 
-		TokenDto allToken = jwtUtil.createAllToken(userId);
-		TokenDto tokenDto = new TokenDto(allToken.getAccessToken(), allToken.getRefreshToken());
+		String accessToken = jwtUtil.createToken(userId, "Access");
+//		TokenDto tokenDto = new TokenDto(allToken.getAccessToken(), allToken.getRefreshToken());
 
-		RefreshTokenRedisTemplate.opsForValue().set(
-				userId,
-				tokenDto.getRefreshToken(),
-				14,
-				TimeUnit.DAYS);
+//		RefreshTokenRedisTemplate.opsForValue().set(
+//				userId,
+//				tokenDto.getRefreshToken(),
+//				14,
+//				TimeUnit.DAYS);
 
-		setHeader(response, tokenDto);
+//		setHeader(response, tokenDto);
 
-		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공");
+		Message message = Message.setSuccess(StatusEnum.OK, "액세스 토큰 재발급 성공", accessToken);
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
 
