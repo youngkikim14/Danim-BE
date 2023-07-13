@@ -111,10 +111,10 @@ public class JwtUtil {
 				}
 			}
 		} else {
-			String bearerToken = request.getHeader("ACCESS_KEY");
+			String bearerToken ="Bearer " + request.getHeader("ACCESS_KEY");
 			if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-				return bearerToken;
-//					.substring(7);
+				return bearerToken
+					.substring(7);
 			}
 		}
 
