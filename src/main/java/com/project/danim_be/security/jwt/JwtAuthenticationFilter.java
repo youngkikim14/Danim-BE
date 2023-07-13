@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				return;
 			} else {
 				jwtExceptionHandler(response, "RefreshToken Expired.", HttpStatus.BAD_REQUEST.value());
-				return;
+				return ;
 			}
 			filterChain.doFilter(request, response);
 		}

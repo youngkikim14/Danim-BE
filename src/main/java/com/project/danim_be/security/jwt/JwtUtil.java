@@ -61,7 +61,7 @@ public class JwtUtil {
 		long tokenType = token.equals("Access") ? ACCESS_TIME : REFRESH_TIME;
 
 		return
-//				BEARER_PREFIX +
+				BEARER_PREFIX +
 			Jwts.builder()
 				.setSubject(userId)
 				.setExpiration(new Date(date.getTime() + tokenType))
@@ -113,8 +113,8 @@ public class JwtUtil {
 		} else {
 			String bearerToken = request.getHeader("ACCESS_KEY");
 			if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-				return bearerToken;
-//					.substring(7);
+				return bearerToken
+					.substring(7);
 			}
 		}
 
@@ -140,12 +140,12 @@ public class JwtUtil {
 
 	public void setCookieAccessToken(HttpServletResponse response, String accessToken) {
 
-		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", accessToken);
-		accessTokenCookie.setHttpOnly(true);
-		accessTokenCookie.setSecure(true);
-		response.addCookie(accessTokenCookie);
-//		response.setHeader(ACCESS_KEY, accessToken);
-
+//		Cookie accessTokenCookie = new Cookie("ACCESS_KEY", accessToken);
+//		accessTokenCookie.setHttpOnly(true);
+//		accessTokenCookie.setSecure(true);
+//		response.addCookie(accessTokenCookie);
+		response.setHeader(ACCESS_KEY, accessToken);
+//		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "AccessToken 재발급", accessToken));
 	}
 
 	public long getExpirationTime(String token) {
