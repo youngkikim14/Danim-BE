@@ -184,7 +184,7 @@ public class MemberService {
 
 		RefreshTokenRedisTemplate.opsForValue().set(
 				userId,
-				tokenDto.getRefreshToken(),
+				tokenDto.getRefreshToken().substring(7),
 				14,
 				TimeUnit.DAYS);
 
@@ -197,7 +197,7 @@ public class MemberService {
 //		accessTokenCookie.setSecure(true);
 //		response.addCookie(accessTokenCookie);
 
-		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken());
+		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setSecure(true);
 		response.addCookie(refreshTokenCookie);
