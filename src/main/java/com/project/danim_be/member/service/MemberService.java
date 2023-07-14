@@ -275,7 +275,7 @@ public class MemberService {
 	public ResponseEntity<Message> refreshAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse response) {
 
 		String refresh_token = jwtUtil.resolveToken(httpServletRequest, JwtUtil.REFRESH_KEY);
-
+		System.out.println("Refresh_Token : " + refresh_token);
 		if(!jwtUtil.refreshTokenValid(refresh_token)) {
 			throw new CustomException(ErrorCode.INVALID_TOKEN);
 		}
