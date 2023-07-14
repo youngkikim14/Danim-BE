@@ -200,9 +200,9 @@ public class MemberService {
 		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setSecure(true);
+		refreshTokenCookie.setDomain(".da-nim.com");
 		response.addCookie(refreshTokenCookie);
 
-		System.out.println("Cookie : " + refreshTokenCookie);
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member, tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
