@@ -136,9 +136,9 @@ public class MemberService {
 		);
 
 		member.update(userInfoRequestDto);
-		String accessToken = jwtUtil.createToken(member.getUserId(), "Access");
+		TokenDto tokenDto = jwtUtil.createAllToken(member.getUserId());
 
-		LoginResponseDto loginResponseDto = new LoginResponseDto(member, accessToken);
+		LoginResponseDto loginResponseDto = new LoginResponseDto(member, tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 		return ResponseEntity.ok(Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto));
 
 	}
@@ -202,8 +202,9 @@ public class MemberService {
 		refreshTokenCookie.setSecure(true);
 		response.addCookie(refreshTokenCookie);
 
+		System.out.println(refreshTokenCookie);
 
-		LoginResponseDto loginResponseDto = new LoginResponseDto(member, tokenDto.getAccessToken());
+		LoginResponseDto loginResponseDto = new LoginResponseDto(member, tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
 
 		return new ResponseEntity<>(message, HttpStatus.OK);
