@@ -202,7 +202,7 @@ public class MemberService {
 		refreshTokenCookie.setSecure(true);
 		response.addCookie(refreshTokenCookie);
 
-		System.out.println(refreshTokenCookie);
+		System.out.println("Cookie : " + refreshTokenCookie);
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member, tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 		Message message = Message.setSuccess(StatusEnum.OK, "로그인 성공", loginResponseDto);
