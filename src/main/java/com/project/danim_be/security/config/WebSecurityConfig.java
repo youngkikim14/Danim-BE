@@ -122,6 +122,7 @@ public class WebSecurityConfig {
 		configuration.addAllowedOrigin("http://project-danim.s3-website.ap-northeast-2.amazonaws.com/");
 		configuration.addAllowedOrigin("https://da-nim.com");
 		configuration.addAllowedOrigin("https://www.da-nim.com");
+		configuration.addAllowedOrigin("http://dev.da-nim.com:3000/");
 
 		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
 		configuration.addExposedHeader(JwtUtil.REFRESH_KEY);
