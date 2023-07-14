@@ -106,15 +106,15 @@ public class JwtUtil {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if (cookie.getName().equals("REFRESH_KEY")) {
-						return JwtUtil.BEARER_PREFIX + cookie.getValue();
+						return cookie.getValue();
 					}
 				}
 			}
 		} else {
 			String bearerToken = request.getHeader("ACCESS_KEY");
 			if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-				return bearerToken;
-//					.substring(7);
+				return bearerToken
+					.substring(7);
 			}
 		}
 

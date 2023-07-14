@@ -184,7 +184,7 @@ public class MemberService {
 
 		RefreshTokenRedisTemplate.opsForValue().set(
 				userId,
-				tokenDto.getRefreshToken(),
+				tokenDto.getRefreshToken().substring(7),
 				14,
 				TimeUnit.DAYS);
 
