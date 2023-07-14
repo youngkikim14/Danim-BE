@@ -75,7 +75,7 @@ public class JwtUtil {
 	public boolean validateToken(String token) {
 
 		try {
-			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(BEARER_PREFIX + token);
+			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
 		} catch (SecurityException | MalformedJwtException e) {
 			log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
@@ -106,15 +106,15 @@ public class JwtUtil {
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if (cookie.getName().equals("REFRESH_KEY")) {
-						return cookie.getValue();
+						return JwtUtil.BEARER_PREFIX + cookie.getValue();
 					}
 				}
 			}
 		} else {
 			String bearerToken = request.getHeader("ACCESS_KEY");
 			if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-				return bearerToken
-					.substring(7);
+				return bearerToken;
+//					.substring(7);
 			}
 		}
 
