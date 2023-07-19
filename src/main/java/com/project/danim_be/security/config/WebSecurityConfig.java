@@ -19,6 +19,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -114,27 +116,41 @@ public class WebSecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 
 		//접근할수있는 포트설정
-		configuration.addAllowedOrigin("http://localhost:3000");
-		configuration.addAllowedOrigin("http://localhost:8080");
-		configuration.addAllowedOrigin("http://127.0.0.1:3000");
-		configuration.addAllowedOrigin("http://localhost:63342");
-		configuration.addAllowedOrigin("http://jxy.me/**");
-		configuration.addAllowedOrigin("http://jxy.me/");
-		configuration.addAllowedOrigin("https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/");
-		configuration.addAllowedOrigin("http://project-danim.s3-website.ap-northeast-2.amazonaws.com/");
-		configuration.addAllowedOrigin("https://da-nim.com");
-		configuration.addAllowedOrigin("https://www.da-nim.com");
-		configuration.addAllowedOrigin("http://dev.da-nim.com:3000/");
+		configuration.setAllowedOrigins(Arrays.asList(
+				"http://localhost:3000",
+				"http://localhost:8080",
+				"http://127.0.0.1:3000",
+				"http://localhost:63342",
+				"http://jxy.me/**",
+				"http://jxy.me/",
+				"https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/",
+				"http://project-danim.s3-website.ap-northeast-2.amazonaws.com/",
+				"https://da-nim.com",
+				"https://www.da-nim.com"
+		));
+//		configuration.addAllowedOrigin("http://localhost:3000");
+//		configuration.addAllowedOrigin("http://localhost:8080");
+//		configuration.addAllowedOrigin("http://127.0.0.1:3000");
+//		configuration.addAllowedOrigin("http://localhost:63342");
+//		configuration.addAllowedOrigin("http://jxy.me/**");
+//		configuration.addAllowedOrigin("http://jxy.me/");
+//		configuration.addAllowedOrigin("https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/");
+//		configuration.addAllowedOrigin("http://project-danim.s3-website.ap-northeast-2.amazonaws.com/");
+//		configuration.addAllowedOrigin("https://da-nim.com");
+//		configuration.addAllowedOrigin("https://www.da-nim.com");
 
 		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
 		configuration.addExposedHeader(JwtUtil.REFRESH_KEY);
 
 		//어떤데이터
-		configuration.addAllowedHeader("*");
-		configuration.setExposedHeaders(List.of(JwtUtil.REFRESH_KEY));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
 
 		//모든 방식(GET, POST, PUT, DELETE 등)으로 데이터를 요청할 수 있게함
-		configuration.addAllowedMethod("*");
+//		configuration.addAllowedMethod("*");
+//		configuration.addAllowedMethod("POST");
+//		configuration.addAllowedMethod("PUT");
+//		configuration.addAllowedMethod("DELETE");
+		configuration.setAllowedMethods(Arrays.asList("*"));
 
 		configuration.setAllowCredentials(true);
 
