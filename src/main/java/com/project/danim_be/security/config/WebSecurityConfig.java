@@ -19,6 +19,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -129,6 +131,7 @@ public class WebSecurityConfig {
 
 		//어떤데이터
 		configuration.addAllowedHeader("*");
+		configuration.setExposedHeaders(List.of(JwtUtil.REFRESH_KEY));
 
 		//모든 방식(GET, POST, PUT, DELETE 등)으로 데이터를 요청할 수 있게함
 		configuration.addAllowedMethod("*");
