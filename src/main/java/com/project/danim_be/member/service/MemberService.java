@@ -199,8 +199,8 @@ public class MemberService {
 
 		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
 		refreshTokenCookie.setHttpOnly(true);
-//		refreshTokenCookie.setSecure(true);
-		refreshTokenCookie.setDomain("da-nim.com");
+		refreshTokenCookie.setSecure(true);
+		refreshTokenCookie.setDomain(".da-nim.com");
 		refreshTokenCookie.setPath("/");
 		response.addCookie(refreshTokenCookie);
 
