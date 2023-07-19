@@ -98,28 +98,28 @@ public class JwtUtil {
 	}
 
 	// header 토큰을 가져오기
-	public String resolveToken(HttpServletRequest request, String token) {
+	public String resolveToken(HttpServletRequest request, String tokenName) {
 
-		if (token.equals("REFRESH_KEY")){
+		String token = null;
+
+		if (tokenName.equals("REFRESH_KEY")){
 //			String tokenName = token.equals("REFRESH_KEY") ? ACCESS_KEY : REFRESH_KEY;
 			Cookie[] cookies = request.getCookies();
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if (cookie.getName().equals("REFRESH_KEY")) {
-						return cookie.getValue();
+						token = cookie.getValue();
 					}
 				}
 			}
 		} else {
 			String bearerToken = request.getHeader("ACCESS_KEY");
 			if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-				return bearerToken
+				token = bearerToken
 					.substring(7);
 			}
 		}
-
-		return null;
-
+		return token;
 	}
 
 	// 인증 객체 생성
