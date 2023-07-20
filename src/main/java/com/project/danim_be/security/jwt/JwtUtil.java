@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 
@@ -105,6 +106,7 @@ public class JwtUtil {
 		if (tokenName.equals("REFRESH_KEY")){
 //			String tokenName = token.equals("REFRESH_KEY") ? ACCESS_KEY : REFRESH_KEY;
 			Cookie[] cookies = request.getCookies();
+			System.out.println("Cookie : " + Arrays.toString(cookies));
 			if (cookies != null) {
 				for (Cookie cookie : cookies) {
 					if (cookie.getName().equals("REFRESH_KEY")) {
