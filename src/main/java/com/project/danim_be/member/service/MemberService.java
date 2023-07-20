@@ -15,7 +15,6 @@ import com.project.danim_be.post.entity.Post;
 import com.project.danim_be.post.repository.PostRepository;
 import com.project.danim_be.security.jwt.JwtUtil;
 import com.project.danim_be.security.jwt.TokenDto;
-import com.project.danim_be.security.refreshToken.RefreshTokenRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,7 +44,6 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final RefreshTokenRepository refreshTokenRepository;
 	private final PostRepository postRepository;
 	private final MemberChatRoomRepository memberChatRoomRepository;
 	private final JwtUtil jwtUtil;
@@ -197,18 +194,18 @@ public class MemberService {
 //		accessTokenCookie.setHttpOnly(true);
 //		accessTokenCookie.setSecure(true);
 //		response.addCookie(accessTokenCookie);
-		ResponseCookie responseCookie = ResponseCookie.from("REFRESH_KEY", tokenDto.getRefreshToken().substring(7))
-				.path("/")
-				.sameSite("None")
-				.httpOnly(true)
-				.secure(true)
-				.domain("www.da-nim.com")
-				.build();
-//		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
-//		refreshTokenCookie.setHttpOnly(true);
-//		refreshTokenCookie.setSecure(true);
-//		refreshTokenCookie.setDomain("www.da-nim.com");
-		response.addHeader("Set-Cookie", responseCookie.toString());
+//		ResponseCookie responseCookie = ResponseCookie.from("REFRESH_KEY", tokenDto.getRefreshToken().substring(7))
+//				.path("/")
+//				.sameSite("None")
+//				.httpOnly(true)
+//				.secure(true)
+//				.domain("www.da-nim.com")
+//				.build();
+		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
+		refreshTokenCookie.setDomain("www.da-nim.com");
+		response.addCookie(refreshTokenCookie);
 
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member, tokenDto.getAccessToken(), tokenDto.getRefreshToken());
