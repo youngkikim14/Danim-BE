@@ -141,6 +141,8 @@ public class WebSecurityConfig {
 
 		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
 		configuration.addExposedHeader(JwtUtil.REFRESH_KEY);
+		configuration.addExposedHeader("Set-Cookie");
+		configuration.addAllowedHeader(CorsConfiguration.ALL);
 
 		//어떤데이터
 //		configuration.setAllowedHeaders(Arrays.asList("*"));
