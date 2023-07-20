@@ -203,7 +203,8 @@ public class MemberService {
 //				.build();
 		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
 		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setSecure(true);
+//		refreshTokenCookie.setSecure(true);
+		refreshTokenCookie.setPath("/");
 		refreshTokenCookie.setDomain("www.da-nim.com");
 		response.addCookie(refreshTokenCookie);
 
