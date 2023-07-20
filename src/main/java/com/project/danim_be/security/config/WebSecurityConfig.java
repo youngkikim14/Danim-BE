@@ -148,7 +148,11 @@ public class WebSecurityConfig {
 //		configuration.setAllowedHeaders(Arrays.asList("*"));
 
 		//모든 방식(GET, POST, PUT, DELETE 등)으로 데이터를 요청할 수 있게함
-		configuration.addAllowedMethod("*");
+//		configuration.addAllowedMethod("*");
+		configuration.addAllowedMethod("GET");
+		configuration.addAllowedMethod("POST");
+		configuration.addAllowedMethod("PUT");
+		configuration.addAllowedMethod("DELETE");
 
 //		configuration.setAllowedMethods(Arrays.asList("*"));
 
