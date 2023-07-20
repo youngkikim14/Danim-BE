@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -196,12 +197,18 @@ public class MemberService {
 //		accessTokenCookie.setHttpOnly(true);
 //		accessTokenCookie.setSecure(true);
 //		response.addCookie(accessTokenCookie);
-
-		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
-		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setSecure(true);
-		refreshTokenCookie.setDomain("www.da-nim.com");
-		response.addCookie(refreshTokenCookie);
+		ResponseCookie responseCookie = ResponseCookie.from("REFRESH_KEY", tokenDto.getRefreshToken().substring(7))
+				.path("/")
+				.sameSite("None")
+				.httpOnly(true)
+				.secure(true)
+				.domain("www.da-nim.com")
+				.build();
+//		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
+//		refreshTokenCookie.setHttpOnly(true);
+//		refreshTokenCookie.setSecure(true);
+//		refreshTokenCookie.setDomain("www.da-nim.com");
+		response.addHeader("Set-Cookie", responseCookie.toString());
 
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member, tokenDto.getAccessToken(), tokenDto.getRefreshToken());
