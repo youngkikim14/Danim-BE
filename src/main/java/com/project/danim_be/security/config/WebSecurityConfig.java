@@ -111,44 +111,61 @@ public class WebSecurityConfig {
 	}
 
 	@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowCredentials(true);
-    configuration.addAllowedHeader(CorsConfiguration.ALL);
-    configuration.addAllowedMethod("GET");
-    configuration.addAllowedMethod("POST");
-    configuration.addAllowedMethod("PUT");
-    configuration.addAllowedMethod("DELETE");
+	public CorsConfigurationSource corsConfigurationSource() {
 
-    List<String> allowedOrigins = Arrays.asList(
-        "http://localhost:3000",
-        "http://localhost:8080",
-        "http://127.0.0.1:3000",
-        "http://localhost:63342",
-        "http://jxy.me/**",
-        "http://jxy.me/",
-        "https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/",
-        "http://project-danim.s3-website.ap-northeast-2.amazonaws.com/",
-        "https://da-nim.com",
-        "https://www.da-nim.com"
-    );
+		CorsConfiguration configuration = new CorsConfiguration();
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource() {
-        @Override
-        public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-            String origin = request.getHeader("Origin");
-            if (allowedOrigins.contains(origin)) {
-                configuration.addAllowedOrigin(origin);
-                return configuration;
-            }
-            return null;
-        }
-    };
+		//접근할수있는 포트설정
+//		configuration.setAllowedOrigins(Arrays.asList(
+//				"http://localhost:3000",
+//				"http://localhost:8080",
+//				"http://127.0.0.1:3000",
+//				"http://localhost:63342",
+//				"http://jxy.me/**",
+//				"http://jxy.me/",
+//				"https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/",
+//				"http://project-danim.s3-website.ap-northeast-2.amazonaws.com/",
+//				"https://da-nim.com",
+//				"https://www.da-nim.com"
+//		));
+		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.addAllowedOrigin("http://localhost:8080");
+		configuration.addAllowedOrigin("http://127.0.0.1:3000");
+		configuration.addAllowedOrigin("http://localhost:63342");
+		configuration.addAllowedOrigin("http://jxy.me/**");
+		configuration.addAllowedOrigin("http://jxy.me/");
+		configuration.addAllowedOrigin("https://danim-https-1018737567.ap-northeast-2.elb.amazonaws.com/");
+		configuration.addAllowedOrigin("http://project-danim.s3-website.ap-northeast-2.amazonaws.com/");
+		configuration.addAllowedOrigin("https://da-nim.com");
+		configuration.addAllowedOrigin("https://www.da-nim.com");
 
-    source.registerCorsConfiguration("/**", configuration);
+		configuration.addExposedHeader(JwtUtil.ACCESS_KEY);
+		configuration.addExposedHeader(JwtUtil.REFRESH_KEY);
+		configuration.addExposedHeader("Set-Cookie");
+		configuration.addAllowedHeader(CorsConfiguration.ALL);
 
-    return source;
-}
+		//어떤데이터
+//		configuration.setAllowedHeaders(Arrays.asList("*"));
+
+		//모든 방식(GET, POST, PUT, DELETE 등)으로 데이터를 요청할 수 있게함
+//		configuration.addAllowedMethod("*");
+		configuration.addAllowedMethod("GET");
+		configuration.addAllowedMethod("POST");
+		configuration.addAllowedMethod("PUT");
+		configuration.addAllowedMethod("DELETE");
+
+//		configuration.setAllowedMethods(Arrays.asList("*"));
+
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+		//이 부분은 위에서 설정한 CORS 설정을 모든 경로에 적용
+		source.registerCorsConfiguration("/**", configuration);
+
+		return source;
+	}
+
 
 }
 
