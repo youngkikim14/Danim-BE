@@ -202,19 +202,22 @@ public class MemberService {
 //				.secure(true)
 //				.domain("www.da-nim.com")
 //				.build();
-		
+
 		String refreshToken = tokenDto.getRefreshToken();
 		if(refreshToken.startsWith("Bearer ")){
 			refreshToken = refreshToken.substring(7);
 		}
-		
+
 //		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", tokenDto.getRefreshToken().substring(7));
-		Cookie refreshTokenCookie = new Cookie("REFRESH_KEY", refreshToken);
+		Cookie refreshTokenCookie = new Cookie(REFRESH_KEY, refreshToken);
 		refreshTokenCookie.setHttpOnly(true);
 //		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
 		refreshTokenCookie.setDomain("www.da-nim.com");
 		response.addCookie(refreshTokenCookie);
+
+
+
 
 
 		LoginResponseDto loginResponseDto = new LoginResponseDto(member, tokenDto.getAccessToken(), tokenDto.getRefreshToken());
