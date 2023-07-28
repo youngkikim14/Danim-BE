@@ -205,7 +205,7 @@ public class MemberService {
 		refreshTokenCookie.setHttpOnly(true);
 //		refreshTokenCookie.setSecure(true);
 		refreshTokenCookie.setPath("/");
-		refreshTokenCookie.setDomain("www.da-nim.com");
+		refreshTokenCookie.setDomain("da-nim.com");
 		response.addCookie(refreshTokenCookie);
 
 
